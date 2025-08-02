@@ -887,36 +887,30 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">{student.email}</div>
-                          <div className="text-sm text-gray-500">{student.mobile}</div>
+                          <div className="text-sm text-gray-500">{student.username}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{student.jobCategory}</div>
+                          <div className="text-sm text-gray-900">{student.course}</div>
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            student.shift === 'morning' ? 'bg-yellow-100 text-yellow-800' :
-                            student.shift === 'afternoon' ? 'bg-orange-100 text-orange-800' :
-                            'bg-purple-100 text-purple-800'
+                            student.libraryAccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
-                            {student.shift}
+                            {student.libraryAccess ? 'Library Access' : 'No Library Access'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Paid: ₹{student.fees.paidAmount.toLocaleString()}</div>
-                          <div className={`text-sm ${student.fees.dueAmount > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                            Due: ₹{student.fees.dueAmount.toLocaleString()}
-                          </div>
+                          <div className="text-sm text-gray-900">Duration: {student.duration} months</div>
+                          <div className="text-sm text-gray-500">Monthly Fee: ₹{student.monthlyFees[0]?.amount || 0}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Score: {student.progress.averageScore}%</div>
-                          <div className="text-sm text-gray-500">Tests: {student.progress.testsCompleted}</div>
-                          <div className="text-sm text-gray-500">Attendance: {Math.round((student.attendance.present / student.attendance.totalDays || 0) * 100)}%</div>
+                          <div className="text-sm text-gray-900">Exams Passed: {student.examsPassed}</div>
+                          <div className="text-sm text-gray-500">Counseling: {student.counselingBooked ? 'Booked' : 'Not Booked'}</div>
+                          <div className="text-sm text-gray-500">Join Date: {student.joinDate}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            student.status === 'active' ? 'bg-green-100 text-green-800' :
-                            student.status === 'inactive' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
+                            student.libraryAccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
-                            {student.status}
+                            {student.libraryAccess ? 'Active' : 'Inactive'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
