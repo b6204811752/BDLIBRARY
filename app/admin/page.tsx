@@ -1,3 +1,8 @@
+
+import React, { useState, useEffect } from 'react';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+// Import or define Student, analytics, and financialAnalytics types/interfaces as needed
 // --- Type/interface definitions ---
 
 interface RealTimeStats {
@@ -16,7 +21,73 @@ interface RealTimeStats {
 }
 
 export default function AdminPage() {
-  // ...all state, handlers, and logic here...
+  // --- Demo/mock state for dashboard preview ---
+  const [activeTab, setActiveTab] = useState('dashboard');
+  // Minimal mock students array
+  const [students] = useState([
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      mobile: '1234567890',
+      jobCategory: 'Banking',
+      shift: 'morning',
+      status: 'active',
+      fees: { paidAmount: 8000, dueAmount: 2000 },
+      progress: { averageScore: 85, testsCompleted: 5 },
+      attendance: { present: 28, totalDays: 30 },
+      library: { booksIssued: [{}, {}], fines: [], },
+      examHistory: [{}, {}, {}],
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      mobile: '9876543210',
+      jobCategory: 'SSC',
+      shift: 'evening',
+      status: 'inactive',
+      fees: { paidAmount: 10000, dueAmount: 0 },
+      progress: { averageScore: 92, testsCompleted: 7 },
+      attendance: { present: 25, totalDays: 30 },
+      library: { booksIssued: [{}], fines: [{ amount: 100, status: 'pending' }], },
+      examHistory: [{}, {}],
+    },
+  ]);
+
+  // Minimal mock analytics
+  const analytics = {
+    averageAttendance: 90,
+    averageScore: 88,
+  };
+  // Minimal mock financialAnalytics
+  const financialAnalytics = {
+    totalRevenue: 18000,
+    totalDues: 2000,
+    totalDiscounts: 500,
+    paymentMethodStats: {
+      cash: { amount: 10000, count: 8 },
+      card: { amount: 5000, count: 3 },
+      upi: { amount: 3000, count: 2 },
+      bank_transfer: { amount: 0, count: 0 },
+    },
+    overduePayments: 1,
+    defaulters: [
+      {
+        id: '1',
+        name: 'John Doe',
+        mobile: '1234567890',
+        fees: { dueAmount: 2000 },
+      },
+    ],
+  };
+  // Minimal mock announcements
+  const [announcements] = useState([
+    { id: 'a1', title: 'Holiday Notice', message: 'Library will be closed tomorrow.', author: 'Admin', date: '2025-08-01', priority: 'high' },
+    { id: 'a2', title: 'Exam Schedule', message: 'Next exam on 10th Aug.', author: 'Admin', date: '2025-08-02', priority: 'medium' },
+  ]);
+
+  // ...existing code...
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -53,8 +124,80 @@ export default function AdminPage() {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && analytics && financialAnalytics && (
-          <div className="space-y-6">
-            {/* ...existing code for dashboard tab... */}
+          <div className="space-y-8">
+            {/* Dashboard Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <i className="ri-user-line text-2xl text-blue-600"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Students</p>
+                  <p className="text-2xl font-bold text-gray-900">{students.length}</p>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <i className="ri-money-rupee-circle-line text-2xl text-green-600"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Revenue</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalRevenue.toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <i className="ri-error-warning-line text-2xl text-red-600"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Pending Dues</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDues.toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
+                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <i className="ri-bar-chart-line text-2xl text-yellow-600"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Avg. Attendance</p>
+                  <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageAttendance)}%</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Dashboard Charts (placeholders) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Revenue Trend</h3>
+                <div className="w-full h-48 flex items-center justify-center text-gray-400">
+                  {/* Chart.js or other chart can be integrated here */}
+                  <span>[Revenue Chart Placeholder]</span>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Student Enrollment Trend</h3>
+                <div className="w-full h-48 flex items-center justify-center text-gray-400">
+                  {/* Chart.js or other chart can be integrated here */}
+                  <span>[Enrollment Chart Placeholder]</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
+                <p className="text-sm text-gray-500">Active Announcements</p>
+                <p className="text-2xl font-bold text-blue-600">{announcements.length}</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
+                <p className="text-sm text-gray-500">Books Issued</p>
+                <p className="text-2xl font-bold text-purple-600">{students.reduce((sum, s) => sum + s.library.booksIssued.length, 0)}</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
+                <p className="text-sm text-gray-500">Avg. Exam Score</p>
+                <p className="text-2xl font-bold text-green-600">{Math.round(analytics.averageScore)}%</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -145,143 +288,6 @@ export default function AdminPage() {
     </div>
   );
 }
-      addExamResult(examData.studentId, {
-        examName: examData.examName,
-        date: new Date().toISOString().split('T')[0],
-        totalMarks,
-        obtainedMarks,
-        percentage: Math.round((obtainedMarks / totalMarks) * 100),
-        rank: Math.floor(Math.random() * 50) + 1,
-        subjects: examData.subjects.map((sub: { name: string; marks: string; totalMarks: string }) => ({
-          name: sub.name,
-          marks: parseInt(sub.marks),
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-money-rupee-circle-line text-xl text-green-600"></i>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalRevenue.toLocaleString()}</p>
-                    <p className="text-xs text-green-600">This month</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-money-rupee-circle-line text-xl text-red-600"></i>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Dues</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDues.toLocaleString()}</p>
-                    <p className="text-xs text-red-600">{financialAnalytics.overduePayments} overdue</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-calendar-check-line text-xl text-purple-600"></i>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Avg Attendance</p>
-                    <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageAttendance)}%</p>
-                    <p className="text-xs text-green-600">+2% this month</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-trophy-line text-xl text-yellow-600"></i>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Avg Score</p>
-                    <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageScore)}</p>
-                    <p className="text-xs text-green-600">+3 pts this week</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-discount-percent-line text-xl text-orange-600"></i>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Discounts</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDiscounts.toLocaleString()}</p>
-                    <p className="text-xs text-orange-600">Total given</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Enhanced Quick Actions */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button
-                  onClick={() => setShowAddModal(true)}
-                  className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-user-add-line"></i>
-                  <span>Add Student</span>
-                </button>
-                <button
-                  onClick={() => setShowPaymentModal(true)}
-                  className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-money-rupee-circle-line"></i>
-                  <span>Add Payment</span>
-                </button>
-                <button
-                  onClick={() => setShowDiscountModal(true)}
-                  className="bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-discount-percent-line"></i>
-                  <span>Apply Discount</span>
-                </button>
-                <button
-                  onClick={() => setShowLibraryModal(true)}
-                  className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-book-line"></i>
-                  <span>Library</span>
-                </button>
-                <button
-                  onClick={() => setShowExamModal(true)}
-                  className="bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-quiz-line"></i>
-                  <span>Add Exam</span>
-                </button>
-                <button
-                  onClick={() => setShowCounselingModal(true)}
-                  className="bg-pink-600 text-white py-3 px-4 rounded-lg hover:bg-pink-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-user-heart-line"></i>
-                  <span>Counseling</span>
-                </button>
-                <button
-                  onClick={() => setShowCertificateModal(true)}
-                  className="bg-teal-600 text-white py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-award-line"></i>
-                  <span>Certificate</span>
-                </button>
-                <button
-                  onClick={() => setShowExportModal(true)}
-                  className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <i className="ri-download-line"></i>
-                  <span>Export</span>
-                </button>
-              </div>
-            </div>
 
             {/* Financial Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
