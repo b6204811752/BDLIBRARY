@@ -196,10 +196,10 @@ export default function AdminDashboard() {
       const success = await addStudent({
         name: newStudent.name,
         email: newStudent.email,
-        username: newStudent.email, // Use email as username for simplicity
-        password: 'student123', // Default password
-        course: newStudent.jobCategory || 'General',
-        duration: courseDurationMonths,
+        username: newStudent.username,
+        password: newStudent.password,
+        course: newStudent.course,
+        duration: newStudent.duration,
         monthlyFees: monthlyFeesArray,
         libraryAccess: true,
         examsPassed: 0,
@@ -1322,55 +1322,43 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                   <input
-                    type="tel"
-                    value={newStudent.mobile}
-                    onChange={(e) => setNewStudent({ ...newStudent, mobile: e.target.value })}
+                    type="text"
+                    value={newStudent.username}
+                    onChange={(e) => setNewStudent({ ...newStudent, username: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter mobile number"
-                    pattern="[0-9]{10}"
+                    placeholder="Enter username"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                  <select
-                    value={newStudent.shift}
-                    onChange={(e) => setNewStudent({ ...newStudent, shift: e.target.value as 'morning' | 'afternoon' | 'evening' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <input
+                    type="password"
+                    value={newStudent.password}
+                    onChange={(e) => setNewStudent({ ...newStudent, password: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter password"
                     required
-                  >
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
-                    <option value="evening">Evening</option>
-                  </select>
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Category</label>
-                  <select
-                    value={newStudent.jobCategory}
-                    onChange={(e) => setNewStudent({ ...newStudent, jobCategory: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                  <input
+                    type="text"
+                    value={newStudent.course}
+                    onChange={(e) => setNewStudent({ ...newStudent, course: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter course name"
                     required
-                  >
-                    <option value="Banking">Banking</option>
-                    <option value="SSC">SSC</option>
-                    <option value="Railway">Railway</option>
-                    <option value="UPSC">UPSC</option>
-                    <option value="State">State Government</option>
-                    <option value="Defense">Defense</option>
-                    <option value="Insurance">Insurance</option>
-                    <option value="Teaching">Teaching</option>
-                    <option value="Police">Police</option>
-                    <option value="Other">Other</option>
-                  </select>
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Course Duration (Months)</label>
                   <select
-                    value={newStudent.courseDurationMonths}
-                    onChange={(e) => setNewStudent({ ...newStudent, courseDurationMonths: e.target.value })}
+                    value={newStudent.duration}
+                    onChange={(e) => setNewStudent({ ...newStudent, duration: parseInt(e.target.value) })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
                     required
                   >
@@ -1483,57 +1471,46 @@ export default function AdminDashboard() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
                   <input
-                    type="tel"
-                    value={selectedStudent.mobile}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, mobile: e.target.value })}
+                    type="email"
+                    value={selectedStudent.email}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, email: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                  <select
-                    value={selectedStudent.shift}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, shift: e.target.value as 'morning' | 'afternoon' | 'evening' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Duration (months)</label>
+                  <input
+                    type="number"
+                    value={selectedStudent.duration}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, duration: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                  >
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
-                    <option value="evening">Evening</option>
-                  </select>
+                    min="1"
+                    max="24"
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Category</label>
-                  <select
-                    value={selectedStudent.jobCategory}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, jobCategory: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                  <input
+                    type="text"
+                    value={selectedStudent.course}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, course: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                  >
-                    <option value="Banking">Banking</option>
-                    <option value="SSC">SSC</option>
-                    <option value="Railway">Railway</option>
-                    <option value="UPSC">UPSC</option>
-                    <option value="State">State Government</option>
-                    <option value="Defense">Defense</option>
-                    <option value="Insurance">Insurance</option>
-                    <option value="Teaching">Teaching</option>
-                    <option value="Police">Police</option>
-                    <option value="Other">Other</option>
-                  </select>
+                    placeholder="Enter course name"
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Library Access</label>
                   <select
-                    value={selectedStudent.status}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, status: e.target.value as 'active' | 'inactive' | 'suspended' })}
+                    value={selectedStudent.libraryAccess ? 'true' : 'false'}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, libraryAccess: e.target.value === 'true' })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
                     required
                   >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="suspended">Suspended</option>
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
                   </select>
                 </div>
                 <div className="flex space-x-4 pt-4">
