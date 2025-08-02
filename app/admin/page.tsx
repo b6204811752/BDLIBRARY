@@ -17,7 +17,8 @@ import {
   Admin,
   AuthData,
   authenticate,
-  authenticateAdmin
+  authenticateAdmin,
+  getCurrentUser
 } from '@/lib/auth';
 
 export default function AdminDashboard() {
@@ -132,14 +133,19 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Check if user is authenticated admin
     const checkAuth = async () => {
-      // For now, assume admin is already authenticated
-      // You can add proper authentication check here
+      const user = getCurrentUser();
+      if (!user.type || user.type !== 'admin') {
+        router.push('/login');
+        return;
+      }
+      
+      setCurrentUser(user.data);
       await loadData();
       setLoading(false);
     };
     
     checkAuth();
-  }, []);
+  }, [router]);
 
   const loadData = async () => {
     try {
