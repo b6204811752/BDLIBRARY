@@ -17,16 +17,13 @@ interface AuthData {
     id: string;
     name: string;
     email: string;
+    mobile: string;
     username: string;
     password: string;
     role: 'student';
     course: string;
     duration: number;
-    monthlyFees: Array<{
-      month: string;
-      amount: number;
-      paid: boolean;
-    }>;
+    monthlyFees: number;
     libraryAccess: boolean;
     examsPassed: number;
     counselingBooked: boolean;
@@ -49,23 +46,81 @@ const defaultAuthData: AuthData = {
       id: 'student1',
       name: 'John Doe',
       email: 'john@example.com',
+      mobile: '9876543210',
       username: 'john_doe',
-      password: 'password123',
+      password: '9876543210',
       role: 'student',
       course: 'Computer Science',
       duration: 6,
-      monthlyFees: [
-        { month: 'January', amount: 5000, paid: true },
-        { month: 'February', amount: 5000, paid: true },
-        { month: 'March', amount: 5000, paid: false },
-        { month: 'April', amount: 5000, paid: false },
-        { month: 'May', amount: 5000, paid: false },
-        { month: 'June', amount: 5000, paid: false }
-      ],
+      monthlyFees: 5000,
       libraryAccess: true,
       examsPassed: 2,
       counselingBooked: false,
       joinDate: '2024-01-15'
+    },
+    {
+      id: 'student2',
+      name: 'Rajesh Kumar',
+      email: 'rajesh@email.com',
+      mobile: '9065541346',
+      username: 'rajesh_kumar',
+      password: '9065541346',
+      role: 'student',
+      course: 'Banking',
+      duration: 12,
+      monthlyFees: 4500,
+      libraryAccess: true,
+      examsPassed: 3,
+      counselingBooked: true,
+      joinDate: '2024-02-01'
+    },
+    {
+      id: 'student3',
+      name: 'Priya Sharma',
+      email: 'priya@email.com',
+      mobile: '9876543211',
+      username: 'priya_sharma',
+      password: '9876543211',
+      role: 'student',
+      course: 'SSC',
+      duration: 8,
+      monthlyFees: 3500,
+      libraryAccess: true,
+      examsPassed: 1,
+      counselingBooked: false,
+      joinDate: '2024-01-20'
+    },
+    {
+      id: 'student4',
+      name: 'Amit Singh',
+      email: 'amit@email.com',
+      mobile: '9876543212',
+      username: 'amit_singh',
+      password: '9876543212',
+      role: 'student',
+      course: 'Railway',
+      duration: 10,
+      monthlyFees: 4000,
+      libraryAccess: true,
+      examsPassed: 4,
+      counselingBooked: true,
+      joinDate: '2024-01-10'
+    },
+    {
+      id: 'demo1',
+      name: 'Demo Student',
+      email: 'demo@student.com',
+      mobile: '1234567890',
+      username: 'demo_student',
+      password: '1234567890',
+      role: 'student',
+      course: 'General',
+      duration: 6,
+      monthlyFees: 3000,
+      libraryAccess: true,
+      examsPassed: 0,
+      counselingBooked: false,
+      joinDate: '2024-01-01'
     }
   ]
 };

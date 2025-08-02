@@ -50,7 +50,7 @@ export default function Login() {
         if (student) {
           setCurrentUser('student', student);
           setLoading(false);
-          window.location.href = '/student';
+          router.push('/student');
           return;
         } else {
           setError('Invalid email or mobile number. Please check the demo credentials below.');
@@ -71,7 +71,7 @@ export default function Login() {
         if (admin) {
           setCurrentUser('admin', admin);
           setLoading(false);
-          window.location.href = '/admin';
+          router.push('/admin');
           return;
         } else {
           setError('Invalid admin credentials. Please check the demo credentials below.');
