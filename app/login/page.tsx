@@ -38,21 +38,22 @@ export default function Login() {
     try {
       if (userType === 'student') {
         const email = formData.email.trim();
+        const mobile = formData.mobile.trim();
         
-        if (!email) {
-          setError('Please enter your email address');
+        if (!email || !mobile) {
+          setError('Please enter both email and mobile number');
           setLoading(false);
           return;
         }
         
-        const student = await authenticateStudent(email, '');
+        const student = await authenticateStudent(email, mobile);
         if (student) {
           setCurrentUser('student', student);
           setLoading(false);
           window.location.href = '/student';
           return;
         } else {
-          setError('Invalid email address. Please check the demo credentials below.');
+          setError('Invalid email or mobile number. Please check the demo credentials below.');
           setLoading(false);
           return;
         }
@@ -66,7 +67,7 @@ export default function Login() {
           return;
         }
         
-        const admin = await authenticateAdmin(username, password);
+        const admin = authenticateAdmin(username, password);
         if (admin) {
           setCurrentUser('admin', admin);
           setLoading(false);
@@ -229,13 +230,13 @@ export default function Login() {
                 <div className="mt-4 p-3 bg-blue-50 rounded-md">
                   <p className="text-sm font-medium text-blue-800">Demo Student Credentials:</p>
                   <div className="space-y-1 mt-2">
-                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Password: 9065541346</p>
-                    <p className="text-xs text-blue-600">Email: priya@email.com | Password: 9876543211</p>
-                    <p className="text-xs text-blue-600">Email: amit@email.com | Password: 9876543212</p>
-                    <p className="text-xs text-blue-600">Email: john@example.com | Password: 9876543210</p>
-                    <p className="text-xs text-blue-600">Email: demo@student.com | Password: 1234567890</p>
+                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Mobile: 9065541346</p>
+                    <p className="text-xs text-blue-600">Email: priya@email.com | Mobile: 9876543211</p>
+                    <p className="text-xs text-blue-600">Email: amit@email.com | Mobile: 9876543212</p>
+                    <p className="text-xs text-blue-600">Email: john@example.com | Mobile: 9876543210</p>
+                    <p className="text-xs text-blue-600">Email: demo@student.com | Mobile: 1234567890</p>
                   </div>
-                  <p className="text-xs text-blue-500 mt-2 font-medium">Note: Use Email as Username and Mobile Number as Password</p>
+                  <p className="text-xs text-blue-500 mt-2 font-medium">Note: Enter Email in first field and Mobile Number in second field</p>
                 </div>
               </div>
             )}

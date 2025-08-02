@@ -260,8 +260,8 @@ export function logout(): void {
 // Student authentication function for login page
 export async function authenticateStudent(email: string, mobile: string): Promise<Student | null> {
   const authData = await loadAuthData();
-  // For now, authenticate by email only since mobile field doesn't exist in new interface
-  const student = authData.students.find(s => s.email === email);
+  // Authenticate using email and mobile number (mobile is used as password)
+  const student = authData.students.find(s => s.email === email && s.mobile === mobile);
   return student || null;
 }
 
