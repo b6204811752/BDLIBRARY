@@ -79,7 +79,7 @@ export default function AdminDashboard() {
     title: string;
     message: string;
     priority: 'medium' | 'low' | 'high';
-    targetAudience: string;
+    targetAudience: string[] | 'all' | 'morning' | 'afternoon' | 'evening';
     expiryDate: string;
   }>({
     title: '',
