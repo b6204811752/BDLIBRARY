@@ -53,12 +53,12 @@ export default function AdminDashboard() {
   const [newStudent, setNewStudent] = useState({
     name: '',
     email: '',
-    mobile: '',
-    shift: 'morning' as 'morning' | 'afternoon' | 'evening',
-    jobCategory: 'Banking',
+    username: '',
+    password: '',
+    course: '',
+    duration: 6,
     courseFee: '',
     feeType: 'monthly' as 'one-time' | 'monthly',
-    courseDurationMonths: '12',
     monthlyFees: Array.from({ length: 12 }, (_, i) => ({
       month: i + 1,
       monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
@@ -211,12 +211,12 @@ export default function AdminDashboard() {
         setNewStudent({
           name: '',
           email: '',
-          mobile: '',
-          shift: 'morning',
-          jobCategory: 'Banking',
+          username: '',
+          password: '',
+          course: '',
+          duration: 6,
           courseFee: '',
           feeType: 'monthly',
-          courseDurationMonths: '12',
           monthlyFees: []
         });
         setShowAddModal(false);
@@ -1411,12 +1411,12 @@ export default function AdminDashboard() {
                       setNewStudent({
                         name: '',
                         email: '',
-                        mobile: '',
-                        shift: 'morning',
-                        jobCategory: 'Banking',
+                        username: '',
+                        password: '',
+                        course: '',
+                        duration: 6,
                         courseFee: '',
                         feeType: 'monthly',
-                        courseDurationMonths: '12',
                         monthlyFees: Array.from({ length: 12 }, (_, i) => ({
                           month: i + 1,
                           monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
