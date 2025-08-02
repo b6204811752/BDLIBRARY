@@ -1000,21 +1000,21 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Library Stats</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Books Issued</span>
+                    <span className="text-gray-600">Library Access</span>
                     <span className="font-bold text-blue-600">
-                      {students.reduce((sum, s) => sum + s.library.booksIssued.length, 0)}
+                      {students.filter(s => s.libraryAccess).length}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Overdue Books</span>
-                    <span className="font-bold text-red-600">
-                      {students.reduce((sum, s) => sum + s.library.booksIssued.filter(b => b.status === 'overdue').length, 0)}
+                    <span className="text-gray-600">Total Students</span>
+                    <span className="font-bold text-green-600">
+                      {students.length}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Pending Fines</span>
+                    <span className="text-gray-600">Counseling Booked</span>
                     <span className="font-bold text-orange-600">
-                      ₹{students.reduce((sum, s) => sum + s.library.fines.reduce((fineSum, f) => fineSum + (f.status === 'pending' ? f.amount : 0), 0), 0)}
+                      {students.filter(s => s.counselingBooked).length}
                     </span>
                   </div>
                 </div>
