@@ -725,11 +725,11 @@ export default function AdminDashboard() {
                     <div key={student.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
                       <div>
                         <p className="font-medium text-gray-900">{student.name}</p>
-                        <p className="text-sm text-gray-500">{student.mobile}</p>
+                        <p className="text-sm text-gray-500">{student.email}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-red-600">₹{student.fees.dueAmount.toLocaleString()}</p>
-                        <p className="text-xs text-gray-500">Due amount</p>
+                        <p className="text-sm font-medium text-red-600">₹{student.monthlyFees.filter(f => !f.paid).length * (student.monthlyFees[0]?.amount || 0)}</p>
+                        <p className="text-xs text-gray-500">Unpaid fees</p>
                       </div>
                     </div>
                   ))}
@@ -1024,21 +1024,21 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Exam Performance</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Total Exams</span>
+                    <span className="text-gray-600">Total Exams Passed</span>
                     <span className="font-bold text-blue-600">
-                      {students.reduce((sum, s) => sum + s.examHistory.length, 0)}
+                      {students.reduce((sum, s) => sum + s.examsPassed, 0)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Avg Performance</span>
+                    <span className="text-gray-600">Avg Exams Per Student</span>
                     <span className="font-bold text-green-600">
-                      {Math.round(students.reduce((sum, s) => sum + s.progress.averageScore, 0) / students.length)}%
+                      {Math.round(students.reduce((sum, s) => sum + s.examsPassed, 0) / students.length)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Top Performers</span>
+                    <span className="text-gray-600">High Performers</span>
                     <span className="font-bold text-purple-600">
-                      {students.filter(s => s.progress.averageScore > 80).length}
+                      {students.filter(s => s.examsPassed > 2).length}
                     </span>
                   </div>
                 </div>
