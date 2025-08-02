@@ -31,10 +31,9 @@ export default function StudentDashboard() {
     if (!user.type || user.type !== 'student') {
       router.push('/login');
       return;
-    }
-    setCurrentUser(user.data);
-    loadData();
-    setLoading(false);
+
+'use client';
+import React from 'react';
 
     // Subscribe to real-time updates
     const unsubscribe = subscribeToDataChanges(() => {
