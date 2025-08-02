@@ -9,11 +9,7 @@ export interface Student {
   role: 'student';
   course: string;
   duration: number;
-  monthlyFees: Array<{
-    month: string;
-    amount: number;
-    paid: boolean;
-  }>;
+  monthlyFees: number;
   libraryAccess: boolean;
   examsPassed: number;
   counselingBooked: boolean;
@@ -52,14 +48,7 @@ export const defaultAuthData: AuthData = {
       role: 'student',
       course: 'Computer Science',
       duration: 6,
-      monthlyFees: [
-        { month: 'January', amount: 5000, paid: true },
-        { month: 'February', amount: 5000, paid: true },
-        { month: 'March', amount: 5000, paid: false },
-        { month: 'April', amount: 5000, paid: false },
-        { month: 'May', amount: 5000, paid: false },
-        { month: 'June', amount: 5000, paid: false }
-      ],
+      monthlyFees: 5000,
       libraryAccess: true,
       examsPassed: 2,
       counselingBooked: false,

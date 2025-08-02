@@ -726,8 +726,8 @@ export default function AdminDashboard() {
                         <p className="text-sm text-gray-500">{student.email}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-red-600">₹{student.monthlyFees.filter((f: { paid: boolean }) => !f.paid).length * (student.monthlyFees[0]?.amount || 0)}</p>
-                        <p className="text-xs text-gray-500">Unpaid fees</p>
+                        <p className="text-sm font-medium text-red-600">₹{student.monthlyFees}</p>
+                        <p className="text-xs text-gray-500">Monthly fee</p>
                       </div>
                     </div>
                   ))}
@@ -897,7 +897,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">Duration: {student.duration} months</div>
-                          <div className="text-sm text-gray-500">Monthly Fee: ₹{student.monthlyFees[0]?.amount || 0}</div>
+                          <div className="text-sm text-gray-500">Monthly Fee: ₹{student.monthlyFees}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">Exams Passed: {student.examsPassed}</div>

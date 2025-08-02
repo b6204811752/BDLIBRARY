@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Student } from '@/lib/auth';
 
 // Data file path
 const DATA_FILE_PATH = path.join(process.cwd(), 'data', 'students.json');
@@ -35,14 +36,7 @@ const defaultAuthData = {
       role: 'student' as const,
       course: 'Computer Science',
       duration: 6,
-      monthlyFees: [
-        { month: 'January', amount: 5000, paid: true },
-        { month: 'February', amount: 5000, paid: true },
-        { month: 'March', amount: 5000, paid: false },
-        { month: 'April', amount: 5000, paid: false },
-        { month: 'May', amount: 5000, paid: false },
-        { month: 'June', amount: 5000, paid: false }
-      ],
+      monthlyFees: 5000,
       libraryAccess: true,
       examsPassed: 2,
       counselingBooked: false,
@@ -142,7 +136,7 @@ export async function PUT(request: NextRequest) {
     }
     
     // Find and update student
-    const studentIndex = data.students.findIndex(s => s.id === updatedStudent.id);
+    const studentIndex = data.students.findIndex((s: Student) => s.id === updatedStudent.id);
     if (studentIndex === -1) {
       return NextResponse.json(
         { success: false, error: 'Student not found' },
@@ -188,7 +182,7 @@ export async function DELETE(request: NextRequest) {
     
     // Filter out the student to delete
     const initialLength = data.students.length;
-    data.students = data.students.filter(s => s.id !== studentId);
+    data.students = data.students.filter((s: Student) => s.id !== studentId);
     
     if (data.students.length === initialLength) {
       return NextResponse.json(
