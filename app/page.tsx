@@ -1,0 +1,288 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import Link from 'next/link';
+import { getCurrentUser } from '@/lib/auth';
+
+export default function Home() {
+  const [currentUser, setCurrentUser] = useState<{ type: 'student' | 'admin' | null; data: any }>({ type: null, data: null });
+
+  useEffect(() => {
+    setCurrentUser(getCurrentUser());
+  }, []);
+
+  const features = [
+    {
+      icon: 'ri-book-open-line',
+      title: 'Comprehensive Study Materials',
+      description: 'Access to thousands of study materials, notes, and practice papers for all government exams'
+    },
+    {
+      icon: 'ri-time-line',
+      title: 'Flexible Time Shifts',
+      description: 'Choose from morning, afternoon, or evening shifts that fit your schedule'
+    },
+    {
+      icon: 'ri-user-star-line',
+      title: 'Expert Faculty',
+      description: 'Learn from experienced teachers with proven track records in government job preparation'
+    },
+    {
+      icon: 'ri-bar-chart-line',
+      title: 'Progress Tracking',
+      description: 'Monitor your learning progress with detailed analytics and performance insights'
+    },
+    {
+      icon: 'ri-quiz-line',
+      title: 'Mock Tests',
+      description: 'Take unlimited practice tests and mock exams to evaluate your preparation level'
+    },
+    {
+      icon: 'ri-trophy-line',
+      title: 'Success Stories',
+      description: 'Join thousands of successful candidates who cleared their exams with our guidance'
+    }
+  ];
+
+  const jobCategories = [
+    {
+      name: 'Banking Exams',
+      description: 'SBI, IBPS, RRB Banking',
+      icon: 'ri-bank-line',
+      color: 'bg-blue-500'
+    },
+    {
+      name: 'SSC Exams',
+      description: 'SSC CGL, CHSL, MTS, GD',
+      icon: 'ri-government-line',
+      color: 'bg-green-500'
+    },
+    {
+      name: 'Railway Exams',
+      description: 'RRB NTPC, Group D, JE',
+      icon: 'ri-train-line',
+      color: 'bg-purple-500'
+    },
+    {
+      name: 'UPSC Civil Services',
+      description: 'IAS, IPS, IFS',
+      icon: 'ri-medal-line',
+      color: 'bg-orange-500'
+    },
+    {
+      name: 'State Government',
+      description: 'Various State Jobs',
+      icon: 'ri-building-line',
+      color: 'bg-red-500'
+    },
+    {
+      name: 'Defense Exams',
+      description: 'NDA, CDS, AFCAT',
+      icon: 'ri-shield-line',
+      color: 'bg-indigo-500'
+    }
+  ];
+
+  const shifts = [
+    {
+      name: 'Morning Shift',
+      time: '6:00 AM - 12:00 PM',
+      description: 'Perfect for early risers and working professionals',
+      icon: 'ri-sun-line',
+      color: 'bg-yellow-500'
+    },
+    {
+      name: 'Afternoon Shift',
+      time: '12:00 PM - 6:00 PM',
+      description: 'Ideal for students and flexible schedules',
+      icon: 'ri-sun-fill',
+      color: 'bg-orange-500'
+    },
+    {
+      name: 'Evening Shift',
+      time: '6:00 PM - 10:00 PM',
+      description: 'Great for working professionals and evening study',
+      icon: 'ri-moon-line',
+      color: 'bg-purple-500'
+    }
+  ];
+
+  const stats = [
+    { number: '10,000+', label: 'Students Enrolled' },
+    { number: '500+', label: 'Success Stories' },
+    { number: '50+', label: 'Expert Faculty' },
+    { number: '15+', label: 'Years Experience' }
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{
+            backgroundImage: `url('https://readdy.ai/api/search-image?query=Modern%20educational%20institute%20building%20with%20students%20studying%20in%20bright%20classroom%20environment%2C%20professional%20academic%20setting%20with%20books%20and%20learning%20materials%2C%20inspirational%20education%20atmosphere%2C%20clean%20and%20organized%20study%20space%2C%20natural%20lighting%2C%20contemporary%20design&width=1200&height=600&seq=hero1&orientation=landscape')`
+          }}
+        ></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              Welcome to <span style={{ fontFamily: 'Pacifico, serif' }}>BD Library GOH</span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+              Your gateway to success in government job examinations. Join thousands of students who achieved their dreams with our expert guidance.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {currentUser.type ? (
+                <Link 
+                  href={currentUser.type === 'admin' ? '/admin' : '/student'}
+                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap cursor-pointer"
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link 
+                    href="/login"
+                    className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Student Login
+                  </Link>
+                  <Link 
+                    href="/courses"
+                    className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Explore Courses
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">{stat.number}</div>
+                <div className="text-gray-600">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Job Categories Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Government Job Categories
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Comprehensive preparation for all major government job examinations
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {jobCategories.map((category, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6 cursor-pointer">
+                <div className={`w-16 h-16 ${category.color} rounded-lg flex items-center justify-center mb-4`}>
+                  <i className={`${category.icon} text-2xl text-white`}></i>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{category.name}</h3>
+                <p className="text-gray-600 mb-4">{category.description}</p>
+                <Link 
+                  href="/login"
+                  className="text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap cursor-pointer"
+                >
+                  Learn More →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Shifts Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Flexible Study Shifts
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Choose the time that works best for your schedule
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {shifts.map((shift, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-8 text-center">
+                <div className={`w-16 h-16 ${shift.color} rounded-full flex items-center justify-center mx-auto mb-6`}>
+                  <i className={`${shift.icon} text-2xl text-white`}></i>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{shift.name}</h3>
+                <p className="text-blue-600 font-medium mb-4">{shift.time}</p>
+                <p className="text-gray-600">{shift.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose BD Library GOH?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Discover the features that make us the top choice for government job preparation
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <i className={`${feature.icon} text-2xl text-blue-600`}></i>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-blue-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Ready to Start Your Journey?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of successful candidates who achieved their government job dreams with us
+          </p>
+          <Link 
+            href="/login"
+            className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap cursor-pointer"
+          >
+            Get Started Today
+          </Link>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}
