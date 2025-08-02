@@ -441,10 +441,10 @@ export default function StudentDashboard() {
                         <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div
                             className="bg-blue-500 h-2 rounded-full"
-                            style={{ width: `${score}%` }}
+                            style={{ width: `${score as number}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-gray-900 w-10">{score}%</span>
+                        <span className="text-sm font-medium text-gray-900 w-10">{score as number}%</span>
                       </div>
                     </div>
                   ))}
