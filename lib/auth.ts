@@ -4,6 +4,7 @@ export interface Student {
   id: string;
   name: string;
   email: string;
+  mobile: string;
   username: string;
   password: string;
   role: 'student';
@@ -44,8 +45,9 @@ export const defaultAuthData: AuthData = {
       id: 'student1',
       name: 'John Doe',
       email: 'john@example.com',
+      mobile: '9876543210',
       username: 'john_doe',
-      password: 'password123',
+      password: '9876543210',
       role: 'student',
       course: 'Computer Science',
       duration: 6,
@@ -59,8 +61,9 @@ export const defaultAuthData: AuthData = {
       id: 'student2',
       name: 'Rajesh Kumar',
       email: 'rajesh@email.com',
+      mobile: '9065541346',
       username: 'rajesh_kumar',
-      password: 'student123',
+      password: '9065541346',
       role: 'student',
       course: 'Banking',
       duration: 12,
@@ -74,8 +77,9 @@ export const defaultAuthData: AuthData = {
       id: 'student3',
       name: 'Priya Sharma',
       email: 'priya@email.com',
+      mobile: '9876543211',
       username: 'priya_sharma',
-      password: 'student123',
+      password: '9876543211',
       role: 'student',
       course: 'SSC',
       duration: 8,
@@ -89,8 +93,9 @@ export const defaultAuthData: AuthData = {
       id: 'student4',
       name: 'Amit Singh',
       email: 'amit@email.com',
+      mobile: '9876543212',
       username: 'amit_singh',
-      password: 'student123',
+      password: '9876543212',
       role: 'student',
       course: 'Railway',
       duration: 10,
@@ -99,6 +104,22 @@ export const defaultAuthData: AuthData = {
       examsPassed: 4,
       counselingBooked: true,
       joinDate: '2024-01-10'
+    },
+    {
+      id: 'demo1',
+      name: 'Demo Student',
+      email: 'demo@student.com',
+      mobile: '1234567890',
+      username: 'demo_student',
+      password: '1234567890',
+      role: 'student',
+      course: 'General',
+      duration: 6,
+      monthlyFees: 3000,
+      libraryAccess: true,
+      examsPassed: 0,
+      counselingBooked: false,
+      joinDate: '2024-01-01'
     }
   ],
   announcements: []
@@ -147,8 +168,8 @@ export async function authenticate(username: string, password: string): Promise<
     return { success: true, user: admin, role: 'admin' };
   }
   
-  // Check student credentials
-  const student = authData.students.find(s => s.username === username && s.password === password);
+  // Check student credentials (email as username, mobile as password)
+  const student = authData.students.find(s => s.email === username && s.mobile === password);
   if (student) {
     return { success: true, user: student, role: 'student' };
   }

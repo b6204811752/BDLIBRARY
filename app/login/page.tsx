@@ -229,11 +229,13 @@ export default function Login() {
                 <div className="mt-4 p-3 bg-blue-50 rounded-md">
                   <p className="text-sm font-medium text-blue-800">Demo Student Credentials:</p>
                   <div className="space-y-1 mt-2">
-                    <p className="text-xs text-blue-600">Email: rajesh@email.com</p>
-                    <p className="text-xs text-blue-600">Email: priya@email.com</p>
-                    <p className="text-xs text-blue-600">Email: amit@email.com</p>
-                    <p className="text-xs text-blue-600">Email: john@example.com</p>
+                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Password: 9065541346</p>
+                    <p className="text-xs text-blue-600">Email: priya@email.com | Password: 9876543211</p>
+                    <p className="text-xs text-blue-600">Email: amit@email.com | Password: 9876543212</p>
+                    <p className="text-xs text-blue-600">Email: john@example.com | Password: 9876543210</p>
+                    <p className="text-xs text-blue-600">Email: demo@student.com | Password: 1234567890</p>
                   </div>
+                  <p className="text-xs text-blue-500 mt-2 font-medium">Note: Use Email as Username and Mobile Number as Password</p>
                 </div>
               </div>
             )}

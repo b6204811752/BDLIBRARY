@@ -54,6 +54,7 @@ export default function AdminDashboard() {
   const [newStudent, setNewStudent] = useState({
     name: '',
     email: '',
+    mobile: '',
     username: '',
     password: '',
     course: '',
@@ -182,8 +183,9 @@ export default function AdminDashboard() {
       const success = await addStudent({
         name: newStudent.name,
         email: newStudent.email,
+        mobile: newStudent.mobile,
         username: newStudent.username,
-        password: newStudent.password,
+        password: newStudent.mobile, // Use mobile as password
         course: newStudent.course,
         duration: newStudent.duration,
         monthlyFees: newStudent.monthlyFees,
@@ -197,6 +199,7 @@ export default function AdminDashboard() {
         setNewStudent({
           name: '',
           email: '',
+          mobile: '',
           username: '',
           password: '',
           course: '',
@@ -229,8 +232,9 @@ export default function AdminDashboard() {
           await addStudent({
             name,
             email,
+            mobile: '9999999999', // Default mobile number
             username: email, // Use email as username
-            password: 'student123', // Default password
+            password: '9999999999', // Default mobile as password
             course: course || 'General',
             duration: 12, // Default duration
             monthlyFees: 5000, // Default monthly fee amount
@@ -871,7 +875,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">{student.email}</div>
-                          <div className="text-sm text-gray-500">{student.username}</div>
+                          <div className="text-sm text-gray-500">Mobile: {student.mobile}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">{student.course}</div>
@@ -1306,6 +1310,17 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                  <input
+                    type="tel"
+                    value={newStudent.mobile}
+                    onChange={(e) => setNewStudent({ ...newStudent, mobile: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter 10-digit mobile number"
+                    required
+                  />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                   <input
                     type="text"
@@ -1451,11 +1466,12 @@ export default function AdminDashboard() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
                   <input
-                    type="email"
-                    value={selectedStudent.email}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, email: e.target.value })}
+                    type="tel"
+                    value={selectedStudent.mobile || ''}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, mobile: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
+                    placeholder="Enter 10-digit mobile number"
                   />
                 </div>
                 <div>
