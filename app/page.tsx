@@ -171,7 +171,7 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Welcome to <span style={{ fontFamily: 'Pacifico, serif' }}>BD Library GOH</span>
+              Welcome to <span style={{ fontFamily: 'Pacifico, serif' }}>B.D Library GOH</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
               Your gateway to success in government job examinations. Join thousands of students who achieved their dreams with our expert guidance.
@@ -304,10 +304,10 @@ export default function Home() {
                     <i className="ri-double-quotes-l text-4xl text-blue-200 absolute -top-4 -left-2"></i>
                     <div className="pl-8">
                       <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                        Welcome to BD Library GOH, where dreams transform into reality through dedicated preparation and unwavering commitment. For over a decade, we have been the guiding light for thousands of aspirants who have successfully secured positions in various government sectors.
+                        Welcome to B.D Library GOH, where dreams transform into reality through dedicated preparation and unwavering commitment. For over a decade, we have been the guiding light for thousands of aspirants who have successfully secured positions in various government sectors.
                       </p>
                       <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                        Our mission extends beyond mere education; we are committed to nurturing future leaders who will serve our nation with integrity and excellence. At BD Library GOH, we believe that with the right guidance, comprehensive study materials, and consistent effort, every student can achieve their goals.
+                        Our mission extends beyond mere education; we are committed to nurturing future leaders who will serve our nation with integrity and excellence. At B.D Library GOH, we believe that with the right guidance, comprehensive study materials, and consistent effort, every student can achieve their goals.
                       </p>
                       <p className="text-lg text-gray-700 leading-relaxed mb-8">
                         We take pride in our holistic approach to education, combining traditional teaching methods with modern technology to create an environment that fosters learning, growth, and success. Your success is our success, and we are here to support you every step of the way on your journey to securing your dream government job.
@@ -320,7 +320,7 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-xl font-bold text-gray-900">Vikash Kumar Yadav</h3>
-                        <p className="text-blue-600 font-medium">Director, BD Library GOH</p>
+                        <p className="text-blue-600 font-medium">Director, B.D Library GOH</p>
                       </div>
                       <div className="text-right">
                         <div className="flex items-center text-yellow-500 mb-1">
@@ -346,7 +346,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose BD Library GOH?
+              Why Choose B.D Library GOH?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Discover the features that make us the top choice for government job preparation

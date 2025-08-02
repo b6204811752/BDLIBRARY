@@ -35,54 +35,6 @@ import {
   getFinancialAnalytics
 } from '@/lib/auth';
 
-// Monthly Fee Component
-interface MonthlyFeeComponentProps {
-  month: string;
-  amount: string;
-  dueDate: string;
-  onAmountChange: (value: string) => void;
-  onDueDateChange: (value: string) => void;
-}
-
-const MonthlyFeeComponent: React.FC<MonthlyFeeComponentProps> = ({
-  month,
-  amount,
-  dueDate,
-  onAmountChange,
-  onDueDateChange
-}) => {
-  return (
-    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200 hover:border-blue-300 transition-colors">
-      <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">{month}</h4>
-      <div className="space-y-2">
-        <div>
-          <label className="block text-xs text-gray-600 mb-1">Amount (₹)</label>
-          <input
-            type="number"
-            placeholder="Enter amount"
-            value={amount}
-            onChange={(e) => onAmountChange(e.target.value)}
-            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-xs text-gray-600 mb-1">Due Date</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => onDueDateChange(e.target.value)}
-            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-            required
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function AdminDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -248,15 +200,17 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       const courseDurationMonths = parseInt(newStudent.courseDurationMonths) || 12;
-      
-      // Calculate total fee from monthly fees
-      const monthlyFeesWithAmounts = newStudent.monthlyFees.slice(0, courseDurationMonths).map((fee, index) => ({
-        ...fee,
-        amount: fee.amount, // Keep as string
-        dueDate: fee.dueDate || new Date(new Date().setMonth(new Date().getMonth() + index + 1)).toISOString().split('T')[0]
+      const monthlyFeeAmount = parseFloat(newStudent.courseFee) || 0;
+      const totalFee = monthlyFeeAmount * courseDurationMonths;
+
+      // Generate monthly fees array based on the single monthly fee amount
+      const monthlyFeesArray = Array.from({ length: courseDurationMonths }, (_, i) => ({
+        month: i + 1,
+        monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
+        amount: monthlyFeeAmount.toString(),
+        dueDate: new Date(new Date().setMonth(new Date().getMonth() + i + 1)).toISOString().split('T')[0],
+        status: 'pending' as 'pending' | 'paid' | 'overdue'
       }));
-      
-      const totalFee = monthlyFeesWithAmounts.reduce((sum, fee) => sum + (parseFloat(fee.amount) || 0), 0);
 
       const student = addStudent({
         name: newStudent.name,
@@ -270,10 +224,10 @@ export default function AdminDashboard() {
           totalFee: totalFee,
           paidAmount: 0,
           dueAmount: totalFee,
-          monthlyFee: monthlyFeesWithAmounts.length > 0 ? parseFloat(monthlyFeesWithAmounts[0].amount) || 0 : 0,
+          monthlyFee: monthlyFeeAmount,
           courseDurationMonths: courseDurationMonths,
           feeType: 'monthly',
-          monthlyFees: monthlyFeesWithAmounts,
+          monthlyFees: monthlyFeesArray,
           installments: [],
           paymentHistory: [],
           discounts: []
@@ -1526,20 +1480,7 @@ export default function AdminDashboard() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Course Duration (Months)</label>
                   <select
                     value={newStudent.courseDurationMonths}
-                    onChange={(e) => {
-                      const months = parseInt(e.target.value);
-                      setNewStudent({ 
-                        ...newStudent, 
-                        courseDurationMonths: e.target.value,
-                        monthlyFees: Array.from({ length: 12 }, (_, i) => ({
-                          month: i + 1,
-                          monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
-                          amount: i < months ? newStudent.monthlyFees[i]?.amount || '' : '',
-                          dueDate: i < months ? newStudent.monthlyFees[i]?.dueDate || '' : '',
-                          status: 'pending' as 'pending' | 'paid' | 'overdue'
-                        }))
-                      });
-                    }}
+                    onChange={(e) => setNewStudent({ ...newStudent, courseDurationMonths: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
                     required
                   >
@@ -1550,53 +1491,40 @@ export default function AdminDashboard() {
                   </select>
                 </div>
 
-                {/* Monthly Fees Section */}
+                {/* Monthly Fee Amount */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Fee Structure</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-60 overflow-y-auto border border-gray-200 rounded-md p-4">
-                    {newStudent.monthlyFees.slice(0, parseInt(newStudent.courseDurationMonths)).map((monthlyFee, index) => (
-                      <MonthlyFeeComponent
-                        key={index}
-                        month={monthlyFee.monthName}
-                        amount={monthlyFee.amount}
-                        dueDate={monthlyFee.dueDate}
-                        onAmountChange={(value: string) => {
-                          const updatedFees = [...newStudent.monthlyFees];
-                          updatedFees[index].amount = value;
-                          setNewStudent({ ...newStudent, monthlyFees: updatedFees });
-                        }}
-                        onDueDateChange={(value: string) => {
-                          const updatedFees = [...newStudent.monthlyFees];
-                          updatedFees[index].dueDate = value;
-                          setNewStudent({ ...newStudent, monthlyFees: updatedFees });
-                        }}
-                      />
-                    ))}
-                  </div>
-                  {parseInt(newStudent.courseDurationMonths) > 6 && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      💡 Tip: Scroll within the box above to see all {newStudent.courseDurationMonths} months
-                    </p>
-                  )}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Fee Amount (₹)</label>
+                  <input
+                    type="number"
+                    value={newStudent.courseFee}
+                    onChange={(e) => setNewStudent({ ...newStudent, courseFee: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter monthly fee amount"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
                 </div>
 
                 {/* Total Fee Summary */}
-                <div className="bg-blue-50 p-4 rounded-md">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-blue-800">Total Course Fee:</span>
-                    <span className="text-lg font-bold text-blue-900">
-                      ₹{newStudent.monthlyFees
-                        .slice(0, parseInt(newStudent.courseDurationMonths))
-                        .reduce((sum, fee) => sum + (parseFloat(fee.amount) || 0), 0)
-                        .toLocaleString()
-                      }
-                    </span>
+                {newStudent.courseFee && newStudent.courseDurationMonths && (
+                  <div className="bg-blue-50 p-4 rounded-md">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-blue-800">Total Course Fee:</span>
+                      <span className="text-lg font-bold text-blue-900">
+                        ₹{(parseFloat(newStudent.courseFee) * parseInt(newStudent.courseDurationMonths)).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-xs text-blue-600">Duration:</span>
+                      <span className="text-xs text-blue-600">{newStudent.courseDurationMonths} months</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-xs text-blue-600">Monthly Fee:</span>
+                      <span className="text-xs text-blue-600">₹{parseFloat(newStudent.courseFee).toLocaleString()}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-xs text-blue-600">Duration:</span>
-                    <span className="text-xs text-blue-600">{newStudent.courseDurationMonths} months</span>
-                  </div>
-                </div>
+                )}
                 <div className="flex space-x-4 pt-4">
                   <button
                     type="button"

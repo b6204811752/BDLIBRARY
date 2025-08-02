@@ -241,7 +241,7 @@ export default function Contact() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="BD Library GOH Location"
+                  title="B.D Library GOH Location"
                 ></iframe>
               </div>
             </div>

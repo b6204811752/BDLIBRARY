@@ -28,7 +28,7 @@ export default function Header() {
                 <span className="text-white font-bold text-lg">BD</span>
               </div>
               <span className="text-xl font-bold text-gray-900" style={{ fontFamily: 'Pacifico, serif' }}>
-                BD Library GOH
+                B.D Library GOH
               </span>
             </Link>
           </div>

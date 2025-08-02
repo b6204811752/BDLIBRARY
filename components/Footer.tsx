@@ -11,7 +11,7 @@ export default function Footer() {
                 <span className="text-white font-bold text-lg">BD</span>
               </div>
               <span className="text-xl font-bold" style={{ fontFamily: 'Pacifico, serif' }}>
-                BD Library GOH
+                B.D Library GOH
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-6">
@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; 2024 BD Library GOH. All rights reserved.</p>
+          <p>&copy; 2024 B.D Library GOH. All rights reserved.</p>
         </div>
       </div>
     </footer>

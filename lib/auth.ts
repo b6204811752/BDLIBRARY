@@ -761,7 +761,7 @@ export function addStudent(student: Omit<Student, 'id' | 'progress' | 'attendanc
     notifications: [
       {
         id: Date.now().toString(),
-        message: 'Welcome to BD Library GOH! Start your preparation journey.',
+        message: 'Welcome to B.D Library GOH! Start your preparation journey.',
         type: 'info',
         read: false,
         timestamp: new Date().toISOString(),

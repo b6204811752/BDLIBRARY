@@ -77,7 +77,7 @@ export default function About() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              About BD Library GOH
+              About B.D Library GOH
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
               Empowering students to achieve their government job dreams through quality education and expert guidance
@@ -95,7 +95,7 @@ export default function About() {
                 Our Mission
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                At BD Library GOH, we are committed to providing comprehensive and quality education to students aspiring for government jobs. Our mission is to bridge the gap between aspiration and achievement through structured learning, expert guidance, and continuous support.
+                At B.D Library GOH, we are committed to providing comprehensive and quality education to students aspiring for government jobs. Our mission is to bridge the gap between aspiration and achievement through structured learning, expert guidance, and continuous support.
               </p>
               <p className="text-lg text-gray-600 mb-8">
                 We believe that every student deserves the opportunity to succeed, and we strive to create an environment that nurtures learning, builds confidence, and develops the skills necessary for success in competitive government examinations.
@@ -123,7 +123,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose BD Library GOH?
+              Why Choose B.D Library GOH?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Discover what makes us the preferred choice for government job preparation
@@ -211,7 +211,7 @@ export default function About() {
                 Our Journey
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                Established in 2009, BD Library GOH has been at the forefront of government job preparation in West Bengal. What started as a small coaching center has grown into one of the most trusted names in competitive exam preparation.
+                Established in 2009, B.D Library GOH has been at the forefront of government job preparation in West Bengal. What started as a small coaching center has grown into one of the most trusted names in competitive exam preparation.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
@@ -254,7 +254,7 @@ export default function About() {
             Ready to Begin Your Success Journey?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of successful candidates who achieved their government job dreams with BD Library GOH
+            Join thousands of successful candidates who achieved their government job dreams with B.D Library GOH
           </p>
           <Link 
             href="/login"
