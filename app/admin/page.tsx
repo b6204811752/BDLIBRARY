@@ -173,22 +173,6 @@ export default function AdminDashboard() {
   const handleAddStudent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const courseDurationMonths = newStudent.duration || 12;
-      const monthlyFeeAmount = newStudent.monthlyFees || 0;
-
-      // Generate monthly fees array based on the single monthly fee amount
-      const monthlyFeesArray = Array.from({ length: courseDurationMonths }, (_, i) => {
-        const monthNames = [
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-        return {
-          month: monthNames[i % 12],
-          amount: monthlyFeeAmount,
-          paid: false
-        };
-      });
-
       const success = await addStudent({
         name: newStudent.name,
         email: newStudent.email,
@@ -196,7 +180,7 @@ export default function AdminDashboard() {
         password: newStudent.password,
         course: newStudent.course,
         duration: newStudent.duration,
-        monthlyFees: monthlyFeesArray,
+        monthlyFees: newStudent.monthlyFees,
         libraryAccess: true,
         examsPassed: 0,
         counselingBooked: false,
@@ -243,11 +227,7 @@ export default function AdminDashboard() {
             password: 'student123', // Default password
             course: course || 'General',
             duration: 12, // Default duration
-            monthlyFees: Array.from({ length: 12 }, (_, i) => ({
-              month: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
-              amount: 5000, // Default amount
-              paid: false
-            })),
+            monthlyFees: 5000, // Default monthly fee amount
             libraryAccess: true,
             examsPassed: 0,
             counselingBooked: false,
