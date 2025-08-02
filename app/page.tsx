@@ -238,6 +238,69 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Director's Message Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Director's Message
+              </h2>
+              <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
+            </div>
+            
+            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="md:w-1/3 flex-shrink-0">
+                  <div className="w-48 h-48 mx-auto bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center shadow-2xl">
+                    <div className="w-40 h-40 bg-white rounded-full flex items-center justify-center">
+                      <i className="ri-user-line text-6xl text-blue-600"></i>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="md:w-2/3">
+                  <div className="relative">
+                    <i className="ri-double-quotes-l text-4xl text-blue-200 absolute -top-4 -left-2"></i>
+                    <div className="pl-8">
+                      <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                        Welcome to BD Library GOH, where dreams transform into reality through dedicated preparation and unwavering commitment. For over a decade, we have been the guiding light for thousands of aspirants who have successfully secured positions in various government sectors.
+                      </p>
+                      <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                        Our mission extends beyond mere education; we are committed to nurturing future leaders who will serve our nation with integrity and excellence. At BD Library GOH, we believe that with the right guidance, comprehensive study materials, and consistent effort, every student can achieve their goals.
+                      </p>
+                      <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                        We take pride in our holistic approach to education, combining traditional teaching methods with modern technology to create an environment that fosters learning, growth, and success. Your success is our success, and we are here to support you every step of the way on your journey to securing your dream government job.
+                      </p>
+                    </div>
+                    <i className="ri-double-quotes-r text-4xl text-blue-200 absolute -bottom-2 right-0"></i>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">Vikash Kumar Yadav</h3>
+                        <p className="text-blue-600 font-medium">Director, BD Library GOH</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center text-yellow-500 mb-1">
+                          <i className="ri-star-fill"></i>
+                          <i className="ri-star-fill"></i>
+                          <i className="ri-star-fill"></i>
+                          <i className="ri-star-fill"></i>
+                          <i className="ri-star-fill"></i>
+                        </div>
+                        <p className="text-sm text-gray-500">Excellence in Education</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
