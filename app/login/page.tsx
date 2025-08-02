@@ -224,7 +224,7 @@ export default function Login() {
             {userType === 'student' && (
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <span className="text-blue-600">Contact admin for registration</span>
                 </p>
                 <div className="mt-4 p-3 bg-blue-50 rounded-md">
