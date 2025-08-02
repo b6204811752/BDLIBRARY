@@ -15,7 +15,9 @@ export default function Header() {
   const handleLogout = () => {
     logout();
     setCurrentUser({ type: null, data: null });
-    window.location.href = '/';
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   return (
