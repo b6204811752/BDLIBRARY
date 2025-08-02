@@ -30,19 +30,23 @@ export default function StudentDashboard() {
       return;
     }
 
-    // Subscribe to real-time updates
+    // Load initial data immediately
+    loadData();
+    setLoading(false);
+
+    // Subscribe to real-time updates (but less frequently)
     const unsubscribe = subscribeToDataChanges(() => {
       loadData();
     });
 
-    // Simulate real-time updates
+    // Simulate real-time updates every 2 minutes instead of 30 seconds
     const interval = setInterval(() => {
       setRealTimeData(prev => ({
         onlineUsers: Math.floor(Math.random() * 20) + 15,
         activeTests: Math.floor(Math.random() * 8) + 3,
         todayMaterials: Math.floor(Math.random() * 50) + 20
       }));
-    }, 30000);
+    }, 120000); // Changed from 30000 to 120000 (2 minutes)
 
     return () => {
       unsubscribe();
@@ -51,26 +55,31 @@ export default function StudentDashboard() {
   }, [router]);
 
   const loadData = () => {
-    const user = getCurrentUser();
-    if (user.data) {
-      setCurrentUser(user.data);
-      // Ensure notifications is always an array - only for students
-      if ('notifications' in user.data) {
-        setNotifications(user.data.notifications || []);
-      } else {
-        setNotifications([]);
-      }
-
-      // Load announcements
-      const authData = getAuthData();
-      const relevantAnnouncements = (authData.announcements || []).filter(
-        (ann: any) => {
-          if (!user.data) return false;
-          return ann.targetAudience === 'all' || 
-                 ('shift' in user.data && ann.targetAudience === user.data.shift);
+    try {
+      const user = getCurrentUser();
+      if (user.data) {
+        setCurrentUser(user.data);
+        // Ensure notifications is always an array - only for students
+        if ('notifications' in user.data) {
+          setNotifications(user.data.notifications || []);
+        } else {
+          setNotifications([]);
         }
-      );
-      setAnnouncements(relevantAnnouncements);
+
+        // Load announcements - use caching to reduce localStorage calls
+        const authData = getAuthData();
+        const relevantAnnouncements = (authData.announcements || []).filter(
+          (ann: any) => {
+            if (!user.data) return false;
+            return ann.targetAudience === 'all' || 
+                   ('shift' in user.data && ann.targetAudience === user.data.shift);
+          }
+        );
+        setAnnouncements(relevantAnnouncements);
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+      setLoading(false);
     }
   };
 
