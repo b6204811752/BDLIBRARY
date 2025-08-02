@@ -728,7 +728,7 @@ export default function AdminDashboard() {
                         <p className="text-sm text-gray-500">{student.email}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-red-600">₹{student.monthlyFees.filter(f => !f.paid).length * (student.monthlyFees[0]?.amount || 0)}</p>
+                        <p className="text-sm font-medium text-red-600">₹{student.monthlyFees.filter((f: { paid: boolean }) => !f.paid).length * (student.monthlyFees[0]?.amount || 0)}</p>
                         <p className="text-xs text-gray-500">Unpaid fees</p>
                       </div>
                     </div>
