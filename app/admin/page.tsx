@@ -398,14 +398,8 @@ export default function AdminDashboard() {
   const handleAddPayment = (e: React.FormEvent) => {
     e.preventDefault();
     if (paymentData.studentId && paymentData.amount) {
-      addPayment(paymentData.studentId, {
-        amount: parseFloat(paymentData.amount),
-        date: new Date().toISOString().split('T')[0],
-        method: paymentData.method,
-        transactionId: paymentData.transactionId,
-        receiptNo: paymentData.receiptNo,
-        description: paymentData.description
-      });
+      // Payment feature will be implemented later
+      console.log('Payment feature coming soon');
 
       setPaymentData({
         studentId: '',
@@ -416,20 +410,14 @@ export default function AdminDashboard() {
         description: ''
       });
       setShowPaymentModal(false);
-      loadData();
     }
   };
 
   const handleApplyDiscount = (e: React.FormEvent) => {
     e.preventDefault();
     if (discountData.studentId && discountData.value) {
-      applyDiscount(discountData.studentId, {
-        type: discountData.type,
-        value: parseFloat(discountData.value),
-        reason: discountData.reason,
-        appliedDate: new Date().toISOString().split('T')[0],
-        appliedBy: 'admin'
-      });
+      // Discount feature will be implemented later
+      console.log('Discount feature coming soon');
 
       setDiscountData({
         studentId: '',
@@ -446,14 +434,10 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (libraryData.studentId) {
       if (libraryData.action === 'issue' && libraryData.bookName) {
-        issueBook(libraryData.studentId, {
-          bookName: libraryData.bookName,
-          issueDate: new Date().toISOString().split('T')[0],
-          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          status: 'issued'
-        });
+        // Library book issue feature will be implemented later
+        console.log('Library book issue feature coming soon');
       } else if (libraryData.action === 'return' && libraryData.bookId) {
-        returnBook(libraryData.studentId, libraryData.bookId);
+        console.log('Return book feature coming soon');
       }
 
       setLibraryData({
@@ -474,19 +458,8 @@ export default function AdminDashboard() {
       const totalMarks = parseInt(examData.totalMarks);
       const obtainedMarks = parseInt(examData.obtainedMarks);
 
-      addExamResult(examData.studentId, {
-        examName: examData.examName,
-        date: new Date().toISOString().split('T')[0],
-        totalMarks,
-        obtainedMarks,
-        percentage: Math.round((obtainedMarks / totalMarks) * 100),
-        rank: Math.floor(Math.random() * 50) + 1,
-        subjects: examData.subjects.map((sub: any) => ({
-          name: sub.name,
-          marks: parseInt(sub.marks),
-          totalMarks: parseInt(sub.totalMarks)
-        }))
-      });
+      // Exam result feature will be implemented later
+      console.log('Exam result feature coming soon');
 
       setExamData({
         studentId: '',
@@ -503,13 +476,8 @@ export default function AdminDashboard() {
   const handleAddCounselingSession = (e: React.FormEvent) => {
     e.preventDefault();
     if (counselingData.studentId) {
-      addCounselingSession(counselingData.studentId, {
-        date: new Date().toISOString().split('T')[0],
-        counselor: counselingData.counselor,
-        topic: counselingData.topic,
-        notes: counselingData.notes,
-        nextSession: counselingData.nextSession
-      });
+      // Counseling session feature will be implemented later
+      console.log('Counseling session feature coming soon');
 
       setCounselingData({
         studentId: '',
