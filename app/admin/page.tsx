@@ -693,13 +693,20 @@ export default function AdminDashboard() {
             {/* Enhanced Quick Actions */}
             <div className="bg-white p-6 rounded-lg shadow">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 <button
                   onClick={() => setShowAddModal(true)}
                   className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   <i className="ri-user-add-line"></i>
                   <span>Add Student</span>
+                </button>
+                <button
+                  onClick={() => setShowBulkUpload(true)}
+                  className="bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-file-upload-line"></i>
+                  <span>Bulk Upload</span>
                 </button>
                 <button
                   onClick={() => setShowPaymentModal(true)}
@@ -889,6 +896,13 @@ export default function AdminDashboard() {
                   >
                     <i className="ri-add-line"></i>
                     <span>Add Student</span>
+                  </button>
+                  <button
+                    onClick={() => setShowBulkUpload(true)}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2 whitespace-nowrap cursor-pointer"
+                  >
+                    <i className="ri-file-upload-line"></i>
+                    <span>Bulk Upload</span>
                   </button>
                   <button
                     onClick={() => setShowPaymentModal(true)}
@@ -1341,6 +1355,258 @@ export default function AdminDashboard() {
                     className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
                   >
                     {libraryData.action === 'issue' ? 'Issue Book' : 'Return Book'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Add Student Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Student</h3>
+              <form onSubmit={handleAddStudent} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={newStudent.name}
+                    onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter student's full name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={newStudent.email}
+                    onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                  <input
+                    type="tel"
+                    value={newStudent.mobile}
+                    onChange={(e) => setNewStudent({ ...newStudent, mobile: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter mobile number"
+                    pattern="[0-9]{10}"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
+                  <select
+                    value={newStudent.shift}
+                    onChange={(e) => setNewStudent({ ...newStudent, shift: e.target.value as 'morning' | 'afternoon' | 'evening' })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Category</label>
+                  <select
+                    value={newStudent.jobCategory}
+                    onChange={(e) => setNewStudent({ ...newStudent, jobCategory: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="Banking">Banking</option>
+                    <option value="SSC">SSC</option>
+                    <option value="Railway">Railway</option>
+                    <option value="UPSC">UPSC</option>
+                    <option value="State">State Government</option>
+                    <option value="Defense">Defense</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Teaching">Teaching</option>
+                    <option value="Police">Police</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setNewStudent({
+                        name: '',
+                        email: '',
+                        mobile: '',
+                        shift: 'morning',
+                        jobCategory: 'Banking'
+                      });
+                    }}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Add Student
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Student Modal */}
+        {showEditModal && selectedStudent && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Edit Student</h3>
+              <form onSubmit={handleUpdateStudent} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={selectedStudent.name}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={selectedStudent.email}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                  <input
+                    type="tel"
+                    value={selectedStudent.mobile}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, mobile: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
+                  <select
+                    value={selectedStudent.shift}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, shift: e.target.value as 'morning' | 'afternoon' | 'evening' })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Category</label>
+                  <select
+                    value={selectedStudent.jobCategory}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, jobCategory: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="Banking">Banking</option>
+                    <option value="SSC">SSC</option>
+                    <option value="Railway">Railway</option>
+                    <option value="UPSC">UPSC</option>
+                    <option value="State">State Government</option>
+                    <option value="Defense">Defense</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Teaching">Teaching</option>
+                    <option value="Police">Police</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    value={selectedStudent.status}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, status: e.target.value as 'active' | 'inactive' | 'suspended' })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                  </select>
+                </div>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEditModal(false);
+                      setSelectedStudent(null);
+                    }}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Update Student
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Bulk Upload Modal */}
+        {showBulkUpload && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Bulk Upload Students</h3>
+              <div className="mb-4 p-4 bg-gray-50 rounded-md">
+                <p className="text-sm text-gray-600 mb-2">Format: Each line should contain:</p>
+                <code className="text-xs bg-gray-200 p-2 rounded block">Name, Email, Mobile, Shift, JobCategory</code>
+                <p className="text-xs text-gray-500 mt-2">Example: John Doe, john@email.com, 9876543210, morning, Banking</p>
+              </div>
+              <form onSubmit={handleBulkUpload} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Student Data</label>
+                  <textarea
+                    value={bulkStudents}
+                    onChange={(e) => setBulkStudents(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={8}
+                    placeholder="Enter student data, one per line..."
+                    required
+                  />
+                </div>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowBulkUpload(false);
+                      setBulkStudents('');
+                    }}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Upload Students
                   </button>
                 </div>
               </form>
