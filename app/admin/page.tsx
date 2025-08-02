@@ -35,6 +35,54 @@ import {
   getFinancialAnalytics
 } from '@/lib/auth';
 
+// Monthly Fee Component
+interface MonthlyFeeComponentProps {
+  month: string;
+  amount: string;
+  dueDate: string;
+  onAmountChange: (value: string) => void;
+  onDueDateChange: (value: string) => void;
+}
+
+const MonthlyFeeComponent: React.FC<MonthlyFeeComponentProps> = ({
+  month,
+  amount,
+  dueDate,
+  onAmountChange,
+  onDueDateChange
+}) => {
+  return (
+    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200 hover:border-blue-300 transition-colors">
+      <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">{month}</h4>
+      <div className="space-y-2">
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">Amount (₹)</label>
+          <input
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => onAmountChange(e.target.value)}
+            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">Due Date</label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => onDueDateChange(e.target.value)}
+            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function AdminDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -1505,44 +1553,31 @@ export default function AdminDashboard() {
                 {/* Monthly Fees Section */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Fee Structure</label>
-                  <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md p-3 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-60 overflow-y-auto border border-gray-200 rounded-md p-4">
                     {newStudent.monthlyFees.slice(0, parseInt(newStudent.courseDurationMonths)).map((monthlyFee, index) => (
-                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md">
-                        <div className="flex-1">
-                          <span className="text-sm font-medium text-gray-700">{monthlyFee.monthName}</span>
-                        </div>
-                        <div className="flex-1">
-                          <input
-                            type="number"
-                            placeholder="Amount (₹)"
-                            value={monthlyFee.amount}
-                            onChange={(e) => {
-                              const updatedFees = [...newStudent.monthlyFees];
-                              updatedFees[index].amount = e.target.value;
-                              setNewStudent({ ...newStudent, monthlyFees: updatedFees });
-                            }}
-                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            min="0"
-                            step="0.01"
-                            required
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <input
-                            type="date"
-                            value={monthlyFee.dueDate}
-                            onChange={(e) => {
-                              const updatedFees = [...newStudent.monthlyFees];
-                              updatedFees[index].dueDate = e.target.value;
-                              setNewStudent({ ...newStudent, monthlyFees: updatedFees });
-                            }}
-                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            required
-                          />
-                        </div>
-                      </div>
+                      <MonthlyFeeComponent
+                        key={index}
+                        month={monthlyFee.monthName}
+                        amount={monthlyFee.amount}
+                        dueDate={monthlyFee.dueDate}
+                        onAmountChange={(value: string) => {
+                          const updatedFees = [...newStudent.monthlyFees];
+                          updatedFees[index].amount = value;
+                          setNewStudent({ ...newStudent, monthlyFees: updatedFees });
+                        }}
+                        onDueDateChange={(value: string) => {
+                          const updatedFees = [...newStudent.monthlyFees];
+                          updatedFees[index].dueDate = value;
+                          setNewStudent({ ...newStudent, monthlyFees: updatedFees });
+                        }}
+                      />
                     ))}
                   </div>
+                  {parseInt(newStudent.courseDurationMonths) > 6 && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      💡 Tip: Scroll within the box above to see all {newStudent.courseDurationMonths} months
+                    </p>
+                  )}
                 </div>
 
                 {/* Total Fee Summary */}
