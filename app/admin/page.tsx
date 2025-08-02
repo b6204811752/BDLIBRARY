@@ -57,15 +57,11 @@ export default function AdminDashboard() {
     password: '',
     course: '',
     duration: 6,
-    courseFee: '',
-    feeType: 'monthly' as 'one-time' | 'monthly',
-    monthlyFees: Array.from({ length: 12 }, (_, i) => ({
-      month: i + 1,
-      monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
-      amount: '',
-      dueDate: '',
-      status: 'pending' as 'pending' | 'paid' | 'overdue'
-    }))
+    monthlyFees: 0,
+    libraryAccess: false,
+    examsPassed: 0,
+    counselingBooked: false,
+    joinDate: new Date().toISOString().split('T')[0]
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
@@ -177,8 +173,8 @@ export default function AdminDashboard() {
   const handleAddStudent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const courseDurationMonths = parseInt(newStudent.courseDurationMonths) || 12;
-      const monthlyFeeAmount = parseFloat(newStudent.courseFee) || 0;
+      const courseDurationMonths = newStudent.duration || 12;
+      const monthlyFeeAmount = newStudent.monthlyFees || 0;
 
       // Generate monthly fees array based on the single monthly fee amount
       const monthlyFeesArray = Array.from({ length: courseDurationMonths }, (_, i) => {
@@ -215,9 +211,11 @@ export default function AdminDashboard() {
           password: '',
           course: '',
           duration: 6,
-          courseFee: '',
-          feeType: 'monthly',
-          monthlyFees: []
+          monthlyFees: 0,
+          libraryAccess: false,
+          examsPassed: 0,
+          counselingBooked: false,
+          joinDate: new Date().toISOString().split('T')[0]
         });
         setShowAddModal(false);
         await loadData(); // Reload data after adding
@@ -1374,8 +1372,8 @@ export default function AdminDashboard() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Fee Amount (₹)</label>
                   <input
                     type="number"
-                    value={newStudent.courseFee}
-                    onChange={(e) => setNewStudent({ ...newStudent, courseFee: e.target.value })}
+                    value={newStudent.monthlyFees}
+                    onChange={(e) => setNewStudent({ ...newStudent, monthlyFees: parseFloat(e.target.value) || 0 })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter monthly fee amount"
                     min="0"
@@ -1385,21 +1383,21 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Total Fee Summary */}
-                {newStudent.courseFee && newStudent.courseDurationMonths && (
+                {newStudent.monthlyFees > 0 && newStudent.duration && (
                   <div className="bg-blue-50 p-4 rounded-md">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium text-blue-800">Total Course Fee:</span>
                       <span className="text-lg font-bold text-blue-900">
-                        ₹{(parseFloat(newStudent.courseFee) * parseInt(newStudent.courseDurationMonths)).toLocaleString()}
+                        ₹{(newStudent.monthlyFees * newStudent.duration).toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-xs text-blue-600">Duration:</span>
-                      <span className="text-xs text-blue-600">{newStudent.courseDurationMonths} months</span>
+                      <span className="text-xs text-blue-600">{newStudent.duration} months</span>
                     </div>
                     <div className="flex justify-between items-center mt-1">
                       <span className="text-xs text-blue-600">Monthly Fee:</span>
-                      <span className="text-xs text-blue-600">₹{parseFloat(newStudent.courseFee).toLocaleString()}</span>
+                      <span className="text-xs text-blue-600">₹{newStudent.monthlyFees.toLocaleString()}</span>
                     </div>
                   </div>
                 )}
@@ -1415,15 +1413,11 @@ export default function AdminDashboard() {
                         password: '',
                         course: '',
                         duration: 6,
-                        courseFee: '',
-                        feeType: 'monthly',
-                        monthlyFees: Array.from({ length: 12 }, (_, i) => ({
-                          month: i + 1,
-                          monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
-                          amount: '',
-                          dueDate: '',
-                          status: 'pending' as 'pending' | 'paid' | 'overdue'
-                        }))
+                        monthlyFees: 0,
+                        libraryAccess: false,
+                        examsPassed: 0,
+                        counselingBooked: false,
+                        joinDate: new Date().toISOString().split('T')[0]
                       });
                     }}
                     className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
