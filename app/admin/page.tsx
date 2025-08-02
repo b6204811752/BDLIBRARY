@@ -229,51 +229,41 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleBulkUpload = (e: React.FormEvent) => {
+  const handleBulkUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const lines = bulkStudents.split('\n').filter((line: string) => line.trim());
 
-    lines.forEach((line: string) => {
-      const [name, email, mobile, shift, jobCategory] = line.split(',').map((s: string) => s.trim());
-      if (name && email && mobile && shift && jobCategory) {
+    for (const line of lines) {
+      const [name, email, course] = line.split(',').map((s: string) => s.trim());
+      if (name && email && course) {
         try {
-          addStudent({
+          await addStudent({
             name,
             email,
-            mobile,
-            shift: shift as 'morning' | 'afternoon' | 'evening',
-            jobCategory,
-            enrollmentDate: new Date().toISOString().split('T')[0],
-            fees: {
-              courseFee: 0,
-              totalFee: 0,
-              paidAmount: 0,
-              dueAmount: 0,
-              installments: [],
-              paymentHistory: [],
-              discounts: []
-            },
-            library: {
-              booksIssued: [],
-              fines: []
-            },
-            examHistory: [],
-            counseling: {
-              sessions: [],
-              careerGuidance: []
-            },
-            certificates: []
+            username: email, // Use email as username
+            password: 'student123', // Default password
+            course: course || 'General',
+            duration: 12, // Default duration
+            monthlyFees: Array.from({ length: 12 }, (_, i) => ({
+              month: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
+              amount: 5000, // Default amount
+              paid: false
+            })),
+            libraryAccess: true,
+            examsPassed: 0,
+            counselingBooked: false,
+            joinDate: new Date().toISOString().split('T')[0]
           });
         } catch (error) {
           console.error('Error adding student:', error);
         }
       }
-    });
+    }
 
     setBulkStudents('');
     setShowBulkUpload(false);
-    loadData();
+    await loadData();
   };
 
   const handleDeleteStudent = async (id: string) => {
@@ -1615,7 +1605,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-bold text-gray-900 mb-4">Bulk Upload Students</h3>
               <div className="mb-4 p-4 bg-gray-50 rounded-md">
                 <p className="text-sm text-gray-600 mb-2">Format: Each line should contain:</p>
-                <code className="text-xs bg-gray-200 p-2 rounded block">Name, Email, Mobile, Shift, JobCategory</code>
+                <code className="text-xs bg-gray-200 p-2 rounded block">Name, Email, Course</code>
                 <p className="text-xs text-gray-500 mt-2">Example: John Doe, john@email.com, 9876543210, morning, Banking</p>
               </div>
               <form onSubmit={handleBulkUpload} className="space-y-4">

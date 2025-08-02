@@ -174,6 +174,51 @@ function getAuthData(): AuthData {
   return defaultAuthData;
 }
 
+// Session management functions
+export function getCurrentUser(): { type: 'student' | 'admin' | null; data: Student | Admin | null } {
+  if (typeof window !== 'undefined') {
+    const current = localStorage.getItem('currentUser');
+    if (current) {
+      return JSON.parse(current);
+    }
+  }
+  return { type: null, data: null };
+}
+
+export function setCurrentUser(type: 'student' | 'admin', data: Student | Admin): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('currentUser', JSON.stringify({ type, data }));
+  }
+}
+
+export function logout(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('currentUser');
+  }
+}
+
+// Student authentication function for login page
+export async function authenticateStudent(email: string, mobile: string): Promise<Student | null> {
+  const authData = await loadAuthData();
+  // For now, authenticate by email only since mobile field doesn't exist in new interface
+  const student = authData.students.find(s => s.email === email);
+  return student || null;
+}
+
+// Placeholder functions for features that will be implemented later
+export function subscribeToDataChanges(callback: () => void): () => void {
+  console.log('Real-time data changes feature coming soon');
+  return () => {}; // Return empty unsubscribe function
+}
+
+export async function updateStudentProgress(studentId: string, progress: any): Promise<void> {
+  console.log('Student progress update feature coming soon');
+}
+
+export function markNotificationAsRead(studentId: string, notificationId: string): void {
+  console.log('Mark notification as read feature coming soon');
+}
+
 // Legacy function - use addStudent instead
 export function authenticateAdmin(username: string, password: string): Admin | null {
   const authData = getAuthData();
