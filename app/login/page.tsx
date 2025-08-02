@@ -46,7 +46,7 @@ export default function Login() {
           return;
         }
         
-        const student = authenticateStudent(email, mobile);
+        const student = await authenticateStudent(email, mobile);
         if (student) {
           setCurrentUser('student', student);
           setLoading(false);
@@ -67,7 +67,7 @@ export default function Login() {
           return;
         }
         
-        const admin = authenticateAdmin(username, password);
+        const admin = await authenticateAdmin(username, password);
         if (admin) {
           setCurrentUser('admin', admin);
           setLoading(false);
