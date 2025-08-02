@@ -1,54 +1,22 @@
 // --- Type/interface definitions ---
+
 interface RealTimeStats {
   onlineUsers: number;
-
-    </div>
-  );
+  // ...other properties...
 }
 
   const handleEditStudent = (student: Student) => {
     // ...existing code for handleEditStudent...
   };
 
-  const handleAddAnnouncement = (e: React.FormEvent) => {
-
-    </div>
-  );
+// --- Type/interface definitions ---
+interface RealTimeStats {
+  onlineUsers: number;
+  // ...other properties...
 }
 
-        nextSession: ''
-      });
-      setShowCounselingModal(false);
-      loadData();
-    }
-  };
-
-  // ...existing code for other handlers...
-
-  // ...existing code...
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-              <p className="text-gray-600">Real-time monitoring and management system</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-600">Online: {realTimeStats.onlineUsers}</span>
-              </div>
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <i className="ri-test-tube-line text-blue-600"></i>
-                <span className="text-sm text-gray-600">Active Tests: {realTimeStats.activeTests}</span>
-              </div>
-            </div>
-  // ...existing code for other handlers...
-
+export default function AdminPage() {
+  // ...all state, handlers, and logic here...
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -177,14 +145,6 @@ interface RealTimeStats {
     </div>
   );
 }
-  };
-
-  const handleAddExamResult = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (examData.studentId && examData.examName) {
-      const totalMarks = parseInt(examData.totalMarks);
-      const obtainedMarks = parseInt(examData.obtainedMarks);
-
       addExamResult(examData.studentId, {
         examName: examData.examName,
         date: new Date().toISOString().split('T')[0],
