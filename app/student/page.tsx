@@ -1,4 +1,6 @@
+'use client';
 
+import React from 'react';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -987,7 +989,8 @@ export default function StudentDashboard() {
                       {test.completed && (
                         <button 
                           onClick={() => {
-                            alert(`Test Results for ${test.name}:\n\nScore: ${test.score}%\nQuestions Attempted: ${test.questions}\nCorrect Answers: ${Math.floor(test.questions * test.score / 100)}\n\nClick OK to view detailed analysis.`);
+                            const score = test.score ?? 0;
+                            alert(`Test Results for ${test.name}:\n\nScore: ${score}%\nQuestions Attempted: ${test.questions}\nCorrect Answers: ${Math.floor(test.questions * score / 100)}\n\nClick OK to view detailed analysis.`);
                           }}
                           className="bg-gray-100 text-gray-600 px-3 py-2 rounded-md hover:bg-gray-200 cursor-pointer"
                         >
