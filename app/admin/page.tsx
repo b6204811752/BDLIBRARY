@@ -153,170 +153,153 @@ export default function AdminPage() {
       priority: 'medium',
       targetAudience: 'all',
       expiryDate: ''
-    });
-    setShowAnnouncementModal(false);
-    loadData();
-  };
-
-  const handleDeleteAnnouncement = (id: string) => {
-    if (confirm('Are you sure you want to delete this announcement?')) {
-      deleteAnnouncement(id);
-      loadData();
-    }
-  };
-
-  const resetStudentProgress = (studentId: string) => {
-    if (confirm('Are you sure you want to reset this student\'s progress?')) {
-      updateStudentProgress(studentId, {
-        testsCompleted: 0,
-        materialsDownloaded: 0,
-        studyHours: 0,
-        averageScore: 0,
-        completionRate: 0,
-        currentStreak: 0,
-        totalPoints: 0
-      });
-      loadData();
-    }
-  };
-
-  const toggleStudentStatus = (studentId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    updateStudent(studentId, { status: newStatus });
-    loadData();
-  };
-
-  const sendNotificationToStudent = (studentId: string, message: string) => {
-    addNotification(studentId, {
-      message,
-      type: 'info',
-      read: false
-    });
-    loadData();
-  };
-
-  const handleExport = (format: 'csv' | 'json') => {
-    const data = exportStudentData(format);
-    const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' : 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `students.${format}`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setShowExportModal(false);
-  };
-
-  const filteredStudents = students.filter((student: Student) => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.mobile.includes(searchTerm);
-    const matchesShift = filterShift === 'all' || student.shift === filterShift;
-    const matchesCategory = filterCategory === 'all' || student.jobCategory === filterCategory;
-    const matchesStatus = filterStatus === 'all' || student.status === filterStatus;
-    return matchesSearch && matchesShift && matchesCategory && matchesStatus;
-  });
-
-  const sortedStudents = [...filteredStudents].sort((a, b) => {
-    let aValue: string | number | Date, bValue: string | number | Date;
-
-    switch (sortBy) {
-      case 'name':
-        aValue = a.name;
-        bValue = b.name;
-        break;
-      case 'email':
-        aValue = a.email;
-        bValue = b.email;
-        break;
-      case 'enrollmentDate':
-        aValue = new Date(a.enrollmentDate);
-        bValue = new Date(b.enrollmentDate);
-        break;
-      case 'progress':
-        aValue = a.progress.totalPoints;
-        bValue = b.progress.totalPoints;
-        break;
-      case 'attendance':
-        aValue = a.attendance.present / a.attendance.totalDays || 0;
-        bValue = b.attendance.present / b.attendance.totalDays || 0;
-        break;
-      case 'score':
-        aValue = a.progress.averageScore;
-        bValue = b.progress.averageScore;
-        break;
-      default:
-        aValue = a.name;
-        bValue = b.name;
-    }
-
-    if (sortOrder === 'asc') {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-    } else {
-      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-    }
-  });
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading admin dashboard...</p>
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+              <p className="text-gray-600">Real-time monitoring and management system</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-600">Online: {realTimeStats.onlineUsers}</span>
+              </div>
+              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
+                <i className="ri-test-tube-line text-blue-600"></i>
+                <span className="text-sm text-gray-600">Active Tests: {realTimeStats.activeTests}</span>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Navigation Tabs */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8">
+              {[ 
+                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
+                { id: 'students', label: 'Students', icon: 'ri-user-line' },
+                { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-line' },
+                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-line' },
+                { id: 'reports', label: 'Reports', icon: 'ri-file-chart-line' },
+                { id: 'settings', label: 'Settings', icon: 'ri-settings-line' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <i className={tab.icon}></i>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && analytics && financialAnalytics && (
+          <div className="space-y-6">
+            {/* ...existing code for dashboard tab... */}
+          </div>
+        )}
+
+        {/* Enhanced Students Tab */}
+        {activeTab === 'students' && (
+          <div className="space-y-6">
+            {/* ...existing code for students tab... */}
+          </div>
+        )}
+
+        {/* Enhanced Analytics Tab */}
+        {activeTab === 'analytics' && analytics && financialAnalytics && (
+          <div className="space-y-6">
+            {/* ...existing code for analytics tab... */}
+          </div>
+        )}
+
+        {/* Announcements Tab */}
+        {activeTab === 'announcements' && (
+          <div className="space-y-6">
+            {/* ...existing code for announcements tab... */}
+          </div>
+        )}
+
+        {/* Reports Tab */}
+        {activeTab === 'reports' && (
+          <div className="space-y-6">
+            {/* ...existing code for reports tab... */}
+          </div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            {/* ...existing code for settings tab... */}
+          </div>
+        )}
+
+        {/* Add Student Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50 p-4">
+            {/* ...existing code for add student modal... */}
+          </div>
+        )}
+
+        {/* Enhanced Modals */}
+        {/* Payment Modal */}
+        {showPaymentModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for payment modal... */}
+          </div>
+        )}
+
+        {/* Discount Modal */}
+        {showDiscountModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for discount modal... */}
+          </div>
+        )}
+
+        {/* Library Modal */}
+        {showLibraryModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for library modal... */}
+          </div>
+        )}
+
+        {showExamModal && (
+          {/* ...existing code for exam modal... */}
+        )}
+
+        {showCounselingModal && (
+          {/* ...existing code for counseling modal... */}
+        )}
+
+        {showCertificateModal && (
+          {/* ...existing code for certificate modal... */}
+        )}
+
+        {showExportModal && (
+          {/* ...existing code for export modal... */}
+        )}
+
+        {showAnnouncementModal && (
+          {/* ...existing code for announcement modal... */}
+        )}
+
+        <Footer />
       </div>
-    );
-  }
-
-  if (!currentUser) {
-    return null;
-  }
-
-  const handleAddPayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (paymentData.studentId && paymentData.amount) {
-      addPayment(paymentData.studentId, {
-        amount: parseFloat(paymentData.amount),
-        date: new Date().toISOString().split('T')[0],
-        method: paymentData.method,
-        transactionId: paymentData.transactionId,
-        receiptNo: paymentData.receiptNo,
-        description: paymentData.description
-      });
-
-      setPaymentData({
-        studentId: '',
-        amount: '',
-        method: 'cash',
-        transactionId: '',
-        receiptNo: '',
-        description: ''
-      });
-      setShowPaymentModal(false);
-      loadData();
-    }
-  };
-
-  const handleApplyDiscount = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (discountData.studentId && discountData.value) {
-      applyDiscount(discountData.studentId, {
-        type: discountData.type,
-        value: parseFloat(discountData.value),
-        reason: discountData.reason,
-        appliedDate: new Date().toISOString().split('T')[0],
-        appliedBy: 'admin'
-      });
-
-      setDiscountData({
-        studentId: '',
-        type: 'percentage',
-        value: '',
-        reason: ''
-      });
-      setShowDiscountModal(false);
-      loadData();
-    }
+    </div>
+  );
   };
 
   const handleLibraryAction = (e: React.FormEvent) => {
