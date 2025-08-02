@@ -1,5 +1,8 @@
 
+
 'use client';
+
+import * as React from 'react';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -142,7 +145,26 @@ export default function AdminDashboard() {
     try {
       const student = addStudent({
         ...newStudent,
-        enrollmentDate: new Date().toISOString().split('T')[0]
+        enrollmentDate: new Date().toISOString().split('T')[0],
+        fees: {
+          courseFee: 0,
+          totalFee: 0,
+          paidAmount: 0,
+          dueAmount: 0,
+          installments: [],
+          paymentHistory: [],
+          discounts: []
+        },
+        library: {
+          booksIssued: [],
+          fines: []
+        },
+        examHistory: [],
+        counseling: {
+          sessions: [],
+          careerGuidance: []
+        },
+        certificates: []
       });
 
       setNewStudent({
@@ -161,10 +183,11 @@ export default function AdminDashboard() {
 
   const handleBulkUpload = (e: React.FormEvent) => {
     e.preventDefault();
-    const lines = bulkStudents.split('\\n').filter(line => line.trim());
 
-    lines.forEach(line => {
-      const [name, email, mobile, shift, jobCategory] = line.split(',').map(s => s.trim());
+    const lines = bulkStudents.split('\n').filter((line: string) => line.trim());
+
+    lines.forEach((line: string) => {
+      const [name, email, mobile, shift, jobCategory] = line.split(',').map((s: string) => s.trim());
       if (name && email && mobile && shift && jobCategory) {
         try {
           addStudent({
@@ -173,7 +196,26 @@ export default function AdminDashboard() {
             mobile,
             shift: shift as 'morning' | 'afternoon' | 'evening',
             jobCategory,
-            enrollmentDate: new Date().toISOString().split('T')[0]
+            enrollmentDate: new Date().toISOString().split('T')[0],
+            fees: {
+              courseFee: 0,
+              totalFee: 0,
+              paidAmount: 0,
+              dueAmount: 0,
+              installments: [],
+              paymentHistory: [],
+              discounts: []
+            },
+            library: {
+              booksIssued: [],
+              fines: []
+            },
+            examHistory: [],
+            counseling: {
+              sessions: [],
+              careerGuidance: []
+            },
+            certificates: []
           });
         } catch (error) {
           console.error('Error adding student:', error);
@@ -274,7 +316,7 @@ export default function AdminDashboard() {
     setShowExportModal(false);
   };
 
-  const filteredStudents = students.filter(student => {
+  const filteredStudents = students.filter((student: Student) => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.mobile.includes(searchTerm);
@@ -450,6 +492,7 @@ export default function AdminDashboard() {
 
   const handleAddExamResult = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (examData.studentId && examData.examName) {
       const totalMarks = parseInt(examData.totalMarks);
       const obtainedMarks = parseInt(examData.obtainedMarks);
@@ -461,7 +504,7 @@ export default function AdminDashboard() {
         obtainedMarks,
         percentage: Math.round((obtainedMarks / totalMarks) * 100),
         rank: Math.floor(Math.random() * 50) + 1,
-        subjects: examData.subjects.map(sub => ({
+        subjects: examData.subjects.map((sub: any) => ({
           name: sub.name,
           marks: parseInt(sub.marks),
           totalMarks: parseInt(sub.totalMarks)
