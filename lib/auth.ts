@@ -49,6 +49,13 @@ export interface Student {
     monthlyFee?: number;
     courseDurationMonths?: number;
     feeType?: 'one-time' | 'monthly';
+    monthlyFees?: {
+      month: number;
+      monthName: string;
+      amount: string;
+      dueDate: string;
+      status: 'pending' | 'paid' | 'overdue';
+    }[];
     installments: {
       id: string;
       amount: number;

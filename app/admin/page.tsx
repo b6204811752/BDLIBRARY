@@ -70,7 +70,17 @@ export default function AdminDashboard() {
     email: '',
     mobile: '',
     shift: 'morning' as 'morning' | 'afternoon' | 'evening',
-    jobCategory: 'Banking'
+    jobCategory: 'Banking',
+    courseFee: '',
+    feeType: 'monthly' as 'one-time' | 'monthly',
+    courseDurationMonths: '12',
+    monthlyFees: Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
+      amount: '',
+      dueDate: '',
+      status: 'pending' as 'pending' | 'paid' | 'overdue'
+    }))
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
@@ -189,14 +199,33 @@ export default function AdminDashboard() {
   const handleAddStudent = (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const courseDurationMonths = parseInt(newStudent.courseDurationMonths) || 12;
+      
+      // Calculate total fee from monthly fees
+      const monthlyFeesWithAmounts = newStudent.monthlyFees.slice(0, courseDurationMonths).map((fee, index) => ({
+        ...fee,
+        amount: parseFloat(fee.amount) || 0,
+        dueDate: fee.dueDate || new Date(new Date().setMonth(new Date().getMonth() + index + 1)).toISOString().split('T')[0]
+      }));
+      
+      const totalFee = monthlyFeesWithAmounts.reduce((sum, fee) => sum + fee.amount, 0);
+
       const student = addStudent({
-        ...newStudent,
+        name: newStudent.name,
+        email: newStudent.email,
+        mobile: newStudent.mobile,
+        shift: newStudent.shift,
+        jobCategory: newStudent.jobCategory,
         enrollmentDate: new Date().toISOString().split('T')[0],
         fees: {
-          courseFee: 0,
-          totalFee: 0,
+          courseFee: totalFee,
+          totalFee: totalFee,
           paidAmount: 0,
-          dueAmount: 0,
+          dueAmount: totalFee,
+          monthlyFee: monthlyFeesWithAmounts.length > 0 ? monthlyFeesWithAmounts[0].amount : 0,
+          courseDurationMonths: courseDurationMonths,
+          feeType: 'monthly',
+          monthlyFees: monthlyFeesWithAmounts,
           installments: [],
           paymentHistory: [],
           discounts: []
@@ -218,7 +247,17 @@ export default function AdminDashboard() {
         email: '',
         mobile: '',
         shift: 'morning',
-        jobCategory: 'Banking'
+        jobCategory: 'Banking',
+        courseFee: '',
+        feeType: 'monthly',
+        courseDurationMonths: '12',
+        monthlyFees: Array.from({ length: 12 }, (_, i) => ({
+          month: i + 1,
+          monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
+          amount: '',
+          dueDate: '',
+          status: 'pending' as 'pending' | 'paid' | 'overdue'
+        }))
       });
       setShowAddModal(false);
       loadData();
@@ -1365,7 +1404,7 @@ export default function AdminDashboard() {
         {/* Add Student Modal */}
         {showAddModal && (
           <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Student</h3>
               <form onSubmit={handleAddStudent} className="space-y-4">
                 <div>
@@ -1435,6 +1474,94 @@ export default function AdminDashboard() {
                     <option value="Other">Other</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Course Duration (Months)</label>
+                  <select
+                    value={newStudent.courseDurationMonths}
+                    onChange={(e) => {
+                      const months = parseInt(e.target.value);
+                      setNewStudent({ 
+                        ...newStudent, 
+                        courseDurationMonths: e.target.value,
+                        monthlyFees: Array.from({ length: 12 }, (_, i) => ({
+                          month: i + 1,
+                          monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
+                          amount: i < months ? newStudent.monthlyFees[i]?.amount || '' : '',
+                          dueDate: i < months ? newStudent.monthlyFees[i]?.dueDate || '' : '',
+                          status: 'pending' as 'pending' | 'paid' | 'overdue'
+                        }))
+                      });
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="6">6 Months</option>
+                    <option value="12">12 Months</option>
+                    <option value="18">18 Months</option>
+                    <option value="24">24 Months</option>
+                  </select>
+                </div>
+
+                {/* Monthly Fees Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Fee Structure</label>
+                  <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md p-3 space-y-3">
+                    {newStudent.monthlyFees.slice(0, parseInt(newStudent.courseDurationMonths)).map((monthlyFee, index) => (
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md">
+                        <div className="flex-1">
+                          <span className="text-sm font-medium text-gray-700">{monthlyFee.monthName}</span>
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            type="number"
+                            placeholder="Amount (₹)"
+                            value={monthlyFee.amount}
+                            onChange={(e) => {
+                              const updatedFees = [...newStudent.monthlyFees];
+                              updatedFees[index].amount = e.target.value;
+                              setNewStudent({ ...newStudent, monthlyFees: updatedFees });
+                            }}
+                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            min="0"
+                            step="0.01"
+                            required
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            type="date"
+                            value={monthlyFee.dueDate}
+                            onChange={(e) => {
+                              const updatedFees = [...newStudent.monthlyFees];
+                              updatedFees[index].dueDate = e.target.value;
+                              setNewStudent({ ...newStudent, monthlyFees: updatedFees });
+                            }}
+                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            required
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Total Fee Summary */}
+                <div className="bg-blue-50 p-4 rounded-md">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-blue-800">Total Course Fee:</span>
+                    <span className="text-lg font-bold text-blue-900">
+                      ₹{newStudent.monthlyFees
+                        .slice(0, parseInt(newStudent.courseDurationMonths))
+                        .reduce((sum, fee) => sum + (parseFloat(fee.amount) || 0), 0)
+                        .toLocaleString()
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-xs text-blue-600">Duration:</span>
+                    <span className="text-xs text-blue-600">{newStudent.courseDurationMonths} months</span>
+                  </div>
+                </div>
                 <div className="flex space-x-4 pt-4">
                   <button
                     type="button"
@@ -1445,7 +1572,10 @@ export default function AdminDashboard() {
                         email: '',
                         mobile: '',
                         shift: 'morning',
-                        jobCategory: 'Banking'
+                        jobCategory: 'Banking',
+                        courseFee: '',
+                        feeType: 'one-time',
+                        courseDurationMonths: ''
                       });
                     }}
                     className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
