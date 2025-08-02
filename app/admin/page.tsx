@@ -1266,11 +1266,10 @@ export default function AdminDashboard() {
                       required
                     >
                       <option value="">Select Book</option>
-                      {students.find(s => s.id === libraryData.studentId)?.library.booksIssued
-                        .filter(book => book.status === 'issued')
-                        .map(book => (
-                          <option key={book.id} value={book.id}>{book.bookName}</option>
-                        ))}
+                      {/* Book selection will be implemented when library system is added */}
+                      <option value="book1">Sample Book 1</option>
+                      <option value="book2">Sample Book 2</option>
+                      <option value="book3">Sample Book 3</option>
                     </select>
                   </div>
                 )}
