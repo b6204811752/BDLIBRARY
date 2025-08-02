@@ -60,8 +60,8 @@ export default function StudentDashboard() {
       if (user.data) {
         setCurrentUser(user.data);
         // Ensure notifications is always an array - only for students
-        if ('notifications' in user.data) {
-          setNotifications(user.data.notifications || []);
+        if ('notifications' in user.data && Array.isArray(user.data.notifications)) {
+          setNotifications(user.data.notifications);
         } else {
           setNotifications([]);
         }
