@@ -1,148 +1,29 @@
 // --- Type/interface definitions ---
 interface RealTimeStats {
   onlineUsers: number;
-  activeTests: number;
-  newNotifications: number;
+
+    </div>
+  );
 }
 
-interface PaymentData {
-  studentId: string;
-  amount: string;
-  method: 'cash' | 'card' | 'upi' | 'bank_transfer';
-  transactionId: string;
-  receiptNo: string;
-  description: string;
-}
-// --- Type/interface definitions ---
-interface RealTimeStats {
-  onlineUsers: number;
-  activeTests: number;
-  newNotifications: number;
+  const handleEditStudent = (student: Student) => {
+    // ...existing code for handleEditStudent...
+  };
+
+  const handleAddAnnouncement = (e: React.FormEvent) => {
+
+    </div>
+  );
 }
 
-interface PaymentData {
-  studentId: string;
-  amount: string;
-  method: 'cash' | 'card' | 'upi' | 'bank_transfer';
-  transactionId: string;
-  receiptNo: string;
-  description: string;
-}
-
-interface DiscountData {
-  studentId: string;
-  type: 'percentage' | 'fixed';
-  value: string;
-  reason: string;
-}
-
-interface LibraryData {
-  studentId: string;
-  bookName: string;
-  action: 'issue' | 'return';
-  bookId: string;
-}
-
-interface ExamData {
-  studentId: string;
-  examName: string;
-  totalMarks: string;
-  obtainedMarks: string;
-  subjects: { name: string; marks: string; totalMarks: string }[];
-}
-
-interface CounselingData {
-  studentId: string;
-  counselor: string;
-  topic: string;
-  notes: string;
-  nextSession: string;
-}
-
-'use client';
-
-
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-
-// Placeholder types and functions for missing symbols
-type Student = any;
-const deleteStudent = (...args: any[]) => {};
-const setSelectedStudent = (...args: any[]) => {};
-const setShowEditModal = (...args: any[]) => {};
-const updateStudent = (...args: any[]) => {};
-const addAnnouncement = (...args: any[]) => {};
-const setNewAnnouncement = (...args: any[]) => {};
-const setShowAnnouncementModal = (...args: any[]) => {};
-const deleteAnnouncement = (...args: any[]) => {};
-const updateStudentProgress = (...args: any[]) => {};
-const updateStudentStatus = (...args: any[]) => {};
-const addNotification = (...args: any[]) => {};
-const exportStudentData = (...args: any[]) => '';
-const setShowExportModal = (...args: any[]) => {};
-const addPayment = (...args: any[]) => {};
-const setShowPaymentModal = (...args: any[]) => {};
-const applyDiscount = (...args: any[]) => {};
-const setShowDiscountModal = (...args: any[]) => {};
-const issueBook = (...args: any[]) => {};
-const returnBook = (...args: any[]) => {};
-const setShowLibraryModal = (...args: any[]) => {};
-const addExamResult = (...args: any[]) => {};
-const [financialAnalytics, setFinancialAnalytics] = [{ paymentMethodStats: {}, defaulters: [], totalRevenue: 0, totalDues: 0, totalDiscounts: 0, overduePayments: 0 }, () => {}];
-const [searchTerm, setSearchTerm] = ['', () => {}];
-const [filterShift, setFilterShift] = ['all', () => {}];
-const [filterCategory, setFilterCategory] = ['all', () => {}];
-const [filterStatus, setFilterStatus] = ['all', () => {}];
-const [sortBy, setSortBy] = ['name', () => {}];
-const [sortOrder, setSortOrder] = ['asc', () => {}];
-const [currentUser, setCurrentUser] = [true, () => {}];
-const [loading, setLoading] = [false, () => {}];
-const [newStudent, setNewStudent] = [{ name: '', email: '', mobile: '', shift: 'morning', jobCategory: 'Banking', monthlyFee: 1000 }, () => {}];
-
-export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [analytics, setAnalytics] = useState<any>({});
-  const [showExamModal, setShowExamModal] = useState(false);
-  const [showCounselingModal, setShowCounselingModal] = useState(false);
-  const [realTimeStats, setRealTimeStats] = useState<RealTimeStats>({ onlineUsers: 0, activeTests: 0, newNotifications: 0 });
-  const [counselingData, setCounselingData] = useState<any>({ studentId: '', counselor: '', notes: '', nextSession: '' });
-  const [examData, setExamData] = useState<any>({ studentId: '', examName: '', totalMarks: '', obtainedMarks: '', subjects: [] });
-  const [libraryData, setLibraryData] = useState<any>({ studentId: '', action: '', bookName: '', bookId: '' });
-  const [discountData, setDiscountData] = useState<any>({ studentId: '', value: '', type: '', reason: '' });
-  const [paymentData, setPaymentData] = useState<any>({ studentId: '', amount: '', method: 'cash', transactionId: '', receiptNo: '', description: '' });
-  // Placeholder state and function for missing variables
-  const [students, setStudents] = useState<any[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [newAnnouncement, setNewAnnouncement] = useState<any>({ title: '', message: '', priority: 'medium', targetAudience: 'all', expiryDate: '' });
-  const loadData = () => {};
-  // ...existing code...
-  const handleDeleteStudent = (id: string) => {
-    if (confirm('Are you sure you want to delete this student?')) {
-      deleteStudent(id);
+        nextSession: ''
+      });
+      setShowCounselingModal(false);
       loadData();
     }
   };
 
-  const handleEditStudent = (student: Student) => {
-  const handleAddAnnouncement = (e: React.FormEvent) => {
-    e.preventDefault();
-    addAnnouncement({
-      ...newAnnouncement,
-      author: 'Admin'
-    });
-    setNewAnnouncement({ 
-      title: '', 
-      message: '', 
-      priority: 'medium',
-      targetAudience: 'all',
-      expiryDate: ''
-    });
-    setShowAnnouncementModal(false);
-    loadData();
-  };
+  // ...existing code for other handlers...
 
   // ...existing code...
 
@@ -166,170 +47,18 @@ export default function AdminPage() {
                 <span className="text-sm text-gray-600">Active Tests: {realTimeStats.activeTests}</span>
               </div>
             </div>
-          </div>
-        </div>
+  // ...existing code for other handlers...
 
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
-              {[ 
-                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-                { id: 'students', label: 'Students', icon: 'ri-user-line' },
-                { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-line' },
-                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-line' },
-                { id: 'reports', label: 'Reports', icon: 'ri-file-chart-line' },
-                { id: 'settings', label: 'Settings', icon: 'ri-settings-line' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <i className={tab.icon}></i>
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
-
-        {/* Dashboard Tab */}
-        {activeTab === 'dashboard' && analytics && financialAnalytics && (
-          <div className="space-y-6">
-            {/* ...existing code for dashboard tab... */}
-          </div>
-        )}
-
-        {/* Enhanced Students Tab */}
-        {activeTab === 'students' && (
-          <div className="space-y-6">
-            {/* ...existing code for students tab... */}
-          </div>
-        )}
-
-        {/* Enhanced Analytics Tab */}
-        {activeTab === 'analytics' && analytics && financialAnalytics && (
-          <div className="space-y-6">
-            {/* ...existing code for analytics tab... */}
-          </div>
-        )}
-
-        {/* Announcements Tab */}
-        {activeTab === 'announcements' && (
-          <div className="space-y-6">
-            {/* ...existing code for announcements tab... */}
-          </div>
-        )}
-
-        {/* Reports Tab */}
-        {activeTab === 'reports' && (
-          <div className="space-y-6">
-            {/* ...existing code for reports tab... */}
-          </div>
-        )}
-
-        {/* Settings Tab */}
-        {activeTab === 'settings' && (
-          <div className="space-y-6">
-            {/* ...existing code for settings tab... */}
-          </div>
-        )}
-
-        {/* Add Student Modal */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50 p-4">
-            {/* ...existing code for add student modal... */}
-          </div>
-        )}
-
-        {/* Enhanced Modals */}
-        {/* Payment Modal */}
-        {showPaymentModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for payment modal... */}
-          </div>
-        )}
-
-        {/* Discount Modal */}
-        {showDiscountModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for discount modal... */}
-          </div>
-        )}
-
-        {/* Library Modal */}
-        {showLibraryModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for library modal... */}
-          </div>
-        )}
-
-        {/* Exam Modal */}
-        {showExamModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for exam modal... */}
-          </div>
-        )}
-
-        {/* Counseling Modal */}
-        {showCounselingModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for counseling modal... */}
-          </div>
-        )}
-
-        {/* Certificate Modal */}
-        {showCertificateModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for certificate modal... */}
-          </div>
-        )}
-
-        {/* Export Modal */}
-        {showExportModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for export modal... */}
-          </div>
-        )}
-
-        {/* Announcement Modal */}
-        {showAnnouncementModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for announcement modal... */}
-          </div>
-        )}
-
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* ...all tab/modal JSX and content here, as in previous return... */}
         <Footer />
       </div>
     </div>
   );
-    e.preventDefault();
-    if (libraryData.studentId) {
-      if (libraryData.action === 'issue' && libraryData.bookName) {
-        issueBook(libraryData.studentId, {
-          bookName: libraryData.bookName,
-          issueDate: new Date().toISOString().split('T')[0],
-          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          status: 'issued'
-        });
-      } else if (libraryData.action === 'return' && libraryData.bookId) {
-        returnBook(libraryData.studentId, libraryData.bookId);
-      }
-
-      setLibraryData({
-        studentId: '',
-        bookName: '',
-        action: 'issue',
-        bookId: ''
-      });
-      setShowLibraryModal(false);
-      loadData();
-    }
+}
   };
 
   const handleAddExamResult = (e: React.FormEvent) => {
@@ -348,112 +77,6 @@ export default function AdminPage() {
         subjects: examData.subjects.map((sub: { name: string; marks: string; totalMarks: string }) => ({
           name: sub.name,
           marks: parseInt(sub.marks),
-          totalMarks: parseInt(sub.totalMarks)
-        }))
-      });
-
-      setExamData({
-        studentId: '',
-        examName: '',
-        totalMarks: '',
-        obtainedMarks: '',
-        subjects: [{ name: '', marks: '', totalMarks: '' }]
-      });
-      setShowExamModal(false);
-      loadData();
-    }
-  };
-
-  const handleAddCounselingSession = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (counselingData.studentId) {
-      // Placeholder: handle counseling session logic here
-
-      setCounselingData({
-        studentId: '',
-        counselor: '',
-        topic: '',
-        notes: '',
-        nextSession: ''
-      });
-      setShowCounselingModal(false);
-      loadData();
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-              <p className="text-gray-600">Real-time monitoring and management system</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-600">Online: {realTimeStats.onlineUsers}</span>
-              </div>
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <i className="ri-test-tube-line text-blue-600"></i>
-                <span className="text-sm text-gray-600">Active Tests: {realTimeStats.activeTests}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
-              {[ 
-                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-                { id: 'students', label: 'Students', icon: 'ri-user-line' },
-                { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-line' },
-                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-line' },
-                { id: 'reports', label: 'Reports', icon: 'ri-file-chart-line' },
-                { id: 'settings', label: 'Settings', icon: 'ri-settings-line' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <i className={tab.icon}></i>
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </div>
-    </div>
-
-        {/* Dashboard Tab */}
-        {activeTab === 'dashboard' && analytics && financialAnalytics && (
-          <div className="space-y-6">
-            {/* Enhanced Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-user-line text-xl text-blue-600"></i>
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Students</p>
-                    <p className="text-2xl font-bold text-gray-900">{analytics.totalStudents}</p>
-                    <p className="text-xs text-green-600">+{Math.floor(Math.random() * 5)} this week</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                     <i className="ri-money-rupee-circle-line text-xl text-green-600"></i>
