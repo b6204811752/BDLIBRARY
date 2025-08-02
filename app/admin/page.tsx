@@ -1,7 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+// ...imports handled below...
 // Import or define Student, analytics, and financialAnalytics types/interfaces as needed
 // --- Type/interface definitions ---
 
@@ -20,7 +18,102 @@ interface RealTimeStats {
   // ...other properties...
 }
 
+import React, { useState, useMemo } from 'react';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+// Define Student type for TypeScript
+type Student = {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  jobCategory: string;
+  shift: 'morning' | 'afternoon' | 'evening';
+  status: 'active' | 'inactive' | 'suspended';
+  fees: { paidAmount: number; dueAmount: number };
+  progress: { averageScore: number; testsCompleted: number };
+  attendance: { present: number; totalDays: number };
+  library: { booksIssued: any[]; fines: { amount: number; status: string }[] };
+  examHistory: any[];
+};
+
+// Placeholder types for modals and other data
+type PaymentData = { studentId: string; amount: string; method: string; transactionId: string; receiptNo: string; description: string };
+type DiscountData = { studentId: string; type: string; value: string; reason: string };
+type LibraryData = { studentId: string; action: string };
+
 export default function AdminPage() {
+  // --- UI/Modal state ---
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [showLibraryModal, setShowLibraryModal] = useState(false);
+  const [showExamModal, setShowExamModal] = useState(false);
+  const [showCounselingModal, setShowCounselingModal] = useState(false);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+
+  // --- Search/filter/sort state ---
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterShift, setFilterShift] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // --- Modal data state ---
+  const [paymentData, setPaymentData] = useState<PaymentData>({ studentId: '', amount: '', method: 'cash', transactionId: '', receiptNo: '', description: '' });
+  const [discountData, setDiscountData] = useState<DiscountData>({ studentId: '', type: 'percentage', value: '', reason: '' });
+  const [libraryData, setLibraryData] = useState<LibraryData>({ studentId: '', action: 'issue' });
+  const [newStudent, setNewStudent] = useState({ name: '', email: '', mobile: '', shift: 'morning', jobCategory: 'Banking', monthlyFee: 1000 });
+
+  // --- Placeholder handler functions ---
+  const handleAddStudent = (e: React.FormEvent) => { e.preventDefault(); setShowAddModal(false); };
+  const handleEditStudent = (student: Student) => {};
+  const handleDeleteStudent = (id: string) => {};
+  const handleAddPayment = (e: React.FormEvent) => { e.preventDefault(); setShowPaymentModal(false); };
+  const handleApplyDiscount = (e: React.FormEvent) => { e.preventDefault(); setShowDiscountModal(false); };
+  const handleLibraryAction = (e: React.FormEvent) => { e.preventDefault(); setShowLibraryModal(false); };
+  const handleAddExamResult = (e: React.FormEvent) => { e.preventDefault(); setShowExamModal(false); };
+  const handleDeleteAnnouncement = (id: string) => {};
+  const sendNotificationToStudent = (id: string, msg: string) => {};
+
+  // --- Sorting/filtering logic for students table ---
+  const filteredStudents = useMemo(() => {
+    return students.filter(s => {
+      const matchesSearch =
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.mobile.includes(searchTerm);
+      const matchesShift = filterShift === 'all' || s.shift === filterShift;
+      const matchesCategory = filterCategory === 'all' || s.jobCategory === filterCategory;
+      const matchesStatus = filterStatus === 'all' || s.status === filterStatus;
+      return matchesSearch && matchesShift && matchesCategory && matchesStatus;
+    });
+  }, [students, searchTerm, filterShift, filterCategory, filterStatus]);
+
+  const sortedStudents = useMemo(() => {
+    const sorted = [...filteredStudents].sort((a, b) => {
+      let aVal: any = a[sortBy as keyof Student];
+      let bVal: any = b[sortBy as keyof Student];
+      if (sortBy === 'progress') {
+        aVal = a.progress.averageScore;
+        bVal = b.progress.averageScore;
+      } else if (sortBy === 'attendance') {
+        aVal = a.attendance.present / (a.attendance.totalDays || 1);
+        bVal = b.attendance.present / (b.attendance.totalDays || 1);
+      } else if (sortBy === 'score') {
+        aVal = a.progress.averageScore;
+        bVal = b.progress.averageScore;
+      }
+      if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [filteredStudents, sortBy, sortOrder]);
   // --- Demo/mock state for dashboard preview ---
   const [activeTab, setActiveTab] = useState('dashboard');
   // Minimal mock students array
@@ -289,44 +382,6 @@ export default function AdminPage() {
   );
 }
 
-            {/* Financial Overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method Stats</h2>
-                <div className="space-y-3">
-                  {Object.entries(financialAnalytics.paymentMethodStats).map(([method, stats]: [string, any]) => (
-                    <div key={method} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <i className={`${method === 'cash' ? 'ri-money-rupee-circle-line' : method === 'card' ? 'ri-bank-card-line' : method === 'upi' ? 'ri-smartphone-line' : 'ri-bank-line'} text-blue-600`}></i>
-                        <span className="text-sm text-gray-600 capitalize">{method}</span>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">₹{stats.amount.toLocaleString()}</p>
-                        <p className="text-xs text-gray-500">{stats.count} transactions</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Fee Defaulters</h2>
-                <div className="space-y-3">
-                  {financialAnalytics.defaulters.slice(0, 5).map((student: Student) => (
-                    <div key={student.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
-                      <div>
-                        <p className="font-medium text-gray-900">{student.name}</p>
-                        <p className="text-sm text-gray-500">{student.mobile}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-red-600">₹{student.fees.dueAmount.toLocaleString()}</p>
-                        <p className="text-xs text-gray-500">Due amount</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
