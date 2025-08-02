@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { practiceTests, createTestAttempt, saveTestAttempt, calculateScore, TestAttempt, TestSet } from '@/lib/practice-tests';
 
-export default function TestPage() {
+function TestComponent() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('id') || 'ssc-cgl-mock-1';
   
@@ -510,4 +510,17 @@ export default function TestPage() {
   }
 
   return null;
+}
+
+export default function TestPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading test...</p>
+      </div>
+    </div>}>
+      <TestComponent />
+    </Suspense>
+  );
 }
