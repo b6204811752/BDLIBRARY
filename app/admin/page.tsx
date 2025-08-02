@@ -111,7 +111,7 @@ interface NewAnnouncement {
   title: string;
   message: string;
   priority: 'low' | 'medium' | 'high';
-  targetAudience: string;
+  targetAudience: 'all' | 'morning' | 'afternoon' | 'evening' | string[];
   expiryDate: string;
 }
 
