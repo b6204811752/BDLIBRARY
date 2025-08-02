@@ -127,20 +127,6 @@ export default function AdminPage() {
   };
 
   const handleEditStudent = (student: Student) => {
-    setSelectedStudent(student);
-    setShowEditModal(true);
-  };
-
-  const handleUpdateStudent = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedStudent) {
-      updateStudent(selectedStudent.id, selectedStudent);
-      setShowEditModal(false);
-      setSelectedStudent(null);
-      loadData();
-    }
-  };
-
   const handleAddAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
     addAnnouncement({
@@ -153,6 +139,13 @@ export default function AdminPage() {
       priority: 'medium',
       targetAudience: 'all',
       expiryDate: ''
+    });
+    setShowAnnouncementModal(false);
+    loadData();
+  };
+
+  // ...existing code...
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -276,33 +269,45 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* Exam Modal */}
         {showExamModal && (
-          {/* ...existing code for exam modal... */}
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for exam modal... */}
+          </div>
         )}
 
+        {/* Counseling Modal */}
         {showCounselingModal && (
-          {/* ...existing code for counseling modal... */}
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for counseling modal... */}
+          </div>
         )}
 
+        {/* Certificate Modal */}
         {showCertificateModal && (
-          {/* ...existing code for certificate modal... */}
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for certificate modal... */}
+          </div>
         )}
 
+        {/* Export Modal */}
         {showExportModal && (
-          {/* ...existing code for export modal... */}
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for export modal... */}
+          </div>
         )}
 
+        {/* Announcement Modal */}
         {showAnnouncementModal && (
-          {/* ...existing code for announcement modal... */}
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for announcement modal... */}
+          </div>
         )}
 
         <Footer />
       </div>
     </div>
   );
-  };
-
-  const handleLibraryAction = (e: React.FormEvent) => {
     e.preventDefault();
     if (libraryData.studentId) {
       if (libraryData.action === 'issue' && libraryData.bookName) {
