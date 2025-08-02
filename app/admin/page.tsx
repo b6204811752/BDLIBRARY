@@ -354,21 +354,21 @@ export default function AdminDashboard() {
         aValue = a.email;
         bValue = b.email;
         break;
-      case 'enrollmentDate':
-        aValue = new Date(a.enrollmentDate);
-        bValue = new Date(b.enrollmentDate);
+      case 'joinDate':
+        aValue = new Date(a.joinDate);
+        bValue = new Date(b.joinDate);
         break;
       case 'progress':
-        aValue = a.progress.totalPoints;
-        bValue = b.progress.totalPoints;
+        aValue = a.examsPassed;
+        bValue = b.examsPassed;
         break;
       case 'attendance':
-        aValue = a.attendance.present / a.attendance.totalDays || 0;
-        bValue = b.attendance.present / b.attendance.totalDays || 0;
+        aValue = 0; // Attendance not available in simplified interface
+        bValue = 0;
         break;
       case 'score':
-        aValue = a.progress.averageScore;
-        bValue = b.progress.averageScore;
+        aValue = a.examsPassed; // Use examsPassed as score proxy
+        bValue = b.examsPassed;
         break;
       default:
         aValue = a.name;
@@ -839,7 +839,7 @@ export default function AdminDashboard() {
                     >
                       <option value="name">Name</option>
                       <option value="email">Email</option>
-                      <option value="enrollmentDate">Enrollment</option>
+                      <option value="joinDate">Join Date</option>
                       <option value="progress">Progress</option>
                       <option value="attendance">Attendance</option>
                       <option value="score">Score</option>

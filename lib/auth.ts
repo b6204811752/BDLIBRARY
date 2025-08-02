@@ -174,6 +174,9 @@ function getAuthData(): AuthData {
   return defaultAuthData;
 }
 
+// Export getAuthData for backward compatibility
+export { getAuthData };
+
 // Session management functions
 export function getCurrentUser(): { type: 'student' | 'admin' | null; data: Student | Admin | null } {
   if (typeof window !== 'undefined') {
