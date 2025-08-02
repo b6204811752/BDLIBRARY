@@ -1224,10 +1224,11 @@ export default function AdminDashboard() {
 
         {/* Add Student Modal */}
         {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Student</h3>
-              <form onSubmit={handleAddStudent} className="space-y-4">
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto mx-4">
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Student</h3>
+                <form onSubmit={handleAddStudent} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
                   <input
@@ -1626,6 +1627,256 @@ export default function AdminDashboard() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Exam Modal */}
+        {showExamModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Add Exam Result</h3>
+              <form onSubmit={handleAddExamResult} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
+                  <select
+                    value={examData.studentId}
+                    onChange={(e) => setExamData({ ...examData, studentId: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="">Select Student</option>
+                    {students.map(student => (
+                      <option key={student.id} value={student.id}>{student.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Exam Name</label>
+                  <input
+                    type="text"
+                    value={examData.examName}
+                    onChange={(e) => setExamData({ ...examData, examName: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Total Marks</label>
+                    <input
+                      type="number"
+                      value={examData.totalMarks}
+                      onChange={(e) => setExamData({ ...examData, totalMarks: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Obtained Marks</label>
+                    <input
+                      type="number"
+                      value={examData.obtainedMarks}
+                      onChange={(e) => setExamData({ ...examData, obtainedMarks: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowExamModal(false)}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Add Result
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Counseling Modal */}
+        {showCounselingModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Add Counseling Session</h3>
+              <form onSubmit={handleAddCounselingSession} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
+                  <select
+                    value={counselingData.studentId}
+                    onChange={(e) => setCounselingData({ ...counselingData, studentId: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="">Select Student</option>
+                    {students.map(student => (
+                      <option key={student.id} value={student.id}>{student.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Counselor</label>
+                  <input
+                    type="text"
+                    value={counselingData.counselor}
+                    onChange={(e) => setCounselingData({ ...counselingData, counselor: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Topic</label>
+                  <input
+                    type="text"
+                    value={counselingData.topic}
+                    onChange={(e) => setCounselingData({ ...counselingData, topic: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                  <textarea
+                    value={counselingData.notes}
+                    onChange={(e) => setCounselingData({ ...counselingData, notes: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Next Session Date</label>
+                  <input
+                    type="date"
+                    value={counselingData.nextSession}
+                    onChange={(e) => setCounselingData({ ...counselingData, nextSession: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowCounselingModal(false)}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Add Session
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Certificate Modal */}
+        {showCertificateModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Issue Certificate</h3>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const studentId = (e.target as any).studentId.value;
+                const certificateType = (e.target as any).certificateType.value;
+                if (studentId && certificateType) {
+                  issueCertificate(studentId, {
+                    type: certificateType,
+                    issueDate: new Date().toISOString().split('T')[0],
+                    issuedBy: 'BD Library GOH'
+                  });
+                  setShowCertificateModal(false);
+                  loadData();
+                }
+              }} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
+                  <select
+                    name="studentId"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="">Select Student</option>
+                    {students.map(student => (
+                      <option key={student.id} value={student.id}>{student.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Certificate Type</label>
+                  <select
+                    name="certificateType"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="">Select Type</option>
+                    <option value="completion">Course Completion</option>
+                    <option value="participation">Participation</option>
+                    <option value="achievement">Achievement</option>
+                    <option value="excellence">Excellence</option>
+                  </select>
+                </div>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowCertificateModal(false)}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Issue Certificate
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Export Modal */}
+        {showExportModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Export Student Data</h3>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">Choose the format to export student data:</p>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => handleExport('csv')}
+                    className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <i className="ri-file-text-line"></i>
+                    <span>Export as CSV</span>
+                  </button>
+                  <button
+                    onClick={() => handleExport('json')}
+                    className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <i className="ri-code-line"></i>
+                    <span>Export as JSON</span>
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowExportModal(false)}
+                  className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}
