@@ -54,6 +54,51 @@ export const defaultAuthData: AuthData = {
       examsPassed: 2,
       counselingBooked: false,
       joinDate: '2024-01-15'
+    },
+    {
+      id: 'student2',
+      name: 'Rajesh Kumar',
+      email: 'rajesh@email.com',
+      username: 'rajesh_kumar',
+      password: 'student123',
+      role: 'student',
+      course: 'Banking',
+      duration: 12,
+      monthlyFees: 4500,
+      libraryAccess: true,
+      examsPassed: 3,
+      counselingBooked: true,
+      joinDate: '2024-02-01'
+    },
+    {
+      id: 'student3',
+      name: 'Priya Sharma',
+      email: 'priya@email.com',
+      username: 'priya_sharma',
+      password: 'student123',
+      role: 'student',
+      course: 'SSC',
+      duration: 8,
+      monthlyFees: 3500,
+      libraryAccess: true,
+      examsPassed: 1,
+      counselingBooked: false,
+      joinDate: '2024-01-20'
+    },
+    {
+      id: 'student4',
+      name: 'Amit Singh',
+      email: 'amit@email.com',
+      username: 'amit_singh',
+      password: 'student123',
+      role: 'student',
+      course: 'Railway',
+      duration: 10,
+      monthlyFees: 4000,
+      libraryAccess: true,
+      examsPassed: 4,
+      counselingBooked: true,
+      joinDate: '2024-01-10'
     }
   ],
   announcements: []

@@ -38,22 +38,21 @@ export default function Login() {
     try {
       if (userType === 'student') {
         const email = formData.email.trim();
-        const mobile = formData.mobile.trim();
         
-        if (!email || !mobile) {
-          setError('Please enter both email and mobile number');
+        if (!email) {
+          setError('Please enter your email address');
           setLoading(false);
           return;
         }
         
-        const student = await authenticateStudent(email, mobile);
+        const student = await authenticateStudent(email, '');
         if (student) {
           setCurrentUser('student', student);
           setLoading(false);
           window.location.href = '/student';
           return;
         } else {
-          setError('Invalid email or mobile number. Please check the demo credentials below.');
+          setError('Invalid email address. Please check the demo credentials below.');
           setLoading(false);
           return;
         }
@@ -230,9 +229,10 @@ export default function Login() {
                 <div className="mt-4 p-3 bg-blue-50 rounded-md">
                   <p className="text-sm font-medium text-blue-800">Demo Student Credentials:</p>
                   <div className="space-y-1 mt-2">
-                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Mobile: 9065541346</p>
-                    <p className="text-xs text-blue-600">Email: priya@email.com | Mobile: 9876543211</p>
-                    <p className="text-xs text-blue-600">Email: amit@email.com | Mobile: 9876543212</p>
+                    <p className="text-xs text-blue-600">Email: rajesh@email.com</p>
+                    <p className="text-xs text-blue-600">Email: priya@email.com</p>
+                    <p className="text-xs text-blue-600">Email: amit@email.com</p>
+                    <p className="text-xs text-blue-600">Email: john@example.com</p>
                   </div>
                 </div>
               </div>
