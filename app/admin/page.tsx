@@ -11,7 +11,8 @@ import {
   addStudent, 
   deleteStudent, 
   updateStudent,
-  Student, 
+  Student,
+  Admin, 
   updateStudentProgress,
   subscribeToDataChanges,
   getAnalytics,
@@ -97,13 +98,6 @@ interface FinancialAnalytics {
   defaulters: Student[];
 }
 
-interface CurrentUser {
-  id: string;
-  username: string;
-  lastLogin: string;
-  permissions: string[];
-}
-
 interface Announcement {
   id: string;
   title: string;
@@ -132,7 +126,7 @@ interface NewAnnouncement {
 }
 
 export default function AdminDashboard() {
-  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<Admin | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
@@ -234,7 +228,8 @@ export default function AdminDashboard() {
       router.push('/login');
       return;
     }
-    setCurrentUser(user.data);
+    // Type assertion since we already checked user.type === 'admin'
+    setCurrentUser(user.data as Admin);
     loadData();
     setLoading(false);
 
