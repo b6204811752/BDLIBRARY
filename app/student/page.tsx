@@ -115,6 +115,27 @@ export default function StudentDashboard() {
     }
   };
 
+  const handleTestComplete = (score: number, totalMarks: number) => {
+    if (currentUser) {
+      const percentage = (score / totalMarks) * 100;
+      const newProgress = {
+        testsCompleted: (currentUser.progress?.testsCompleted || 0) + 1,
+        totalPoints: (currentUser.progress?.totalPoints || 0) + score,
+        currentStreak: (currentUser.progress?.currentStreak || 0) + 1,
+        averageScore: percentage
+      };
+
+      updateStudentProgress(currentUser.id, newProgress);
+      setCurrentUser({
+        ...currentUser,
+        progress: {
+          ...currentUser.progress,
+          ...newProgress
+        }
+      });
+    }
+  };
+
   const handleMarkNotificationAsRead = (notificationId: string) => {
     if (currentUser) {
       markNotificationAsRead(currentUser.id, notificationId);
@@ -866,68 +887,10 @@ export default function StudentDashboard() {
 
         {/* Practice Tests Tab */}
         {activeTab === 'tests' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Practice Tests</h2>
-                <div className="text-sm text-gray-500">
-                  Completed: {currentUser.progress?.testsCompleted || 0} | Average: {currentUser.progress?.averageScore || 0}%
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { name: 'Mock Test 1', questions: 100, duration: '2 hours', difficulty: 'Easy', completed: true, score: 85 },
-                  { name: 'Mock Test 2', questions: 150, duration: '3 hours', difficulty: 'Medium', completed: true, score: 78 },
-                  { name: 'Mock Test 3', questions: 200, duration: '4 hours', difficulty: 'Hard', completed: false, score: null },
-                  { name: 'Previous Year Paper 1', questions: 100, duration: '2 hours', difficulty: 'Medium', completed: true, score: 92 },
-                  { name: 'Previous Year Paper 2', questions: 100, duration: '2 hours', difficulty: 'Medium', completed: false, score: null },
-                  { name: 'Sectional Test - Math', questions: 50, duration: '1 hour', difficulty: 'Easy', completed: true, score: 88 }
-                ].map((test, index) => (
-                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium text-gray-900">{test.name}</h3>
-                      {test.completed && (
-                        <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                          {test.score}%
-                        </span>
-                      )}
-                    </div>
-                    <div className="space-y-1 text-sm text-gray-600 mb-3">
-                      <p>Questions: {test.questions}</p>
-                      <p>Duration: {test.duration}</p>
-                      <p>Difficulty: <span
-                        className={`font-medium ${
-                          test.difficulty === 'Easy' ? 'text-green-600' :
-                            test.difficulty === 'Medium' ? 'text-yellow-600' :
-                              'text-red-600'
-                        }`}
-                      >
-                        {test.difficulty}
-                      </span></p>
-                    </div>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={handleTakeTest}
-                        className={`flex-1 py-2 px-4 rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                          test.completed
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-green-600 text-white hover:bg-green-700'
-                        }`}
-                      >
-                        {test.completed ? 'Retake' : 'Take Test'}
-                      </button>
-                      {test.completed && (
-                        <button className="bg-gray-100 text-gray-600 px-3 py-2 rounded-md hover:bg-gray-200 cursor-pointer">
-                          <i className="ri-eye-line"></i>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <PracticeTest
+            currentUser={currentUser}
+            onTestComplete={handleTestComplete}
+          />
         )}
 
         {/* Progress Tab */}
