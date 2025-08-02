@@ -75,9 +75,15 @@ export default function AdminDashboard() {
 
   const [bulkStudents, setBulkStudents] = useState('');
   const [announcements, setAnnouncements] = useState<any>([]);
-  const [newAnnouncement, setNewAnnouncement] = useState({ 
-    title: '', 
-    message: '', 
+  const [newAnnouncement, setNewAnnouncement] = useState<{
+    title: string;
+    message: string;
+    priority: 'medium' | 'low' | 'high';
+    targetAudience: string;
+    expiryDate: string;
+  }>({
+    title: '',
+    message: '',
     priority: 'medium',
     targetAudience: 'all',
     expiryDate: ''
@@ -256,9 +262,9 @@ export default function AdminDashboard() {
       ...newAnnouncement,
       author: 'Admin'
     });
-    setNewAnnouncement({ 
-      title: '', 
-      message: '', 
+    setNewAnnouncement({
+      title: '',
+      message: '',
       priority: 'medium',
       targetAudience: 'all',
       expiryDate: ''
