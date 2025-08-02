@@ -12,7 +12,8 @@ import {
   deleteStudent, 
   updateStudent,
   Student,
-  Admin, 
+  Admin,
+  Announcement, 
   updateStudentProgress,
   subscribeToDataChanges,
   getAnalytics,
@@ -96,17 +97,6 @@ interface FinancialAnalytics {
     };
   };
   defaulters: Student[];
-}
-
-interface Announcement {
-  id: string;
-  title: string;
-  message: string;
-  priority: 'low' | 'medium' | 'high';
-  date: string;
-  author: string;
-  targetAudience: string;
-  expiryDate?: string;
 }
 
 interface NewStudent {
