@@ -57,13 +57,21 @@ export default function StudentDashboard() {
     const user = getCurrentUser();
     if (user.data) {
       setCurrentUser(user.data);
-      // Ensure notifications is always an array
-      setNotifications(user.data.notifications || []);
+      // Ensure notifications is always an array - only for students
+      if ('notifications' in user.data) {
+        setNotifications(user.data.notifications || []);
+      } else {
+        setNotifications([]);
+      }
 
       // Load announcements
       const authData = getAuthData();
       const relevantAnnouncements = (authData.announcements || []).filter(
-        (ann: any) => ann.targetAudience === 'all' || ann.targetAudience === user.data.shift
+        (ann: any) => {
+          if (!user.data) return false;
+          return ann.targetAudience === 'all' || 
+                 ('shift' in user.data && ann.targetAudience === user.data.shift);
+        }
       );
       setAnnouncements(relevantAnnouncements);
     }
