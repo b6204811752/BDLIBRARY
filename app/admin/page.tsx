@@ -105,9 +105,7 @@ interface NewStudent {
   mobile: string;
   shift: 'morning' | 'afternoon' | 'evening';
   jobCategory: string;
-  courseFee: number;
-  discountAmount: number;
-  paidAmount: number;
+  monthlyFee: number;
 }
 
 interface NewAnnouncement {
@@ -154,9 +152,7 @@ export default function AdminDashboard() {
     mobile: '',
     shift: 'morning',
     jobCategory: 'Banking',
-    courseFee: 5000,
-    discountAmount: 0,
-    paidAmount: 0
+    monthlyFee: 1000
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
@@ -304,36 +300,21 @@ export default function AdminDashboard() {
     }
     
     try {
-      // Calculate fee structure
-      const totalFee = newStudent.courseFee - newStudent.discountAmount;
-      const dueAmount = Math.max(0, totalFee - newStudent.paidAmount);
-      
+      // Use a simple monthly fee structure
       const student = addStudent({
         ...newStudent,
         enrollmentDate: new Date().toISOString().split('T')[0],
         fees: {
-          courseFee: newStudent.courseFee,
-          totalFee: totalFee,
-          paidAmount: newStudent.paidAmount,
-          dueAmount: dueAmount,
+          courseFee: newStudent.monthlyFee * 6, // Default 6 months
+          monthlyFee: newStudent.monthlyFee,
+          courseDurationMonths: 6,
+          feeType: 'monthly',
+          totalFee: newStudent.monthlyFee * 6,
+          paidAmount: 0,
+          dueAmount: newStudent.monthlyFee * 6,
           installments: [],
-          paymentHistory: newStudent.paidAmount > 0 ? [{
-            id: Date.now().toString(),
-            amount: newStudent.paidAmount,
-            date: new Date().toISOString().split('T')[0],
-            method: 'cash',
-            transactionId: '',
-            receiptNo: '',
-            description: 'Initial payment during registration'
-          }] : [],
-          discounts: newStudent.discountAmount > 0 ? [{
-            id: Date.now().toString(),
-            type: 'fixed',
-            value: newStudent.discountAmount,
-            reason: 'Registration discount',
-            appliedDate: new Date().toISOString().split('T')[0],
-            appliedBy: 'admin'
-          }] : [],
+          paymentHistory: [],
+          discounts: [],
         },
         library: {
           booksIssued: [],
@@ -354,9 +335,7 @@ export default function AdminDashboard() {
         mobile: '',
         shift: 'morning',
         jobCategory: 'Banking',
-        courseFee: 5000,
-        discountAmount: 0,
-        paidAmount: 0
+        monthlyFee: 1000
       });
       
       setShowAddModal(false);
@@ -1322,46 +1301,20 @@ export default function AdminDashboard() {
                 <div className="bg-gray-50 p-4 rounded-lg border">
                   <h4 className="text-md font-semibold text-gray-800 mb-3 flex items-center">
                     <i className="ri-money-rupee-circle-line mr-2 text-green-600"></i>
-                    Fee Structure
+                    Monthly Fee Structure
                   </h4>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Course Fee (₹) *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Fee (₹) *</label>
                       <input
                         type="number"
-                        value={newStudent.courseFee}
-                        onChange={(e) => setNewStudent({ ...newStudent, courseFee: parseInt(e.target.value) || 0 })}
+                        value={newStudent.monthlyFee}
+                        onChange={(e) => setNewStudent({ ...newStudent, monthlyFee: parseInt(e.target.value) || 0 })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter course fee"
+                        placeholder="Enter monthly fee"
                         min="0"
                         required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Discount Amount (₹)</label>
-                      <input
-                        type="number"
-                        value={newStudent.discountAmount}
-                        onChange={(e) => setNewStudent({ ...newStudent, discountAmount: parseInt(e.target.value) || 0 })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter discount amount"
-                        min="0"
-                        max={newStudent.courseFee}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Initial Payment (₹)</label>
-                      <input
-                        type="number"
-                        value={newStudent.paidAmount}
-                        onChange={(e) => setNewStudent({ ...newStudent, paidAmount: parseInt(e.target.value) || 0 })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter initial payment"
-                        min="0"
-                        max={newStudent.courseFee - newStudent.discountAmount}
                       />
                     </div>
                     
@@ -1369,24 +1322,16 @@ export default function AdminDashboard() {
                       <div className="bg-white p-3 rounded border">
                         <div className="text-sm space-y-1">
                           <div className="flex justify-between">
-                            <span className="text-gray-600">Course Fee:</span>
-                            <span className="font-medium">₹{newStudent.courseFee.toLocaleString()}</span>
+                            <span className="text-gray-600">Monthly Fee:</span>
+                            <span className="font-medium">₹{newStudent.monthlyFee.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-600">Discount:</span>
-                            <span className="font-medium text-orange-600">-₹{newStudent.discountAmount.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Total Fee:</span>
-                            <span className="font-medium">₹{(newStudent.courseFee - newStudent.discountAmount).toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Paid Amount:</span>
-                            <span className="font-medium text-green-600">₹{newStudent.paidAmount.toLocaleString()}</span>
+                            <span className="text-gray-600">Payment Type:</span>
+                            <span className="font-medium text-blue-600">Monthly</span>
                           </div>
                           <div className="flex justify-between border-t pt-1">
-                            <span className="text-gray-700 font-medium">Due Amount:</span>
-                            <span className="font-bold text-red-600">₹{Math.max(0, newStudent.courseFee - newStudent.discountAmount - newStudent.paidAmount).toLocaleString()}</span>
+                            <span className="text-gray-700 font-medium">Default Duration:</span>
+                            <span className="font-medium text-green-600">6 Months</span>
                           </div>
                         </div>
                       </div>
@@ -1400,10 +1345,11 @@ export default function AdminDashboard() {
                     Student Information
                   </p>
                   <ul className="text-xs text-blue-600 space-y-1">
-                    <li>• Fee structure can be customized before registration</li>
+                    <li>• Monthly fee structure will be applied</li>
                     <li>• Student will receive login credentials via email</li>
                     <li>• Enrollment date: {new Date().toLocaleDateString()}</li>
                     <li>• Payment history will be automatically tracked</li>
+                    <li>• Monthly payments will be tracked automatically</li>
                   </ul>
                 </div>
                 
@@ -1418,9 +1364,7 @@ export default function AdminDashboard() {
                         mobile: '',
                         shift: 'morning',
                         jobCategory: 'Banking',
-                        courseFee: 5000,
-                        discountAmount: 0,
-                        paidAmount: 0
+                        monthlyFee: 1000
                       });
                     }}
                     className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"

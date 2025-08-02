@@ -46,6 +46,9 @@ export interface Student {
     totalFee: number;
     paidAmount: number;
     dueAmount: number;
+    monthlyFee?: number;
+    courseDurationMonths?: number;
+    feeType?: 'one-time' | 'monthly';
     installments: {
       id: string;
       amount: number;
