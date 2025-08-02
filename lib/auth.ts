@@ -223,9 +223,15 @@ export async function deleteStudent(studentId: string): Promise<boolean> {
 // Legacy localStorage functions for backward compatibility (will be removed)
 function getAuthData(): AuthData {
   if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('authData');
-    if (stored) {
-      return JSON.parse(stored);
+    try {
+      const stored = localStorage.getItem('authData');
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.error('Error parsing auth data:', error);
+      // Clear corrupted data
+      localStorage.removeItem('authData');
     }
   }
   return defaultAuthData;
@@ -237,9 +243,15 @@ export { getAuthData };
 // Session management functions
 export function getCurrentUser(): { type: 'student' | 'admin' | null; data: Student | Admin | null } {
   if (typeof window !== 'undefined') {
-    const current = localStorage.getItem('currentUser');
-    if (current) {
-      return JSON.parse(current);
+    try {
+      const current = localStorage.getItem('currentUser');
+      if (current) {
+        return JSON.parse(current);
+      }
+    } catch (error) {
+      console.error('Error parsing current user data:', error);
+      // Clear corrupted data
+      localStorage.removeItem('currentUser');
     }
   }
   return { type: null, data: null };
@@ -247,7 +259,11 @@ export function getCurrentUser(): { type: 'student' | 'admin' | null; data: Stud
 
 export function setCurrentUser(type: 'student' | 'admin', data: Student | Admin): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('currentUser', JSON.stringify({ type, data }));
+    try {
+      localStorage.setItem('currentUser', JSON.stringify({ type, data }));
+    } catch (error) {
+      console.error('Error setting current user data:', error);
+    }
   }
 }
 
