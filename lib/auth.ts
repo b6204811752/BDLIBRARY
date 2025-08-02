@@ -26,6 +26,7 @@ export interface Admin {
 export interface AuthData {
   admins: Admin[];
   students: Student[];
+  announcements?: any[];
 }
 
 // Default data when file doesn't exist
@@ -54,7 +55,8 @@ export const defaultAuthData: AuthData = {
       counselingBooked: false,
       joinDate: '2024-01-15'
     }
-  ]
+  ],
+  announcements: []
 };
 
 // API-based data functions for persistent file storage
