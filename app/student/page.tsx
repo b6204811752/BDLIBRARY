@@ -1,9 +1,6 @@
 'use client';
 
-import React from 'react';
-'use client';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -31,9 +28,7 @@ export default function StudentDashboard() {
     if (!user.type || user.type !== 'student') {
       router.push('/login');
       return;
-
-'use client';
-import React from 'react';
+    }
 
     // Subscribe to real-time updates
     const unsubscribe = subscribeToDataChanges(() => {
