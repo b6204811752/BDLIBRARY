@@ -105,6 +105,9 @@ interface NewStudent {
   mobile: string;
   shift: 'morning' | 'afternoon' | 'evening';
   jobCategory: string;
+  courseFee: number;
+  discountAmount: number;
+  paidAmount: number;
 }
 
 interface NewAnnouncement {
@@ -150,7 +153,10 @@ export default function AdminDashboard() {
     email: '',
     mobile: '',
     shift: 'morning',
-    jobCategory: 'Banking'
+    jobCategory: 'Banking',
+    courseFee: 5000,
+    discountAmount: 0,
+    paidAmount: 0
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
@@ -263,18 +269,71 @@ export default function AdminDashboard() {
 
   const handleAddStudent = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!newStudent.name.trim() || !newStudent.email.trim() || !newStudent.mobile.trim()) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newStudent.email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+    
+    // Mobile validation
+    if (newStudent.mobile.length !== 10 || !/^\d+$/.test(newStudent.mobile)) {
+      alert('Please enter a valid 10-digit mobile number');
+      return;
+    }
+    
+    // Check if email already exists
+    const existingEmailStudent = students.find(s => s.email.toLowerCase() === newStudent.email.toLowerCase());
+    if (existingEmailStudent) {
+      alert('A student with this email already exists');
+      return;
+    }
+    
+    // Check if mobile already exists
+    const existingMobileStudent = students.find(s => s.mobile === newStudent.mobile);
+    if (existingMobileStudent) {
+      alert('A student with this mobile number already exists');
+      return;
+    }
+    
     try {
+      // Calculate fee structure
+      const totalFee = newStudent.courseFee - newStudent.discountAmount;
+      const dueAmount = Math.max(0, totalFee - newStudent.paidAmount);
+      
       const student = addStudent({
         ...newStudent,
         enrollmentDate: new Date().toISOString().split('T')[0],
         fees: {
-          courseFee: 0,
-          totalFee: 0,
-          paidAmount: 0,
-          dueAmount: 0,
+          courseFee: newStudent.courseFee,
+          totalFee: totalFee,
+          paidAmount: newStudent.paidAmount,
+          dueAmount: dueAmount,
           installments: [],
-          paymentHistory: [],
-          discounts: [],
+          paymentHistory: newStudent.paidAmount > 0 ? [{
+            id: Date.now().toString(),
+            amount: newStudent.paidAmount,
+            date: new Date().toISOString().split('T')[0],
+            method: 'cash',
+            transactionId: '',
+            receiptNo: '',
+            description: 'Initial payment during registration'
+          }] : [],
+          discounts: newStudent.discountAmount > 0 ? [{
+            id: Date.now().toString(),
+            type: 'fixed',
+            value: newStudent.discountAmount,
+            reason: 'Registration discount',
+            appliedDate: new Date().toISOString().split('T')[0],
+            appliedBy: 'admin'
+          }] : [],
         },
         library: {
           booksIssued: [],
@@ -288,17 +347,27 @@ export default function AdminDashboard() {
         certificates: [],
       });
 
+      // Reset form
       setNewStudent({
         name: '',
         email: '',
         mobile: '',
         shift: 'morning',
-        jobCategory: 'Banking'
+        jobCategory: 'Banking',
+        courseFee: 5000,
+        discountAmount: 0,
+        paidAmount: 0
       });
+      
       setShowAddModal(false);
       loadData();
+      
+      // Success message
+      alert(`Student "${student.name}" has been successfully added to the system!`);
+      
     } catch (error) {
       console.error('Error adding student:', error);
+      alert('Failed to add student. Please try again.');
     }
   };
 
@@ -1170,6 +1239,202 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Student Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Student</h3>
+              <form onSubmit={handleAddStudent} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    value={newStudent.name}
+                    onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter student's full name"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    value={newStudent.email}
+                    onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
+                  <input
+                    type="tel"
+                    value={newStudent.mobile}
+                    onChange={(e) => setNewStudent({ ...newStudent, mobile: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter mobile number"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Study Shift *</label>
+                  <select
+                    value={newStudent.shift}
+                    onChange={(e) => setNewStudent({ ...newStudent, shift: e.target.value as 'morning' | 'afternoon' | 'evening' })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="morning">Morning (6:00 AM - 12:00 PM)</option>
+                    <option value="afternoon">Afternoon (12:00 PM - 6:00 PM)</option>
+                    <option value="evening">Evening (6:00 PM - 10:00 PM)</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Category *</label>
+                  <select
+                    value={newStudent.jobCategory}
+                    onChange={(e) => setNewStudent({ ...newStudent, jobCategory: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    required
+                  >
+                    <option value="Banking">Banking</option>
+                    <option value="SSC">SSC</option>
+                    <option value="Railway">Railway</option>
+                    <option value="UPSC">UPSC</option>
+                    <option value="State">State Government</option>
+                    <option value="Defense">Defense</option>
+                  </select>
+                </div>
+                
+                {/* Fee Structure Section */}
+                <div className="bg-gray-50 p-4 rounded-lg border">
+                  <h4 className="text-md font-semibold text-gray-800 mb-3 flex items-center">
+                    <i className="ri-money-rupee-circle-line mr-2 text-green-600"></i>
+                    Fee Structure
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Course Fee (₹) *</label>
+                      <input
+                        type="number"
+                        value={newStudent.courseFee}
+                        onChange={(e) => setNewStudent({ ...newStudent, courseFee: parseInt(e.target.value) || 0 })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter course fee"
+                        min="0"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Discount Amount (₹)</label>
+                      <input
+                        type="number"
+                        value={newStudent.discountAmount}
+                        onChange={(e) => setNewStudent({ ...newStudent, discountAmount: parseInt(e.target.value) || 0 })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter discount amount"
+                        min="0"
+                        max={newStudent.courseFee}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Initial Payment (₹)</label>
+                      <input
+                        type="number"
+                        value={newStudent.paidAmount}
+                        onChange={(e) => setNewStudent({ ...newStudent, paidAmount: parseInt(e.target.value) || 0 })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter initial payment"
+                        min="0"
+                        max={newStudent.courseFee - newStudent.discountAmount}
+                      />
+                    </div>
+                    
+                    <div className="flex flex-col justify-end">
+                      <div className="bg-white p-3 rounded border">
+                        <div className="text-sm space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Course Fee:</span>
+                            <span className="font-medium">₹{newStudent.courseFee.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Discount:</span>
+                            <span className="font-medium text-orange-600">-₹{newStudent.discountAmount.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Total Fee:</span>
+                            <span className="font-medium">₹{(newStudent.courseFee - newStudent.discountAmount).toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Paid Amount:</span>
+                            <span className="font-medium text-green-600">₹{newStudent.paidAmount.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between border-t pt-1">
+                            <span className="text-gray-700 font-medium">Due Amount:</span>
+                            <span className="font-bold text-red-600">₹{Math.max(0, newStudent.courseFee - newStudent.discountAmount - newStudent.paidAmount).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-blue-50 p-3 rounded-md">
+                  <p className="text-sm text-blue-700 mb-2">
+                    <i className="ri-information-line mr-2"></i>
+                    Student Information
+                  </p>
+                  <ul className="text-xs text-blue-600 space-y-1">
+                    <li>• Fee structure can be customized before registration</li>
+                    <li>• Student will receive login credentials via email</li>
+                    <li>• Enrollment date: {new Date().toLocaleDateString()}</li>
+                    <li>• Payment history will be automatically tracked</li>
+                  </ul>
+                </div>
+                
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setNewStudent({
+                        name: '',
+                        email: '',
+                        mobile: '',
+                        shift: 'morning',
+                        jobCategory: 'Banking',
+                        courseFee: 5000,
+                        discountAmount: 0,
+                        paidAmount: 0
+                      });
+                    }}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    Add Student
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
