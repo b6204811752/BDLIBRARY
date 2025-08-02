@@ -43,6 +43,46 @@ export default function Home() {
       icon: 'ri-trophy-line',
       title: 'Success Stories',
       description: 'Join thousands of successful candidates who cleared their exams with our guidance'
+    },
+    {
+      icon: 'ri-wifi-line',
+      title: 'High Speed WiFi',
+      description: 'Stay connected with unlimited high-speed internet access for online research and study'
+    },
+    {
+      icon: 'ri-temp-cold-line',
+      title: 'Fully AC Conditioned',
+      description: 'Comfortable study environment with centralized air conditioning throughout the facility'
+    },
+    {
+      icon: 'ri-newspaper-line',
+      title: 'Daily Newspapers',
+      description: 'Stay updated with current affairs through complimentary daily newspapers and magazines'
+    },
+    {
+      icon: 'ri-camera-line',
+      title: 'CCTV Surveillance',
+      description: 'Complete security with 24/7 CCTV monitoring for a safe and secure learning environment'
+    },
+    {
+      icon: 'ri-computer-line',
+      title: 'Online/Offline Test Series',
+      description: 'Comprehensive test series available both online and offline to suit your preference'
+    },
+    {
+      icon: 'ri-time-line',
+      title: '24×7 Open Access',
+      description: 'Round-the-clock access for both girls and boys with separate study areas and facilities'
+    },
+    {
+      icon: 'ri-drop-line',
+      title: 'RO Drinking Water',
+      description: 'Pure and safe drinking water available through advanced RO filtration system'
+    },
+    {
+      icon: 'ri-volume-mute-line',
+      title: 'Silent Environment',
+      description: 'Peaceful and distraction-free study atmosphere designed for maximum concentration'
     }
   ];
 
