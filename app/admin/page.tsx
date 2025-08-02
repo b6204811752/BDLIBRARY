@@ -1410,6 +1410,7 @@ export default function AdminDashboard() {
                       setNewStudent({
                         name: '',
                         email: '',
+                        mobile: '',
                         username: '',
                         password: '',
                         course: '',
