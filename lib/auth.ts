@@ -170,7 +170,7 @@ const defaultAuthData: AuthData = {
       id: '1',
       name: 'Rajesh Kumar',
       email: 'rajesh@email.com',
-      mobile: '9876543210',
+      mobile: '9065541346',
       shift: 'morning',
       jobCategory: 'Banking',
       enrollmentDate: '2024-01-15',

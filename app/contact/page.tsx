@@ -37,13 +37,13 @@ export default function Contact() {
     {
       icon: 'ri-map-pin-line',
       title: 'Address',
-      details: '123 Education Street, College Para, Kolkata, West Bengal 700012',
+      details: 'Goh,Aurangabad,Bihar , West Bengal 700012',
       color: 'bg-blue-100 text-blue-600'
     },
     {
       icon: 'ri-phone-line',
       title: 'Phone',
-      details: '+91 9876543210',
+      details: '+91 9065541346',
       color: 'bg-green-100 text-green-600'
     },
     {
@@ -63,8 +63,8 @@ export default function Contact() {
   const branches = [
     {
       name: 'Main Branch',
-      address: '123 Education Street, College Para, Kolkata',
-      phone: '+91 9876543210',
+      address: 'Goh,Aurangabad,Bihar ',
+      phone: '+91 9065541346',
       timing: '6:00 AM - 10:00 PM'
     },
     {
@@ -348,7 +348,7 @@ export default function Contact() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
-              href="tel:+919876543210"
+              href="tel:+919065541346"
               className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap cursor-pointer"
             >
               Call Now

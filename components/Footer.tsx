@@ -46,11 +46,11 @@ export default function Footer() {
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center space-x-2">
                 <i className="ri-map-pin-line w-4 h-4 flex items-center justify-center"></i>
-                <span>123 Education Street, Kolkata, West Bengal</span>
+                <span>Goh,Aurangabad,Bihar 824203</span>
               </div>
               <div className="flex items-center space-x-2">
                 <i className="ri-phone-line w-4 h-4 flex items-center justify-center"></i>
-                <span>+91 9876543210</span>
+                <span>+91 9065541346</span>
               </div>
               <div className="flex items-center space-x-2">
                 <i className="ri-mail-line w-4 h-4 flex items-center justify-center"></i>

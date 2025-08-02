@@ -230,7 +230,7 @@ export default function Login() {
                 <div className="mt-4 p-3 bg-blue-50 rounded-md">
                   <p className="text-sm font-medium text-blue-800">Demo Student Credentials:</p>
                   <div className="space-y-1 mt-2">
-                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Mobile: 9876543210</p>
+                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Mobile: 9065541346</p>
                     <p className="text-xs text-blue-600">Email: priya@email.com | Mobile: 9876543211</p>
                     <p className="text-xs text-blue-600">Email: amit@email.com | Mobile: 9876543212</p>
                   </div>
