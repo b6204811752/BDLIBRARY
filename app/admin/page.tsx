@@ -53,7 +53,125 @@ interface RealTimeStats {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ...all tab/modal JSX and content here, as in previous return... */}
+        {/* Navigation Tabs and all tab/modal JSX must be inside this div */}
+        {/* Navigation Tabs */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8">
+              {[ 
+                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
+                { id: 'students', label: 'Students', icon: 'ri-user-line' },
+                { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-line' },
+                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-line' },
+                { id: 'reports', label: 'Reports', icon: 'ri-file-chart-line' },
+                { id: 'settings', label: 'Settings', icon: 'ri-settings-line' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <i className={tab.icon}></i>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && analytics && financialAnalytics && (
+          <div className="space-y-6">
+            {/* ...existing code for dashboard tab... */}
+          </div>
+        )}
+
+        {/* Students Tab */}
+        {activeTab === 'students' && (
+          <div className="space-y-6">
+            {/* ...existing code for students tab... */}
+          </div>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && analytics && financialAnalytics && (
+          <div className="space-y-6">
+            {/* ...existing code for analytics tab... */}
+          </div>
+        )}
+
+        {/* Announcements Tab */}
+        {activeTab === 'announcements' && (
+          <div className="space-y-6">
+            {/* ...existing code for announcements tab... */}
+          </div>
+        )}
+
+        {/* Reports Tab */}
+        {activeTab === 'reports' && (
+          <div className="space-y-6">
+            {/* ...existing code for reports tab... */}
+          </div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            {/* ...existing code for settings tab... */}
+          </div>
+        )}
+
+        {/* Modals */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50 p-4">
+            {/* ...existing code for add student modal... */}
+          </div>
+        )}
+        {showPaymentModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for payment modal... */}
+          </div>
+        )}
+        {showDiscountModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for discount modal... */}
+          </div>
+        )}
+        {showLibraryModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for library modal... */}
+          </div>
+        )}
+        {showExamModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for exam modal... */}
+          </div>
+        )}
+        {showCounselingModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for counseling modal... */}
+          </div>
+        )}
+        {showCertificateModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for certificate modal... */}
+          </div>
+        )}
+        {showExportModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for export modal... */}
+          </div>
+        )}
+        {showAnnouncementModal && (
+          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
+            {/* ...existing code for announcement modal... */}
+          </div>
+        )}
+
         <Footer />
       </div>
     </div>
