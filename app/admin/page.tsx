@@ -204,11 +204,11 @@ export default function AdminDashboard() {
       // Calculate total fee from monthly fees
       const monthlyFeesWithAmounts = newStudent.monthlyFees.slice(0, courseDurationMonths).map((fee, index) => ({
         ...fee,
-        amount: parseFloat(fee.amount) || 0,
+        amount: fee.amount, // Keep as string
         dueDate: fee.dueDate || new Date(new Date().setMonth(new Date().getMonth() + index + 1)).toISOString().split('T')[0]
       }));
       
-      const totalFee = monthlyFeesWithAmounts.reduce((sum, fee) => sum + fee.amount, 0);
+      const totalFee = monthlyFeesWithAmounts.reduce((sum, fee) => sum + (parseFloat(fee.amount) || 0), 0);
 
       const student = addStudent({
         name: newStudent.name,
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
           totalFee: totalFee,
           paidAmount: 0,
           dueAmount: totalFee,
-          monthlyFee: monthlyFeesWithAmounts.length > 0 ? monthlyFeesWithAmounts[0].amount : 0,
+          monthlyFee: monthlyFeesWithAmounts.length > 0 ? parseFloat(monthlyFeesWithAmounts[0].amount) || 0 : 0,
           courseDurationMonths: courseDurationMonths,
           feeType: 'monthly',
           monthlyFees: monthlyFeesWithAmounts,
@@ -1574,8 +1574,15 @@ export default function AdminDashboard() {
                         shift: 'morning',
                         jobCategory: 'Banking',
                         courseFee: '',
-                        feeType: 'one-time',
-                        courseDurationMonths: ''
+                        feeType: 'monthly',
+                        courseDurationMonths: '12',
+                        monthlyFees: Array.from({ length: 12 }, (_, i) => ({
+                          month: i + 1,
+                          monthName: new Date(2024, i, 1).toLocaleString('default', { month: 'long' }),
+                          amount: '',
+                          dueDate: '',
+                          status: 'pending' as 'pending' | 'paid' | 'overdue'
+                        }))
                       });
                     }}
                     className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
