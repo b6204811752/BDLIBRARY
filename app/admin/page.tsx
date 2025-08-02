@@ -96,6 +96,46 @@ export default function AdminDashboard() {
     newNotifications: 0
   });
 
+  // Payment, discount, library, exam, and counseling data states
+  const [paymentData, setPaymentData] = useState({
+    studentId: '',
+    amount: '',
+    method: 'cash' as 'cash' | 'card' | 'upi' | 'bank_transfer',
+    transactionId: '',
+    receiptNo: '',
+    description: ''
+  });
+
+  const [discountData, setDiscountData] = useState({
+    studentId: '',
+    type: 'percentage' as 'percentage' | 'fixed',
+    value: '',
+    reason: ''
+  });
+
+  const [libraryData, setLibraryData] = useState({
+    studentId: '',
+    bookName: '',
+    action: 'issue' as 'issue' | 'return',
+    bookId: ''
+  });
+
+  const [examData, setExamData] = useState({
+    studentId: '',
+    examName: '',
+    totalMarks: '',
+    obtainedMarks: '',
+    subjects: [{ name: '', marks: '', totalMarks: '' }]
+  });
+
+  const [counselingData, setCounselingData] = useState({
+    studentId: '',
+    counselor: '',
+    topic: '',
+    notes: '',
+    nextSession: ''
+  });
+
   const router = useRouter();
 
   useEffect(() => {
@@ -384,45 +424,6 @@ export default function AdminDashboard() {
   if (!currentUser) {
     return null;
   }
-
-  const [paymentData, setPaymentData] = useState({
-    studentId: '',
-    amount: '',
-    method: 'cash' as 'cash' | 'card' | 'upi' | 'bank_transfer',
-    transactionId: '',
-    receiptNo: '',
-    description: ''
-  });
-
-  const [discountData, setDiscountData] = useState({
-    studentId: '',
-    type: 'percentage' as 'percentage' | 'fixed',
-    value: '',
-    reason: ''
-  });
-
-  const [libraryData, setLibraryData] = useState({
-    studentId: '',
-    bookName: '',
-    action: 'issue' as 'issue' | 'return',
-    bookId: ''
-  });
-
-  const [examData, setExamData] = useState({
-    studentId: '',
-    examName: '',
-    totalMarks: '',
-    obtainedMarks: '',
-    subjects: [{ name: '', marks: '', totalMarks: '' }]
-  });
-
-  const [counselingData, setCounselingData] = useState({
-    studentId: '',
-    counselor: '',
-    topic: '',
-    notes: '',
-    nextSession: ''
-  });
 
   const handleAddPayment = (e: React.FormEvent) => {
     e.preventDefault();
