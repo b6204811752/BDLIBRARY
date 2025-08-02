@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -31,6 +31,67 @@ import {
   issueCertificate,
   getFinancialAnalytics
 } from '@/lib/auth';
+
+interface RealTimeStats {
+  onlineUsers: number;
+  activeTests: number;
+  newNotifications: number;
+}
+
+interface PaymentData {
+  studentId: string;
+  amount: string;
+  method: 'cash' | 'card' | 'upi' | 'bank_transfer';
+  transactionId: string;
+  receiptNo: string;
+  description: string;
+}
+
+interface DiscountData {
+  studentId: string;
+  type: 'percentage' | 'fixed';
+  value: string;
+  reason: string;
+}
+
+interface LibraryData {
+  studentId: string;
+  bookName: string;
+  action: 'issue' | 'return';
+  bookId: string;
+}
+
+interface ExamData {
+  studentId: string;
+  examName: string;
+  totalMarks: string;
+  obtainedMarks: string;
+  subjects: { name: string; marks: string; totalMarks: string }[];
+}
+
+interface CounselingData {
+  studentId: string;
+  counselor: string;
+  topic: string;
+  notes: string;
+  nextSession: string;
+}
+
+interface NewStudent {
+  name: string;
+  email: string;
+  mobile: string;
+  shift: 'morning' | 'afternoon' | 'evening';
+  jobCategory: string;
+}
+
+interface NewAnnouncement {
+  title: string;
+  message: string;
+  priority: string;
+  targetAudience: string;
+  expiryDate: string;
+}
 
 export default function AdminDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -62,17 +123,17 @@ export default function AdminDashboard() {
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const [newStudent, setNewStudent] = useState({
+  const [newStudent, setNewStudent] = useState<NewStudent>({
     name: '',
     email: '',
     mobile: '',
-    shift: 'morning' as 'morning' | 'afternoon' | 'evening',
+    shift: 'morning',
     jobCategory: 'Banking'
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
   const [announcements, setAnnouncements] = useState<any>([]);
-  const [newAnnouncement, setNewAnnouncement] = useState({ 
+  const [newAnnouncement, setNewAnnouncement] = useState<NewAnnouncement>({ 
     title: '', 
     message: '', 
     priority: 'medium',
@@ -81,10 +142,50 @@ export default function AdminDashboard() {
   });
 
   // Real-time updates
-  const [realTimeStats, setRealTimeStats] = useState({
+  const [realTimeStats, setRealTimeStats] = useState<RealTimeStats>({
     onlineUsers: 0,
     activeTests: 0,
     newNotifications: 0
+  });
+
+  // Payment and other modal data
+  const [paymentData, setPaymentData] = useState<PaymentData>({
+    studentId: '',
+    amount: '',
+    method: 'cash',
+    transactionId: '',
+    receiptNo: '',
+    description: ''
+  });
+
+  const [discountData, setDiscountData] = useState<DiscountData>({
+    studentId: '',
+    type: 'percentage',
+    value: '',
+    reason: ''
+  });
+
+  const [libraryData, setLibraryData] = useState<LibraryData>({
+    studentId: '',
+    bookName: '',
+    action: 'issue',
+    bookId: ''
+  });
+
+  const [examData, setExamData] = useState<ExamData>({
+    studentId: '',
+    examName: '',
+    totalMarks: '',
+    obtainedMarks: '',
+    subjects: [{ name: '', marks: '', totalMarks: '' }]
+  });
+
+  const [counselingData, setCounselingData] = useState<CounselingData>({
+    studentId: '',
+    counselor: '',
+    topic: '',
+    notes: '',
+    nextSession: ''
   });
 
   const router = useRouter();
@@ -106,7 +207,7 @@ export default function AdminDashboard() {
 
     // Simulate real-time stats
     const interval = setInterval(() => {
-      setRealTimeStats(prev => ({
+      setRealTimeStats((prev: RealTimeStats) => ({
         onlineUsers: Math.floor(Math.random() * 20) + 5,
         activeTests: Math.floor(Math.random() * 10) + 1,
         newNotifications: Math.floor(Math.random() * 5)
@@ -127,7 +228,7 @@ export default function AdminDashboard() {
     setFinancialAnalytics(getFinancialAnalytics());
 
     // Update real-time stats
-    setRealTimeStats(prev => ({
+    setRealTimeStats((prev: RealTimeStats) => ({
       ...prev,
       onlineUsers: authData.students.filter(s => {
         const lastLogin = new Date(s.progress.lastLogin);
@@ -142,7 +243,26 @@ export default function AdminDashboard() {
     try {
       const student = addStudent({
         ...newStudent,
-        enrollmentDate: new Date().toISOString().split('T')[0]
+        enrollmentDate: new Date().toISOString().split('T')[0],
+        fees: {
+          courseFee: 0,
+          totalFee: 0,
+          paidAmount: 0,
+          dueAmount: 0,
+          installments: [],
+          paymentHistory: [],
+          discounts: [],
+        },
+        library: {
+          booksIssued: [],
+          fines: [],
+        },
+        examHistory: [],
+        counseling: {
+          sessions: [],
+          careerGuidance: [],
+        },
+        certificates: [],
       });
 
       setNewStudent({
@@ -161,10 +281,10 @@ export default function AdminDashboard() {
 
   const handleBulkUpload = (e: React.FormEvent) => {
     e.preventDefault();
-    const lines = bulkStudents.split('\\n').filter(line => line.trim());
+    const lines = bulkStudents.split('\\n').filter((line: string) => line.trim());
 
-    lines.forEach(line => {
-      const [name, email, mobile, shift, jobCategory] = line.split(',').map(s => s.trim());
+    lines.forEach((line: string) => {
+      const [name, email, mobile, shift, jobCategory] = line.split(',').map((s: string) => s.trim());
       if (name && email && mobile && shift && jobCategory) {
         try {
           addStudent({
@@ -173,7 +293,26 @@ export default function AdminDashboard() {
             mobile,
             shift: shift as 'morning' | 'afternoon' | 'evening',
             jobCategory,
-            enrollmentDate: new Date().toISOString().split('T')[0]
+            enrollmentDate: new Date().toISOString().split('T')[0],
+            fees: {
+              courseFee: 0,
+              totalFee: 0,
+              paidAmount: 0,
+              dueAmount: 0,
+              installments: [],
+              paymentHistory: [],
+              discounts: [],
+            },
+            library: {
+              booksIssued: [],
+              fines: [],
+            },
+            examHistory: [],
+            counseling: {
+              sessions: [],
+              careerGuidance: [],
+            },
+            certificates: [],
           });
         } catch (error) {
           console.error('Error adding student:', error);
@@ -274,7 +413,7 @@ export default function AdminDashboard() {
     setShowExportModal(false);
   };
 
-  const filteredStudents = students.filter(student => {
+  const filteredStudents = students.filter((student: Student) => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.mobile.includes(searchTerm);
@@ -336,45 +475,6 @@ export default function AdminDashboard() {
   if (!currentUser) {
     return null;
   }
-
-  const [paymentData, setPaymentData] = useState({
-    studentId: '',
-    amount: '',
-    method: 'cash' as 'cash' | 'card' | 'upi' | 'bank_transfer',
-    transactionId: '',
-    receiptNo: '',
-    description: ''
-  });
-
-  const [discountData, setDiscountData] = useState({
-    studentId: '',
-    type: 'percentage' as 'percentage' | 'fixed',
-    value: '',
-    reason: ''
-  });
-
-  const [libraryData, setLibraryData] = useState({
-    studentId: '',
-    bookName: '',
-    action: 'issue' as 'issue' | 'return',
-    bookId: ''
-  });
-
-  const [examData, setExamData] = useState({
-    studentId: '',
-    examName: '',
-    totalMarks: '',
-    obtainedMarks: '',
-    subjects: [{ name: '', marks: '', totalMarks: '' }]
-  });
-
-  const [counselingData, setCounselingData] = useState({
-    studentId: '',
-    counselor: '',
-    topic: '',
-    notes: '',
-    nextSession: ''
-  });
 
   const handleAddPayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -461,7 +561,7 @@ export default function AdminDashboard() {
         obtainedMarks,
         percentage: Math.round((obtainedMarks / totalMarks) * 100),
         rank: Math.floor(Math.random() * 50) + 1,
-        subjects: examData.subjects.map(sub => ({
+        subjects: examData.subjects.map((sub: { name: string; marks: string; totalMarks: string }) => ({
           name: sub.name,
           marks: parseInt(sub.marks),
           totalMarks: parseInt(sub.totalMarks)
