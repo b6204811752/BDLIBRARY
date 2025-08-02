@@ -77,6 +77,44 @@ interface CounselingData {
   nextSession: string;
 }
 
+interface Analytics {
+  totalStudents: number;
+  averageAttendance: number;
+  averageScore: number;
+}
+
+interface FinancialAnalytics {
+  totalRevenue: number;
+  totalDues: number;
+  totalDiscounts: number;
+  overduePayments: number;
+  paymentMethodStats: {
+    [key: string]: {
+      amount: number;
+      count: number;
+    };
+  };
+  defaulters: Student[];
+}
+
+interface CurrentUser {
+  id: string;
+  username: string;
+  lastLogin: string;
+  permissions: string[];
+}
+
+interface Announcement {
+  id: string;
+  title: string;
+  message: string;
+  priority: 'low' | 'medium' | 'high';
+  date: string;
+  author: string;
+  targetAudience: string;
+  expiryDate?: string;
+}
+
 interface NewStudent {
   name: string;
   email: string;
@@ -88,18 +126,18 @@ interface NewStudent {
 interface NewAnnouncement {
   title: string;
   message: string;
-  priority: string;
+  priority: 'low' | 'medium' | 'high';
   targetAudience: string;
   expiryDate: string;
 }
 
 export default function AdminDashboard() {
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [analytics, setAnalytics] = useState<any>(null);
-  const [financialAnalytics, setFinancialAnalytics] = useState<any>(null);
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [financialAnalytics, setFinancialAnalytics] = useState<FinancialAnalytics | null>(null);
 
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
@@ -132,7 +170,7 @@ export default function AdminDashboard() {
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
-  const [announcements, setAnnouncements] = useState<any>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [newAnnouncement, setNewAnnouncement] = useState<NewAnnouncement>({ 
     title: '', 
     message: '', 
@@ -281,7 +319,7 @@ export default function AdminDashboard() {
 
   const handleBulkUpload = (e: React.FormEvent) => {
     e.preventDefault();
-    const lines = bulkStudents.split('\\n').filter((line: string) => line.trim());
+    const lines = bulkStudents.split('\n').filter((line: string) => line.trim());
 
     lines.forEach((line: string) => {
       const [name, email, mobile, shift, jobCategory] = line.split(',').map((s: string) => s.trim());
@@ -424,7 +462,7 @@ export default function AdminDashboard() {
   });
 
   const sortedStudents = [...filteredStudents].sort((a, b) => {
-    let aValue: any, bValue: any;
+    let aValue: string | number | Date, bValue: string | number | Date;
 
     switch (sortBy) {
       case 'name':
@@ -826,7 +864,7 @@ export default function AdminDashboard() {
               <div className="bg-white p-6 rounded-lg shadow">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">Fee Defaulters</h2>
                 <div className="space-y-3">
-                  {financialAnalytics.defaulters.slice(0, 5).map((student: any) => (
+                  {financialAnalytics.defaulters.slice(0, 5).map((student: Student) => (
                     <div key={student.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
                       <div>
                         <p className="font-medium text-gray-900">{student.name}</p>
