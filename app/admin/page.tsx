@@ -1,61 +1,60 @@
 
-// ...imports handled below...
-// Import or define Student, analytics, and financialAnalytics types/interfaces as needed
-// --- Type/interface definitions ---
+'use client';
 
-interface RealTimeStats {
-  onlineUsers: number;
-  // ...other properties...
-}
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { 
+  getCurrentUser, 
+  getAuthData, 
+  addStudent, 
+  deleteStudent, 
+  updateStudent,
+  Student, 
+  updateStudentProgress,
+  subscribeToDataChanges,
+  getAnalytics,
+  addAnnouncement,
+  deleteAnnouncement,
+  exportStudentData,
+  bulkUpdateStudents,
+  addNotification,
+  addPayment,
+  applyDiscount,
+  addInstallment,
+  issueBook,
+  returnBook,
+  addExamResult,
+  addCounselingSession,
+  addCareerGuidance,
+  issueCertificate,
+  getFinancialAnalytics
+} from '@/lib/auth';
 
-  const handleEditStudent = (student: Student) => {
-    // ...existing code for handleEditStudent...
-  };
+export default function AdminDashboard() {
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [financialAnalytics, setFinancialAnalytics] = useState<any>(null);
 
-// --- Type/interface definitions ---
-interface RealTimeStats {
-  onlineUsers: number;
-  // ...other properties...
-}
-
-import React, { useState, useMemo } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-
-// Define Student type for TypeScript
-type Student = {
-  id: string;
-  name: string;
-  email: string;
-  mobile: string;
-  jobCategory: string;
-  shift: 'morning' | 'afternoon' | 'evening';
-  status: 'active' | 'inactive' | 'suspended';
-  fees: { paidAmount: number; dueAmount: number };
-  progress: { averageScore: number; testsCompleted: number };
-  attendance: { present: number; totalDays: number };
-  library: { booksIssued: any[]; fines: { amount: number; status: string }[] };
-  examHistory: any[];
-};
-
-// Placeholder types for modals and other data
-type PaymentData = { studentId: string; amount: string; method: string; transactionId: string; receiptNo: string; description: string };
-type DiscountData = { studentId: string; type: string; value: string; reason: string };
-type LibraryData = { studentId: string; action: string };
-
-export default function AdminPage() {
-  // --- UI/Modal state ---
+  // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showDiscountModal, setShowDiscountModal] = useState(false);
   const [showLibraryModal, setShowLibraryModal] = useState(false);
   const [showExamModal, setShowExamModal] = useState(false);
   const [showCounselingModal, setShowCounselingModal] = useState(false);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
-  const [showExportModal, setShowExportModal] = useState(false);
-  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
 
-  // --- Search/filter/sort state ---
+  // Data states
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterShift, setFilterShift] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
@@ -63,129 +62,471 @@ export default function AdminPage() {
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  // --- Modal data state ---
-  const [paymentData, setPaymentData] = useState<PaymentData>({ studentId: '', amount: '', method: 'cash', transactionId: '', receiptNo: '', description: '' });
-  const [discountData, setDiscountData] = useState<DiscountData>({ studentId: '', type: 'percentage', value: '', reason: '' });
-  const [libraryData, setLibraryData] = useState<LibraryData>({ studentId: '', action: 'issue' });
-  const [newStudent, setNewStudent] = useState({ name: '', email: '', mobile: '', shift: 'morning', jobCategory: 'Banking', monthlyFee: 1000 });
+  const [newStudent, setNewStudent] = useState({
+    name: '',
+    email: '',
+    mobile: '',
+    shift: 'morning' as 'morning' | 'afternoon' | 'evening',
+    jobCategory: 'Banking'
+  });
 
-  // --- Placeholder handler functions ---
-  const handleAddStudent = (e: React.FormEvent) => { e.preventDefault(); setShowAddModal(false); };
-  const handleEditStudent = (student: Student) => {};
-  const handleDeleteStudent = (id: string) => {};
-  const handleAddPayment = (e: React.FormEvent) => { e.preventDefault(); setShowPaymentModal(false); };
-  const handleApplyDiscount = (e: React.FormEvent) => { e.preventDefault(); setShowDiscountModal(false); };
-  const handleLibraryAction = (e: React.FormEvent) => { e.preventDefault(); setShowLibraryModal(false); };
-  const handleAddExamResult = (e: React.FormEvent) => { e.preventDefault(); setShowExamModal(false); };
-  const handleDeleteAnnouncement = (id: string) => {};
-  const sendNotificationToStudent = (id: string, msg: string) => {};
+  const [bulkStudents, setBulkStudents] = useState('');
+  const [announcements, setAnnouncements] = useState<any>([]);
+  const [newAnnouncement, setNewAnnouncement] = useState({ 
+    title: '', 
+    message: '', 
+    priority: 'medium',
+    targetAudience: 'all',
+    expiryDate: ''
+  });
 
-  // --- Sorting/filtering logic for students table ---
-  const filteredStudents = useMemo(() => {
-    return students.filter(s => {
-      const matchesSearch =
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.mobile.includes(searchTerm);
-      const matchesShift = filterShift === 'all' || s.shift === filterShift;
-      const matchesCategory = filterCategory === 'all' || s.jobCategory === filterCategory;
-      const matchesStatus = filterStatus === 'all' || s.status === filterStatus;
-      return matchesSearch && matchesShift && matchesCategory && matchesStatus;
+  // Real-time updates
+  const [realTimeStats, setRealTimeStats] = useState({
+    onlineUsers: 0,
+    activeTests: 0,
+    newNotifications: 0
+  });
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (!user.type || user.type !== 'admin') {
+      router.push('/login');
+      return;
+    }
+    setCurrentUser(user.data);
+    loadData();
+    setLoading(false);
+
+    // Subscribe to real-time updates
+    const unsubscribe = subscribeToDataChanges(() => {
+      loadData();
     });
-  }, [students, searchTerm, filterShift, filterCategory, filterStatus]);
 
-  const sortedStudents = useMemo(() => {
-    const sorted = [...filteredStudents].sort((a, b) => {
-      let aVal: any = a[sortBy as keyof Student];
-      let bVal: any = b[sortBy as keyof Student];
-      if (sortBy === 'progress') {
-        aVal = a.progress.averageScore;
-        bVal = b.progress.averageScore;
-      } else if (sortBy === 'attendance') {
-        aVal = a.attendance.present / (a.attendance.totalDays || 1);
-        bVal = b.attendance.present / (b.attendance.totalDays || 1);
-      } else if (sortBy === 'score') {
-        aVal = a.progress.averageScore;
-        bVal = b.progress.averageScore;
+    // Simulate real-time stats
+    const interval = setInterval(() => {
+      setRealTimeStats(prev => ({
+        onlineUsers: Math.floor(Math.random() * 20) + 5,
+        activeTests: Math.floor(Math.random() * 10) + 1,
+        newNotifications: Math.floor(Math.random() * 5)
+      }));
+    }, 30000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(interval);
+    };
+  }, [router]);
+
+  const loadData = () => {
+    const authData = getAuthData();
+    setStudents(authData.students);
+    setAnnouncements(authData.announcements);
+    setAnalytics(getAnalytics());
+    setFinancialAnalytics(getFinancialAnalytics());
+
+    // Update real-time stats
+    setRealTimeStats(prev => ({
+      ...prev,
+      onlineUsers: authData.students.filter(s => {
+        const lastLogin = new Date(s.progress.lastLogin);
+        const now = new Date();
+        return (now.getTime() - lastLogin.getTime()) < 300000; // 5 minutes
+      }).length
+    }));
+  };
+
+  const handleAddStudent = (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const student = addStudent({
+        ...newStudent,
+        enrollmentDate: new Date().toISOString().split('T')[0]
+      });
+
+      setNewStudent({
+        name: '',
+        email: '',
+        mobile: '',
+        shift: 'morning',
+        jobCategory: 'Banking'
+      });
+      setShowAddModal(false);
+      loadData();
+    } catch (error) {
+      console.error('Error adding student:', error);
+    }
+  };
+
+  const handleBulkUpload = (e: React.FormEvent) => {
+    e.preventDefault();
+    const lines = bulkStudents.split('\\n').filter(line => line.trim());
+
+    lines.forEach(line => {
+      const [name, email, mobile, shift, jobCategory] = line.split(',').map(s => s.trim());
+      if (name && email && mobile && shift && jobCategory) {
+        try {
+          addStudent({
+            name,
+            email,
+            mobile,
+            shift: shift as 'morning' | 'afternoon' | 'evening',
+            jobCategory,
+            enrollmentDate: new Date().toISOString().split('T')[0]
+          });
+        } catch (error) {
+          console.error('Error adding student:', error);
+        }
       }
-      if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
-      return 0;
     });
-    return sorted;
-  }, [filteredStudents, sortBy, sortOrder]);
-  // --- Demo/mock state for dashboard preview ---
-  const [activeTab, setActiveTab] = useState('dashboard');
-  // Minimal mock students array
-  const [students] = useState([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      mobile: '1234567890',
-      jobCategory: 'Banking',
-      shift: 'morning',
-      status: 'active',
-      fees: { paidAmount: 8000, dueAmount: 2000 },
-      progress: { averageScore: 85, testsCompleted: 5 },
-      attendance: { present: 28, totalDays: 30 },
-      library: { booksIssued: [{}, {}], fines: [], },
-      examHistory: [{}, {}, {}],
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      mobile: '9876543210',
-      jobCategory: 'SSC',
-      shift: 'evening',
-      status: 'inactive',
-      fees: { paidAmount: 10000, dueAmount: 0 },
-      progress: { averageScore: 92, testsCompleted: 7 },
-      attendance: { present: 25, totalDays: 30 },
-      library: { booksIssued: [{}], fines: [{ amount: 100, status: 'pending' }], },
-      examHistory: [{}, {}],
-    },
-  ]);
 
-  // Minimal mock analytics
-  const analytics = {
-    averageAttendance: 90,
-    averageScore: 88,
+    setBulkStudents('');
+    setShowBulkUpload(false);
+    loadData();
   };
-  // Minimal mock financialAnalytics
-  const financialAnalytics = {
-    totalRevenue: 18000,
-    totalDues: 2000,
-    totalDiscounts: 500,
-    paymentMethodStats: {
-      cash: { amount: 10000, count: 8 },
-      card: { amount: 5000, count: 3 },
-      upi: { amount: 3000, count: 2 },
-      bank_transfer: { amount: 0, count: 0 },
-    },
-    overduePayments: 1,
-    defaulters: [
-      {
-        id: '1',
-        name: 'John Doe',
-        mobile: '1234567890',
-        fees: { dueAmount: 2000 },
-      },
-    ],
-  };
-  // Minimal mock announcements
-  const [announcements] = useState([
-    { id: 'a1', title: 'Holiday Notice', message: 'Library will be closed tomorrow.', author: 'Admin', date: '2025-08-01', priority: 'high' },
-    { id: 'a2', title: 'Exam Schedule', message: 'Next exam on 10th Aug.', author: 'Admin', date: '2025-08-02', priority: 'medium' },
-  ]);
 
-  // ...existing code...
+  const handleDeleteStudent = (id: string) => {
+    if (confirm('Are you sure you want to delete this student?')) {
+      deleteStudent(id);
+      loadData();
+    }
+  };
+
+  const handleEditStudent = (student: Student) => {
+    setSelectedStudent(student);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateStudent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedStudent) {
+      updateStudent(selectedStudent.id, selectedStudent);
+      setShowEditModal(false);
+      setSelectedStudent(null);
+      loadData();
+    }
+  };
+
+  const handleAddAnnouncement = (e: React.FormEvent) => {
+    e.preventDefault();
+    addAnnouncement({
+      ...newAnnouncement,
+      author: 'Admin'
+    });
+    setNewAnnouncement({ 
+      title: '', 
+      message: '', 
+      priority: 'medium',
+      targetAudience: 'all',
+      expiryDate: ''
+    });
+    setShowAnnouncementModal(false);
+    loadData();
+  };
+
+  const handleDeleteAnnouncement = (id: string) => {
+    if (confirm('Are you sure you want to delete this announcement?')) {
+      deleteAnnouncement(id);
+      loadData();
+    }
+  };
+
+  const resetStudentProgress = (studentId: string) => {
+    if (confirm('Are you sure you want to reset this student\'s progress?')) {
+      updateStudentProgress(studentId, {
+        testsCompleted: 0,
+        materialsDownloaded: 0,
+        studyHours: 0,
+        averageScore: 0,
+        completionRate: 0,
+        currentStreak: 0,
+        totalPoints: 0
+      });
+      loadData();
+    }
+  };
+
+  const toggleStudentStatus = (studentId: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    updateStudent(studentId, { status: newStatus });
+    loadData();
+  };
+
+  const sendNotificationToStudent = (studentId: string, message: string) => {
+    addNotification(studentId, {
+      message,
+      type: 'info',
+      read: false
+    });
+    loadData();
+  };
+
+  const handleExport = (format: 'csv' | 'json') => {
+    const data = exportStudentData(format);
+    const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `students.${format}`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportModal(false);
+  };
+
+  const filteredStudents = students.filter(student => {
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         student.mobile.includes(searchTerm);
+    const matchesShift = filterShift === 'all' || student.shift === filterShift;
+    const matchesCategory = filterCategory === 'all' || student.jobCategory === filterCategory;
+    const matchesStatus = filterStatus === 'all' || student.status === filterStatus;
+    return matchesSearch && matchesShift && matchesCategory && matchesStatus;
+  });
+
+  const sortedStudents = [...filteredStudents].sort((a, b) => {
+    let aValue: any, bValue: any;
+
+    switch (sortBy) {
+      case 'name':
+        aValue = a.name;
+        bValue = b.name;
+        break;
+      case 'email':
+        aValue = a.email;
+        bValue = b.email;
+        break;
+      case 'enrollmentDate':
+        aValue = new Date(a.enrollmentDate);
+        bValue = new Date(b.enrollmentDate);
+        break;
+      case 'progress':
+        aValue = a.progress.totalPoints;
+        bValue = b.progress.totalPoints;
+        break;
+      case 'attendance':
+        aValue = a.attendance.present / a.attendance.totalDays || 0;
+        bValue = b.attendance.present / b.attendance.totalDays || 0;
+        break;
+      case 'score':
+        aValue = a.progress.averageScore;
+        bValue = b.progress.averageScore;
+        break;
+      default:
+        aValue = a.name;
+        bValue = b.name;
+    }
+
+    if (sortOrder === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
+  if (loading) {
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading admin dashboard...</p>
+      </div>
+    </div>;
+  }
+
+  if (!currentUser) {
+    return null;
+  }
+
+  const [paymentData, setPaymentData] = useState({
+    studentId: '',
+    amount: '',
+    method: 'cash' as 'cash' | 'card' | 'upi' | 'bank_transfer',
+    transactionId: '',
+    receiptNo: '',
+    description: ''
+  });
+
+  const [discountData, setDiscountData] = useState({
+    studentId: '',
+    type: 'percentage' as 'percentage' | 'fixed',
+    value: '',
+    reason: ''
+  });
+
+  const [libraryData, setLibraryData] = useState({
+    studentId: '',
+    bookName: '',
+    action: 'issue' as 'issue' | 'return',
+    bookId: ''
+  });
+
+  const [examData, setExamData] = useState({
+    studentId: '',
+    examName: '',
+    totalMarks: '',
+    obtainedMarks: '',
+    subjects: [{ name: '', marks: '', totalMarks: '' }]
+  });
+
+  const [counselingData, setCounselingData] = useState({
+    studentId: '',
+    counselor: '',
+    topic: '',
+    notes: '',
+    nextSession: ''
+  });
+
+  const handleAddPayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (paymentData.studentId && paymentData.amount) {
+      addPayment(paymentData.studentId, {
+        amount: parseFloat(paymentData.amount),
+        date: new Date().toISOString().split('T')[0],
+        method: paymentData.method,
+        transactionId: paymentData.transactionId,
+        receiptNo: paymentData.receiptNo,
+        description: paymentData.description
+      });
+
+      setPaymentData({
+        studentId: '',
+        amount: '',
+        method: 'cash',
+        transactionId: '',
+        receiptNo: '',
+        description: ''
+      });
+      setShowPaymentModal(false);
+      loadData();
+    }
+  };
+
+  const handleApplyDiscount = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (discountData.studentId && discountData.value) {
+      applyDiscount(discountData.studentId, {
+        type: discountData.type,
+        value: parseFloat(discountData.value),
+        reason: discountData.reason,
+        appliedDate: new Date().toISOString().split('T')[0],
+        appliedBy: 'admin'
+      });
+
+      setDiscountData({
+        studentId: '',
+        type: 'percentage',
+        value: '',
+        reason: ''
+      });
+      setShowDiscountModal(false);
+      loadData();
+    }
+  };
+
+  const handleLibraryAction = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (libraryData.studentId) {
+      if (libraryData.action === 'issue' && libraryData.bookName) {
+        issueBook(libraryData.studentId, {
+          bookName: libraryData.bookName,
+          issueDate: new Date().toISOString().split('T')[0],
+          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          status: 'issued'
+        });
+      } else if (libraryData.action === 'return' && libraryData.bookId) {
+        returnBook(libraryData.studentId, libraryData.bookId);
+      }
+
+      setLibraryData({
+        studentId: '',
+        bookName: '',
+        action: 'issue',
+        bookId: ''
+      });
+      setShowLibraryModal(false);
+      loadData();
+    }
+  };
+
+  const handleAddExamResult = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (examData.studentId && examData.examName) {
+      const totalMarks = parseInt(examData.totalMarks);
+      const obtainedMarks = parseInt(examData.obtainedMarks);
+
+      addExamResult(examData.studentId, {
+        examName: examData.examName,
+        date: new Date().toISOString().split('T')[0],
+        totalMarks,
+        obtainedMarks,
+        percentage: Math.round((obtainedMarks / totalMarks) * 100),
+        rank: Math.floor(Math.random() * 50) + 1,
+        subjects: examData.subjects.map(sub => ({
+          name: sub.name,
+          marks: parseInt(sub.marks),
+          totalMarks: parseInt(sub.totalMarks)
+        }))
+      });
+
+      setExamData({
+        studentId: '',
+        examName: '',
+        totalMarks: '',
+        obtainedMarks: '',
+        subjects: [{ name: '', marks: '', totalMarks: '' }]
+      });
+      setShowExamModal(false);
+      loadData();
+    }
+  };
+
+  const handleAddCounselingSession = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (counselingData.studentId) {
+      addCounselingSession(counselingData.studentId, {
+        date: new Date().toISOString().split('T')[0],
+        counselor: counselingData.counselor,
+        topic: counselingData.topic,
+        notes: counselingData.notes,
+        nextSession: counselingData.nextSession
+      });
+
+      setCounselingData({
+        studentId: '',
+        counselor: '',
+        topic: '',
+        notes: '',
+        nextSession: ''
+      });
+      setShowCounselingModal(false);
+      loadData();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs and all tab/modal JSX must be inside this div */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+              <p className="text-gray-600">Real-time monitoring and management system</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-600">Online: {realTimeStats.onlineUsers}</span>
+              </div>
+              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
+                <i className="ri-test-tube-line text-blue-600"></i>
+                <span className="text-sm text-gray-600">Active Tests: {realTimeStats.activeTests}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Navigation Tabs */}
         <div className="mb-8">
           <div className="border-b border-gray-200">
@@ -207,7 +548,7 @@ export default function AdminPage() {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  <i className={tab.icon}></i>
+                  <i className={`${tab.icon} text-lg`}></i>
                   <span>{tab.label}</span>
                 </button>
               ))}
@@ -217,171 +558,189 @@ export default function AdminPage() {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && analytics && financialAnalytics && (
-          <div className="space-y-8">
-            {/* Dashboard Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <i className="ri-user-line text-2xl text-blue-600"></i>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Total Students</p>
-                  <p className="text-2xl font-bold text-gray-900">{students.length}</p>
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <i className="ri-money-rupee-circle-line text-2xl text-green-600"></i>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalRevenue.toLocaleString()}</p>
+          <div className="space-y-6">
+            {/* Enhanced Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-user-line text-xl text-blue-600"></i>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Total Students</p>
+                    <p className="text-2xl font-bold text-gray-900">{analytics.totalStudents}</p>
+                    <p className="text-xs text-green-600">+{Math.floor(Math.random() * 5)} this week</p>
+                  </div>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                  <i className="ri-error-warning-line text-2xl text-red-600"></i>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Pending Dues</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDues.toLocaleString()}</p>
+
+              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-money-rupee-circle-line text-xl text-green-600"></i>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalRevenue.toLocaleString()}</p>
+                    <p className="text-xs text-green-600">This month</p>
+                  </div>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow flex items-center space-x-4">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                  <i className="ri-bar-chart-line text-2xl text-yellow-600"></i>
+
+              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-money-rupee-circle-line text-xl text-red-600"></i>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Total Dues</p>
+                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDues.toLocaleString()}</p>
+                    <p className="text-xs text-red-600">{financialAnalytics.overduePayments} overdue</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">Avg. Attendance</p>
-                  <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageAttendance)}%</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-calendar-check-line text-xl text-purple-600"></i>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Avg Attendance</p>
+                    <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageAttendance)}%</p>
+                    <p className="text-xs text-green-600">+2% this month</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-trophy-line text-xl text-yellow-600"></i>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Avg Score</p>
+                    <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageScore)}</p>
+                    <p className="text-xs text-green-600">+3 pts this week</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-discount-percent-line text-xl text-orange-600"></i>
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Discounts</p>
+                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDiscounts.toLocaleString()}</p>
+                    <p className="text-xs text-orange-600">Total given</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Dashboard Charts (placeholders) */}
+            {/* Enhanced Quick Actions */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-user-add-line"></i>
+                  <span>Add Student</span>
+                </button>
+                <button
+                  onClick={() => setShowPaymentModal(true)}
+                  className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-money-rupee-circle-line"></i>
+                  <span>Add Payment</span>
+                </button>
+                <button
+                  onClick={() => setShowDiscountModal(true)}
+                  className="bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-discount-percent-line"></i>
+                  <span>Apply Discount</span>
+                </button>
+                <button
+                  onClick={() => setShowLibraryModal(true)}
+                  className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-book-line"></i>
+                  <span>Library</span>
+                </button>
+                <button
+                  onClick={() => setShowExamModal(true)}
+                  className="bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-quiz-line"></i>
+                  <span>Add Exam</span>
+                </button>
+                <button
+                  onClick={() => setShowCounselingModal(true)}
+                  className="bg-pink-600 text-white py-3 px-4 rounded-lg hover:bg-pink-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-user-heart-line"></i>
+                  <span>Counseling</span>
+                </button>
+                <button
+                  onClick={() => setShowCertificateModal(true)}
+                  className="bg-teal-600 text-white py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-award-line"></i>
+                  <span>Certificate</span>
+                </button>
+                <button
+                  onClick={() => setShowExportModal(true)}
+                  className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-download-line"></i>
+                  <span>Export</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Financial Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Revenue Trend</h3>
-                <div className="w-full h-48 flex items-center justify-center text-gray-400">
-                  {/* Chart.js or other chart can be integrated here */}
-                  <span>[Revenue Chart Placeholder]</span>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method Stats</h2>
+                <div className="space-y-3">
+                  {Object.entries(financialAnalytics.paymentMethodStats).map(([method, stats]: [string, any]) => (
+                    <div key={method} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <i className={`${method === 'cash' ? 'ri-money-rupee-circle-line' : method === 'card' ? 'ri-bank-card-line' : method === 'upi' ? 'ri-smartphone-line' : 'ri-bank-line'} text-blue-600`}></i>
+                        <span className="text-sm text-gray-600 capitalize">{method}</span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">₹{stats.amount.toLocaleString()}</p>
+                        <p className="text-xs text-gray-500">{stats.count} transactions</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Student Enrollment Trend</h3>
-                <div className="w-full h-48 flex items-center justify-center text-gray-400">
-                  {/* Chart.js or other chart can be integrated here */}
-                  <span>[Enrollment Chart Placeholder]</span>
+
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Fee Defaulters</h2>
+                <div className="space-y-3">
+                  {financialAnalytics.defaulters.slice(0, 5).map((student: any) => (
+                    <div key={student.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
+                      <div>
+                        <p className="font-medium text-gray-900">{student.name}</p>
+                        <p className="text-sm text-gray-500">{student.mobile}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-red-600">₹{student.fees.dueAmount.toLocaleString()}</p>
+                        <p className="text-xs text-gray-500">Due amount</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
-                <p className="text-sm text-gray-500">Active Announcements</p>
-                <p className="text-2xl font-bold text-blue-600">{announcements.length}</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
-                <p className="text-sm text-gray-500">Books Issued</p>
-                <p className="text-2xl font-bold text-purple-600">{students.reduce((sum, s) => sum + s.library.booksIssued.length, 0)}</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
-                <p className="text-sm text-gray-500">Avg. Exam Score</p>
-                <p className="text-2xl font-bold text-green-600">{Math.round(analytics.averageScore)}%</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Students Tab */}
-        {activeTab === 'students' && (
-          <div className="space-y-6">
-            {/* ...existing code for students tab... */}
-          </div>
-        )}
-
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && analytics && financialAnalytics && (
-          <div className="space-y-6">
-            {/* ...existing code for analytics tab... */}
-          </div>
-        )}
-
-        {/* Announcements Tab */}
-        {activeTab === 'announcements' && (
-          <div className="space-y-6">
-            {/* ...existing code for announcements tab... */}
-          </div>
-        )}
-
-        {/* Reports Tab */}
-        {activeTab === 'reports' && (
-          <div className="space-y-6">
-            {/* ...existing code for reports tab... */}
-          </div>
-        )}
-
-        {/* Settings Tab */}
-        {activeTab === 'settings' && (
-          <div className="space-y-6">
-            {/* ...existing code for settings tab... */}
-          </div>
-        )}
-
-        {/* Modals */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50 p-4">
-            {/* ...existing code for add student modal... */}
-          </div>
-        )}
-        {showPaymentModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for payment modal... */}
-          </div>
-        )}
-        {showDiscountModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for discount modal... */}
-          </div>
-        )}
-        {showLibraryModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for library modal... */}
-          </div>
-        )}
-        {showExamModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for exam modal... */}
-          </div>
-        )}
-        {showCounselingModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for counseling modal... */}
-          </div>
-        )}
-        {showCertificateModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for certificate modal... */}
-          </div>
-        )}
-        {showExportModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for export modal... */}
-          </div>
-        )}
-        {showAnnouncementModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            {/* ...existing code for announcement modal... */}
-          </div>
-        )}
-
-        <Footer />
-      </div>
-    </div>
-  );
-}
-
           </div>
         )}
 
@@ -692,292 +1051,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Announcements Tab */}
-        {activeTab === 'announcements' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Announcements</h2>
-                <button
-                  onClick={() => setShowAnnouncementModal(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-                >
-                  <i className="ri-add-line"></i>
-                  <span>Add Announcement</span>
-                </button>
-              </div>
-              <div className="space-y-4">
-                {announcements.map((announcement) => (
-                  <div key={announcement.id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{announcement.title}</h3>
-                        <p className="text-gray-600 mt-1">{announcement.message}</p>
-                        <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                          <span>By: {announcement.author}</span>
-                          <span>Date: {announcement.date}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            announcement.priority === 'high' ? 'bg-red-100 text-red-800' :
-                            announcement.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-green-100 text-green-800'
-                          }`}>
-                            {announcement.priority} priority
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteAnnouncement(announcement.id)}
-                        className="text-red-600 hover:text-red-900 ml-4"
-                      >
-                        <i className="ri-delete-bin-line"></i>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Reports Tab */}
-        {activeTab === 'reports' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Student Performance</h3>
-                <button
-                  onClick={() => setShowExportModal(true)}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Generate Report
-                </button>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Financial Summary</h3>
-                <button
-                  onClick={() => setShowExportModal(true)}
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Download Report
-                </button>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Attendance Report</h3>
-                <button
-                  onClick={() => setShowExportModal(true)}
-                  className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors"
-                >
-                  Export Data
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Settings Tab */}
-        {activeTab === 'settings' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">System Settings</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Institution Name
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue="BD Library GOH"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Default Monthly Fee
-                  </label>
-                  <input
-                    type="number"
-                    defaultValue="1000"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Backup Data
-                  </label>
-                  <button
-                    onClick={() => setShowExportModal(true)}
-                    className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                  >
-                    Create Backup
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Add Student Modal */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto mx-4">
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Student</h3>
-                <form onSubmit={handleAddStudent} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                  <input
-                    type="text"
-                    value={newStudent.name}
-                    onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter student's full name"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    value={newStudent.email}
-                    onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter email address"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
-                  <input
-                    type="tel"
-                    value={newStudent.mobile}
-                    onChange={(e) => setNewStudent({ ...newStudent, mobile: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter mobile number"
-                    pattern="[0-9]{10}"
-                    maxLength={10}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Study Shift *</label>
-                  <select
-                    value={newStudent.shift}
-                    onChange={(e) => setNewStudent({ ...newStudent, shift: e.target.value as 'morning' | 'afternoon' | 'evening' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="morning">Morning (6:00 AM - 12:00 PM)</option>
-                    <option value="afternoon">Afternoon (12:00 PM - 6:00 PM)</option>
-                    <option value="evening">Evening (6:00 PM - 10:00 PM)</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Category *</label>
-                  <select
-                    value={newStudent.jobCategory}
-                    onChange={(e) => setNewStudent({ ...newStudent, jobCategory: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="Banking">Banking</option>
-                    <option value="SSC">SSC</option>
-                    <option value="Railway">Railway</option>
-                    <option value="UPSC">UPSC</option>
-                    <option value="State">State Government</option>
-                    <option value="Defense">Defense</option>
-                  </select>
-                </div>
-                
-                {/* Fee Structure Section */}
-                <div className="bg-gray-50 p-4 rounded-lg border">
-                  <h4 className="text-md font-semibold text-gray-800 mb-3 flex items-center">
-                    <i className="ri-money-rupee-circle-line mr-2 text-green-600"></i>
-                    Monthly Fee Structure
-                  </h4>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Fee (₹) *</label>
-                      <input
-                        type="number"
-                        value={newStudent.monthlyFee}
-                        onChange={(e) => setNewStudent({ ...newStudent, monthlyFee: parseInt(e.target.value) || 0 })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter monthly fee"
-                        min="0"
-                        required
-                      />
-                    </div>
-                    
-                    <div className="flex flex-col justify-end">
-                      <div className="bg-white p-3 rounded border">
-                        <div className="text-sm space-y-1">
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Monthly Fee:</span>
-                            <span className="font-medium">₹{newStudent.monthlyFee.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Payment Type:</span>
-                            <span className="font-medium text-blue-600">Monthly</span>
-                          </div>
-                          <div className="flex justify-between border-t pt-1">
-                            <span className="text-gray-700 font-medium">Default Duration:</span>
-                            <span className="font-medium text-green-600">6 Months</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-blue-50 p-3 rounded-md">
-                  <p className="text-sm text-blue-700 mb-2">
-                    <i className="ri-information-line mr-2"></i>
-                    Student Information
-                  </p>
-                  <ul className="text-xs text-blue-600 space-y-1">
-                    <li>• Monthly fee structure will be applied</li>
-                    <li>• Student will receive login credentials via email</li>
-                    <li>• Enrollment date: {new Date().toLocaleDateString()}</li>
-                    <li>• Payment history will be automatically tracked</li>
-                    <li>• Monthly payments will be tracked automatically</li>
-                  </ul>
-                </div>
-                
-                <div className="flex space-x-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAddModal(false);
-                      setNewStudent({
-                        name: '',
-                        email: '',
-                        mobile: '',
-                        shift: 'morning',
-                        jobCategory: 'Banking',
-                        monthlyFee: 1000
-                      });
-                    }}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Add Student
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
         {/* Enhanced Modals */}
         {/* Payment Modal */}
         {showPaymentModal && (
@@ -1218,336 +1291,6 @@ export default function AdminPage() {
                     className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
                   >
                     {libraryData.action === 'issue' ? 'Issue Book' : 'Return Book'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Exam Modal */}
-        {showExamModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Add Exam Result</h3>
-              <form onSubmit={handleAddExamResult} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
-                  <select
-                    value={examData.studentId}
-                    onChange={(e) => setExamData({ ...examData, studentId: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="">Select Student</option>
-                    {students.map(student => (
-                      <option key={student.id} value={student.id}>{student.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Exam Name</label>
-                  <input
-                    type="text"
-                    value={examData.examName}
-                    onChange={(e) => setExamData({ ...examData, examName: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Total Marks</label>
-                    <input
-                      type="number"
-                      value={examData.totalMarks}
-                      onChange={(e) => setExamData({ ...examData, totalMarks: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Obtained Marks</label>
-                    <input
-                      type="number"
-                      value={examData.obtainedMarks}
-                      onChange={(e) => setExamData({ ...examData, obtainedMarks: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="flex space-x-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowExamModal(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Add Result
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Counseling Modal */}
-        {showCounselingModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Add Counseling Session</h3>
-              <form onSubmit={handleAddCounselingSession} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
-                  <select
-                    value={counselingData.studentId}
-                    onChange={(e) => setCounselingData({ ...counselingData, studentId: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="">Select Student</option>
-                    {students.map(student => (
-                      <option key={student.id} value={student.id}>{student.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Counselor</label>
-                  <input
-                    type="text"
-                    value={counselingData.counselor}
-                    onChange={(e) => setCounselingData({ ...counselingData, counselor: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Topic</label>
-                  <input
-                    type="text"
-                    value={counselingData.topic}
-                    onChange={(e) => setCounselingData({ ...counselingData, topic: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                  <textarea
-                    value={counselingData.notes}
-                    onChange={(e) => setCounselingData({ ...counselingData, notes: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Next Session Date</label>
-                  <input
-                    type="date"
-                    value={counselingData.nextSession}
-                    onChange={(e) => setCounselingData({ ...counselingData, nextSession: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="flex space-x-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowCounselingModal(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Add Session
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Certificate Modal */}
-        {showCertificateModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Issue Certificate</h3>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                const studentId = (e.target as any).studentId.value;
-                const certificateType = (e.target as any).certificateType.value;
-                if (studentId && certificateType) {
-                  issueCertificate(studentId, {
-                    type: certificateType,
-                    issueDate: new Date().toISOString().split('T')[0],
-                    issuedBy: 'BD Library GOH'
-                  });
-                  setShowCertificateModal(false);
-                  loadData();
-                }
-              }} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
-                  <select
-                    name="studentId"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="">Select Student</option>
-                    {students.map(student => (
-                      <option key={student.id} value={student.id}>{student.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Certificate Type</label>
-                  <select
-                    name="certificateType"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="">Select Type</option>
-                    <option value="completion">Course Completion</option>
-                    <option value="participation">Participation</option>
-                    <option value="achievement">Achievement</option>
-                    <option value="excellence">Excellence</option>
-                  </select>
-                </div>
-                <div className="flex space-x-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowCertificateModal(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer"
-                  >
-                    Issue Certificate
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Export Modal */}
-        {showExportModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Export Student Data</h3>
-              <div className="space-y-4">
-                <p className="text-sm text-gray-600">Choose the format to export student data:</p>
-                <div className="flex space-x-4">
-                  <button
-                    onClick={() => handleExport('csv')}
-                    className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <i className="ri-file-text-line"></i>
-                    <span>Export as CSV</span>
-                  </button>
-                  <button
-                    onClick={() => handleExport('json')}
-                    className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <i className="ri-code-line"></i>
-                    <span>Export as JSON</span>
-                  </button>
-                </div>
-                <button
-                  onClick={() => setShowExportModal(false)}
-                  className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Announcement Modal */}
-        {showAnnouncementModal && (
-          <div className="fixed inset-0 bg-black bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Add Announcement</h3>
-              <form onSubmit={handleAddAnnouncement} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                  <input
-                    type="text"
-                    value={newAnnouncement.title}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <textarea
-                    value={newAnnouncement.message}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, message: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={4}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                  <select
-                    value={newAnnouncement.priority}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, priority: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Target Audience</label>
-                  <select
-                    value={newAnnouncement.targetAudience}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, targetAudience: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="all">All Students</option>
-                    <option value="morning">Morning Shift</option>
-                    <option value="afternoon">Afternoon Shift</option>
-                    <option value="evening">Evening Shift</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
-                  <input
-                    type="date"
-                    value={newAnnouncement.expiryDate}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, expiryDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="flex space-x-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowAnnouncementModal(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-                  >
-                    Add Announcement
                   </button>
                 </div>
               </form>
