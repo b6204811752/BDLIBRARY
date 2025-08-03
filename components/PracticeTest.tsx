@@ -21,6 +21,8 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [showAllQuestions, setShowAllQuestions] = useState(true);
+  const [questionsPerPage, setQuestionsPerPage] = useState(100); // Show all by default
+  const [currentPage, setCurrentPage] = useState(1);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Check if user has completed a test
@@ -380,12 +382,19 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 <div className="text-sm text-gray-600">
                   Showing all {selectedTest.questions.length} questions
                 </div>
-                <button
-                  onClick={() => setShowAllQuestions(!showAllQuestions)}
-                  className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 cursor-pointer"
+                <select
+                  value={questionsPerPage}
+                  onChange={(e) => {
+                    setQuestionsPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="px-2 py-1 text-xs bg-white border border-gray-300 rounded-md"
                 >
-                  {showAllQuestions ? 'Collapse' : 'Expand All'}
-                </button>
+                  <option value={10}>Show 10 per page</option>
+                  <option value={25}>Show 25 per page</option>
+                  <option value={50}>Show 50 per page</option>
+                  <option value={100}>Show all 100 questions</option>
+                </select>
               </div>
             </div>
             
@@ -394,7 +403,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
               <div className="text-center p-3 bg-green-50 rounded-lg">
                 <div className="text-lg font-bold text-green-600">
                   {Object.keys(currentAttempt.answers).filter(qId => {
-                    const question = selectedTest.questions.find(q => q.id === qId);
+                    const question = selectedTest.questions.find((q: any) => q.id === qId);
                     return question && currentAttempt.answers[qId] === question.correctAnswer;
                   }).length}
                 </div>
@@ -403,7 +412,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
               <div className="text-center p-3 bg-red-50 rounded-lg">
                 <div className="text-lg font-bold text-red-600">
                   {Object.keys(currentAttempt.answers).filter(qId => {
-                    const question = selectedTest.questions.find(q => q.id === qId);
+                    const question = selectedTest.questions.find((q: any) => q.id === qId);
                     return question && currentAttempt.answers[qId] !== undefined && currentAttempt.answers[qId] !== question.correctAnswer;
                   }).length}
                 </div>
@@ -424,18 +433,56 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
             </div>
           </div>
           
-          <div className={`${showAllQuestions ? 'p-6 space-y-6' : 'p-6 space-y-6 max-h-96 overflow-y-auto'}`}>
-            {selectedTest.questions.map((question, index) => {
-              const userAnswer = currentAttempt.answers[question.id];
-              const isCorrect = userAnswer === question.correctAnswer;
-              const wasAttempted = userAnswer !== undefined;
-
+          <div className="p-6 space-y-6">
+            {(() => {
+              const startIndex = (currentPage - 1) * questionsPerPage;
+              const endIndex = startIndex + questionsPerPage;
+              const currentQuestions = selectedTest.questions.slice(startIndex, endIndex);
+              const totalPages = Math.ceil(selectedTest.questions.length / questionsPerPage);
+              
               return (
+                <>
+                  {/* Pagination info */}
+                  {questionsPerPage < selectedTest.questions.length && (
+                    <div className="flex justify-between items-center mb-4 p-3 bg-blue-50 rounded-lg">
+                      <div className="text-sm text-blue-800">
+                        Showing questions {startIndex + 1} - {Math.min(endIndex, selectedTest.questions.length)} of {selectedTest.questions.length}
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                          disabled={currentPage === 1}
+                          className="px-3 py-1 text-xs bg-white text-blue-700 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Previous
+                        </button>
+                        <span className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-md">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                          disabled={currentPage === totalPages}
+                          className="px-3 py-1 text-xs bg-white text-blue-700 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Questions */}
+                  {currentQuestions.map((question: any, relativeIndex: number) => {
+                    const actualIndex = startIndex + relativeIndex;
+                    const userAnswer = currentAttempt.answers[question.id];
+                    const isCorrect = userAnswer === question.correctAnswer;
+                    const wasAttempted = userAnswer !== undefined;
+
+                    return (
                 <div key={question.id} className="border rounded-lg p-4 bg-gray-50">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center space-x-3">
                       <span className="text-sm font-medium text-gray-600 bg-white px-2 py-1 rounded">
-                        Question {index + 1} of {selectedTest.questions.length}
+                        Question {actualIndex + 1} of {selectedTest.questions.length}
                       </span>
                       <div className="flex items-center space-x-2">
                         {wasAttempted ? (
@@ -520,10 +567,38 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+                );
+              })}
+              
+              {/* Pagination controls at bottom */}
+              {questionsPerPage < selectedTest.questions.length && (
+                <div className="flex justify-center items-center mt-6 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 text-xs bg-white text-blue-700 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <span className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-md">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1 text-xs bg-white text-blue-700 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          );
+        })()}
+      </div>
+    </div>
 
         <div className="text-center">
           <button
