@@ -169,63 +169,84 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="container-responsive py-4 sm:py-6 lg:py-8">
+        {/* Enhanced Header Section */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 truncate">
                 Welcome back, {currentUser.name}!
               </h1>
-              <p className="text-gray-600">
-                {currentUser.shift.charAt(0).toUpperCase() + currentUser.shift.slice(1)} Shift • {currentUser.jobCategory} Category
+              <p className="text-sm sm:text-base text-gray-600">
+                <span className="block sm:inline">
+                  {currentUser.shift.charAt(0).toUpperCase() + currentUser.shift.slice(1)} Shift
+                </span>
+                <span className="hidden sm:inline"> • </span>
+                <span className="block sm:inline">
+                  {currentUser.jobCategory} Category
+                </span>
               </p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-600">Online: {realTimeData.onlineUsers}</span>
+            
+            {/* Mobile-optimized action section */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+              <div className="bg-white px-3 sm:px-4 py-2 rounded-lg shadow flex items-center justify-center sm:justify-start space-x-2">
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm text-gray-600">Online: {realTimeData.onlineUsers}</span>
               </div>
+              
+              {/* Mobile-friendly notification button */}
               <div className="relative">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer relative"
+                  className="w-full sm:w-auto bg-white p-2.5 sm:p-2 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer relative flex items-center justify-center"
                 >
-                  <i className="ri-notification-line text-xl text-gray-600"></i>
+                  <i className="ri-notification-line text-lg sm:text-xl text-gray-600"></i>
+                  <span className="ml-2 sm:hidden text-sm text-gray-600">Notifications</span>
                   {unreadNotifications > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                       {unreadNotifications}
                     </span>
                   )}
                 </button>
 
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
-                    <div className="p-4 border-b">
-                      <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-lg shadow-lg z-50 max-h-80 sm:max-h-96 overflow-y-auto border">
+                    <div className="p-3 sm:p-4 border-b">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Notifications</h3>
+                        <button 
+                          onClick={() => setShowNotifications(false)}
+                          className="sm:hidden text-gray-400 hover:text-gray-600"
+                        >
+                          <i className="ri-close-line text-lg"></i>
+                        </button>
+                      </div>
                     </div>
                     <div className="divide-y">
                       {notifications.length === 0 ? (
                         <div className="p-4 text-center text-gray-500">
-                          No notifications
+                          <i className="ri-notification-off-line text-2xl mb-2 block"></i>
+                          <span className="text-sm">No notifications</span>
                         </div>
                       ) : (
                         notifications.map((notification) => (
                           <div
                             key={notification.id}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer ${
+                            className={`p-3 sm:p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
                               !notification.read ? 'bg-blue-50' : ''
                             }`}
                             onClick={() => handleMarkNotificationAsRead(notification.id)}
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <p className="text-sm text-gray-900">{notification.message}</p>
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-gray-900 leading-relaxed">{notification.message}</p>
                                 <p className="text-xs text-gray-500 mt-1">
                                   {new Date(notification.timestamp).toLocaleString()}
                                 </p>
                               </div>
                               {!notification.read && (
-                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></div>
                               )}
                             </div>
                           </div>
@@ -240,9 +261,9 @@ export default function StudentDashboard() {
         </div>
 
         {/* Enhanced Navigation Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
+        <div className="mb-6 sm:mb-8">
+          <div className="border-b border-gray-200 overflow-x-auto">
+            <nav className="flex space-x-1 sm:space-x-4 lg:space-x-8 min-w-max px-4 sm:px-0">
               {[
                 { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
                 { id: 'fees', label: 'Fees & Payments', icon: 'ri-money-rupee-circle-line' },
@@ -253,14 +274,14 @@ export default function StudentDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                  className={`flex items-center space-x-1 sm:space-x-2 py-3 sm:py-4 px-2 sm:px-3 lg:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap cursor-pointer transition-colors ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  <i className={`${tab.icon} text-lg`}></i>
-                  <span>{tab.label}</span>
+                  <i className={`${tab.icon} text-base sm:text-lg`}></i>
+                  <span className="hidden xs:inline sm:inline">{tab.label}</span>
                 </button>
               ))}
             </nav>
@@ -271,70 +292,70 @@ export default function StudentDashboard() {
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
             {/* Enhanced Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-quiz-line text-xl text-blue-600"></i>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-quiz-line text-sm sm:text-lg lg:text-xl text-blue-600"></i>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Tests Completed</p>
-                    <p className="text-2xl font-bold text-gray-900">{currentUser.progress?.testsCompleted || 0}</p>
-                    <p className="text-xs text-blue-600">Streak: {currentUser.progress?.currentStreak || 0}</p>
+                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Tests Completed</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.progress?.testsCompleted || 0}</p>
+                    <p className="text-xs text-blue-600 hidden sm:block">Streak: {currentUser.progress?.currentStreak || 0}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-money-rupee-circle-line text-xl text-green-600"></i>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-money-rupee-circle-line text-sm sm:text-lg lg:text-xl text-green-600"></i>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Fees Paid</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{currentUser.fees?.paidAmount?.toLocaleString() || 0}</p>
-                    <p className="text-xs text-green-600">Due: ₹{currentUser.fees?.dueAmount?.toLocaleString() || 0}</p>
+                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Fees Paid</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">₹{(currentUser.fees?.paidAmount || 0).toLocaleString()}</p>
+                    <p className="text-xs text-green-600 hidden sm:block">Due: ₹{(currentUser.fees?.dueAmount || 0).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-book-line text-xl text-purple-600"></i>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-book-line text-sm sm:text-lg lg:text-xl text-purple-600"></i>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Books Issued</p>
-                    <p className="text-2xl font-bold text-gray-900">{currentUser.library?.booksIssued?.length || 0}</p>
-                    <p className="text-xs text-purple-600">
+                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Books Issued</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.library?.booksIssued?.length || 0}</p>
+                    <p className="text-xs text-purple-600 hidden sm:block">
                       {currentUser.library?.booksIssued?.filter((book: any) => book.status === 'issued').length || 0} active
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-trophy-line text-xl text-yellow-600"></i>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-trophy-line text-sm sm:text-lg lg:text-xl text-yellow-600"></i>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Points</p>
-                    <p className="text-2xl font-bold text-gray-900">{currentUser.progress?.totalPoints || 0}</p>
-                    <p className="text-xs text-yellow-600">Rank: #{Math.floor(Math.random() * 10) + 1}</p>
+                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Points</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.progress?.totalPoints || 0}</p>
+                    <p className="text-xs text-yellow-600 hidden sm:block">Rank: #{Math.floor(Math.random() * 10) + 1}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow col-span-2 sm:col-span-3 lg:col-span-1">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-award-line text-xl text-red-600"></i>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                    <i className="ri-award-line text-sm sm:text-lg lg:text-xl text-red-600"></i>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Certificates</p>
-                    <p className="text-2xl font-bold text-gray-900">{currentUser.certificates?.length || 0}</p>
-                    <p className="text-xs text-red-600">Earned</p>
+                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Certificates</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.certificates?.length || 0}</p>
+                    <p className="text-xs text-red-600 hidden sm:block">Earned</p>
                   </div>
                 </div>
               </div>
