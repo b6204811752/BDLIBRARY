@@ -243,7 +243,7 @@ function TestComponent() {
             <h3 className="text-xl font-bold text-gray-900 mb-6">Question Analysis</h3>
             
             <div className="space-y-4">
-              {test.questions.slice(0, 10).map((question, index) => {
+              {test.questions.map((question, index) => {
                 const userAnswer = currentAttempt.answers[question.id];
                 const isCorrect = userAnswer === question.correctAnswer;
                 const wasAttempted = userAnswer !== undefined;
@@ -303,13 +303,15 @@ function TestComponent() {
                 );
               })}
               
-              {test.questions.length > 10 && (
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-gray-600">
-                    Showing first 10 questions. Total questions: {test.questions.length}
-                  </p>
-                </div>
-              )}
+              {/* All questions displayed confirmation */}
+              <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                <p className="text-green-800 font-medium">
+                  ✅ All {test.questions.length} questions displayed with complete analysis
+                </p>
+                <p className="text-green-600 text-sm mt-1">
+                  Every question has been analyzed above with detailed explanations
+                </p>
+              </div>
             </div>
           </div>
         </div>
