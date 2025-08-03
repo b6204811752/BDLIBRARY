@@ -849,3 +849,26 @@
 .card-stack:hover::after {
   transform: rotate(-2deg) translateY(-4px);
 }
+
+/* Success Popup Animation */
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-50px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) translateY(0px);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out;
+}

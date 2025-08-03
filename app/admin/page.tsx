@@ -119,6 +119,10 @@ export default function AdminDashboard() {
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [selectedStudentForFee, setSelectedStudentForFee] = useState<Student | null>(null);
 
+  // Success popup state
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
   // Payment, discount, library, exam, and counseling data states
   const [paymentData, setPaymentData] = useState({
     studentId: '',
@@ -265,6 +269,16 @@ export default function AdminDashboard() {
           joinDate: new Date().toISOString().split('T')[0]
         });
         setShowAddModal(false);
+        
+        // Show success popup
+        setSuccessMessage(`Student "${newStudent.name}" has been successfully added!`);
+        setShowSuccessPopup(true);
+        
+        // Auto-hide popup after 3 seconds
+        setTimeout(() => {
+          setShowSuccessPopup(false);
+        }, 3000);
+        
         await loadData(); // Reload data after adding
       } else {
         console.error('Failed to add student');
@@ -278,6 +292,8 @@ export default function AdminDashboard() {
     e.preventDefault();
 
     const lines = bulkStudents.split('\n').filter((line: string) => line.trim());
+    let successCount = 0;
+    let errorCount = 0;
 
     for (const line of lines) {
       const [name, email, course] = line.split(',').map((s: string) => s.trim());
@@ -312,14 +328,28 @@ export default function AdminDashboard() {
             },
             notifications: []
           });
+          successCount++;
         } catch (error) {
           console.error('Error adding student:', error);
+          errorCount++;
         }
       }
     }
 
     setBulkStudents('');
     setShowBulkUpload(false);
+    
+    // Show success popup for bulk upload
+    if (successCount > 0) {
+      setSuccessMessage(`Successfully added ${successCount} student${successCount > 1 ? 's' : ''}!${errorCount > 0 ? ` (${errorCount} failed)` : ''}`);
+      setShowSuccessPopup(true);
+      
+      // Auto-hide popup after 4 seconds for bulk upload
+      setTimeout(() => {
+        setShowSuccessPopup(false);
+      }, 4000);
+    }
+    
     await loadData();
   };
 
@@ -2141,6 +2171,49 @@ export default function AdminDashboard() {
         )}
 
         <Footer />
+
+        {/* Success Popup */}
+        {showSuccessPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 animate-bounce-in">
+              <div className="p-6">
+                {/* Success Icon */}
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                
+                {/* Success Message */}
+                <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                  Success!
+                </h3>
+                <p className="text-gray-600 text-center mb-6">
+                  {successMessage}
+                </p>
+                
+                {/* Action Buttons */}
+                <div className="flex justify-center space-x-3">
+                  <button
+                    onClick={() => setShowSuccessPopup(false)}
+                    className="px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium"
+                  >
+                    Great!
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowSuccessPopup(false);
+                      setShowAddModal(true);
+                    }}
+                    className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium"
+                  >
+                    Add Another
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
