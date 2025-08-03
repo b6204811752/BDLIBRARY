@@ -15,7 +15,10 @@ import {
   AuthData,
   authenticate,
   authenticateAdmin,
-  getCurrentUser
+  getCurrentUser,
+  debugAuthData,
+  refreshAuthData,
+  authenticateStudent
 } from '@/lib/auth';
 import {
   getFeeTransactions,
@@ -678,6 +681,7 @@ export default function AdminDashboard() {
                 { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-fill', color: 'purple' },
                 { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-fill', color: 'orange' },
                 { id: 'reports', label: 'Reports', icon: 'ri-file-chart-fill', color: 'red' },
+                { id: 'debug', label: 'Debug', icon: 'ri-bug-fill', color: 'yellow' },
                 { id: 'settings', label: 'Settings', icon: 'ri-settings-fill', color: 'gray' }
               ].map((tab) => (
                 <button
@@ -2197,6 +2201,165 @@ export default function AdminDashboard() {
                   >
                     Add Another
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Debug Tab */}
+        {activeTab === 'debug' && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-2xl shadow-xl border border-yellow-200">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <i className="ri-bug-fill text-white"></i>
+                </div>
+                <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                  Authentication Debug Panel
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Debug Actions */}
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i className="ri-tools-fill text-yellow-600 mr-2"></i>
+                    Debug Actions
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    <button
+                      onClick={async () => {
+                        console.log('🔍 Running debug check...');
+                        await debugAuthData();
+                      }}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium flex items-center justify-center space-x-2"
+                    >
+                      <i className="ri-search-line"></i>
+                      <span>Check Current Auth Data</span>
+                    </button>
+
+                    <button
+                      onClick={async () => {
+                        console.log('🔄 Refreshing auth data...');
+                        await refreshAuthData();
+                        await loadData(); // Reload the admin data
+                      }}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium flex items-center justify-center space-x-2"
+                    >
+                      <i className="ri-refresh-line"></i>
+                      <span>Refresh Auth Data</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          localStorage.clear();
+                          console.log('🗑️ LocalStorage cleared');
+                          window.location.reload();
+                        }
+                      }}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 font-medium flex items-center justify-center space-x-2"
+                    >
+                      <i className="ri-delete-bin-line"></i>
+                      <span>Clear All Data & Reload</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Test Authentication */}
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i className="ri-shield-check-line text-green-600 mr-2"></i>
+                    Test Authentication
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Test Email</label>
+                      <input
+                        type="email"
+                        placeholder="Enter email to test"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        id="testEmail"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Test Mobile</label>
+                      <input
+                        type="tel"
+                        placeholder="Enter mobile to test"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        id="testMobile"
+                      />
+                    </div>
+
+                    <button
+                      onClick={async () => {
+                        const email = (document.getElementById('testEmail') as HTMLInputElement)?.value;
+                        const mobile = (document.getElementById('testMobile') as HTMLInputElement)?.value;
+                        
+                        if (email && mobile) {
+                          console.log('🧪 Testing authentication for:', { email, mobile });
+                          const result = await authenticateStudent(email, mobile);
+                          if (result) {
+                            console.log('✅ Authentication test PASSED:', result.name);
+                            alert(`✅ Authentication successful for ${result.name}`);
+                          } else {
+                            console.log('❌ Authentication test FAILED');
+                            alert('❌ Authentication failed');
+                          }
+                        } else {
+                          alert('Please enter both email and mobile');
+                        }
+                      }}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium flex items-center justify-center space-x-2"
+                    >
+                      <i className="ri-play-line"></i>
+                      <span>Test Authentication</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Current Data Summary */}
+              <div className="mt-6 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <i className="ri-database-line text-purple-600 mr-2"></i>
+                  Current Data Summary
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="text-2xl font-bold text-blue-600">{students.length}</div>
+                    <div className="text-sm text-blue-800">Total Students</div>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div className="text-2xl font-bold text-green-600">
+                      {students.filter(s => s.joinDate === new Date().toISOString().split('T')[0]).length}
+                    </div>
+                    <div className="text-sm text-green-800">Added Today</div>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="text-2xl font-bold text-purple-600">
+                      {typeof window !== 'undefined' && localStorage.getItem('authData') ? 'Yes' : 'No'}
+                    </div>
+                    <div className="text-sm text-purple-800">LocalStorage Data</div>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  <h5 className="font-semibold text-gray-800 mb-2">Instructions:</h5>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Use "Check Current Auth Data" to see all students in console</li>
+                    <li>• Use "Test Authentication" to verify login credentials work</li>
+                    <li>• Check browser console for detailed debug information</li>
+                    <li>• If students still can't login, try "Refresh Auth Data"</li>
+                  </ul>
                 </div>
               </div>
             </div>

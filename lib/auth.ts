@@ -240,54 +240,76 @@ export const defaultAuthData: AuthData = {
   announcements: []
 };
 
-// Vercel-compatible localStorage-based data functions
+// Vercel-compatible localStorage-based data functions with enhanced debugging
 async function loadAuthData(): Promise<AuthData> {
   try {
+    console.log('🔄 Loading auth data...');
+    
     // First, try to load from localStorage
     if (typeof window !== 'undefined') {
       const localData = localStorage.getItem('authData');
       if (localData) {
-        console.log('Loading auth data from localStorage');
-        return JSON.parse(localData);
+        try {
+          const parsedData = JSON.parse(localData);
+          console.log('✅ Loading auth data from localStorage, students:', parsedData.students?.length || 0);
+          return parsedData;
+        } catch (parseError) {
+          console.error('❌ Error parsing localStorage data:', parseError);
+          localStorage.removeItem('authData'); // Clear corrupted data
+        }
+      } else {
+        console.log('📝 No data found in localStorage');
       }
     }
     
-    // If localStorage is empty, try to load from API (fallback)
+    // If localStorage is empty or corrupted, try to load from API (fallback)
     try {
+      console.log('🌐 Attempting to load from API...');
       const response = await fetch('/api/auth');
       if (response.ok) {
         const result = await response.json();
-        if (result.success) {
+        if (result.success && result.data) {
           // Save to localStorage for future use
           if (typeof window !== 'undefined') {
             localStorage.setItem('authData', JSON.stringify(result.data));
+            console.log('💾 Loaded from API and cached to localStorage, students:', result.data.students?.length || 0);
           }
-          console.log('Loading auth data from API and caching to localStorage');
           return result.data;
         }
       }
+      console.log('⚠️ API load unsuccessful');
     } catch (apiError) {
-      console.log('API not available, using localStorage/default data');
+      console.log('⚠️ API not available, using default data');
     }
     
     // If both fail, initialize with default data
-    console.log('Initializing with default auth data');
+    console.log('🏗️ Initializing with default auth data');
     if (typeof window !== 'undefined') {
       localStorage.setItem('authData', JSON.stringify(defaultAuthData));
+      console.log('💾 Default data saved to localStorage, students:', defaultAuthData.students.length);
     }
     return defaultAuthData;
   } catch (error) {
-    console.error('Error loading auth data:', error);
+    console.error('❌ Error loading auth data:', error);
     return defaultAuthData;
   }
 }
 
 async function saveAuthData(data: AuthData): Promise<boolean> {
   try {
+    console.log('💾 Saving auth data, students:', data.students?.length || 0);
+    
     // Always save to localStorage for Vercel compatibility
     if (typeof window !== 'undefined') {
       localStorage.setItem('authData', JSON.stringify(data));
-      console.log('Auth data saved to localStorage successfully');
+      console.log('✅ Auth data saved to localStorage successfully');
+      
+      // Also trigger a storage event to sync across tabs
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'authData',
+        newValue: JSON.stringify(data),
+        storageArea: localStorage
+      }));
     }
     
     // Try to save to API as well (if available), but don't fail if it doesn't work
@@ -302,15 +324,17 @@ async function saveAuthData(data: AuthData): Promise<boolean> {
       
       if (response.ok) {
         const result = await response.json();
-        console.log('Auth data also saved to API:', result.success);
+        console.log('🌐 Auth data also saved to API:', result.success);
+      } else {
+        console.log('⚠️ API save failed with status:', response.status);
       }
     } catch (apiError) {
-      console.log('API save failed, but localStorage save succeeded');
+      console.log('⚠️ API save failed, but localStorage save succeeded');
     }
     
     return true; // Return true since localStorage save succeeded
   } catch (error) {
-    console.error('Error saving auth data:', error);
+    console.error('❌ Error saving auth data:', error);
     return false;
   }
 }
@@ -351,11 +375,71 @@ export async function authenticate(username: string, password: string): Promise<
 // Initialize auth data on first load
 export async function initializeAuthData(): Promise<void> {
   try {
-    console.log('Initializing authentication data...');
+    console.log('🚀 Initializing authentication data...');
     const authData = await loadAuthData();
-    console.log('Auth data initialized with', authData.students.length, 'students and', authData.admins.length, 'admins');
+    console.log('✅ Auth data initialized with', authData.students.length, 'students and', authData.admins.length, 'admins');
+    
+    // Log all students for debugging
+    console.log('📋 Current students in system:');
+    authData.students.forEach((student, index) => {
+      console.log(`${index + 1}. ${student.name} - ${student.email} - ${student.mobile}`);
+    });
   } catch (error) {
-    console.error('Error initializing auth data:', error);
+    console.error('❌ Error initializing auth data:', error);
+  }
+}
+
+// Debug function to check current auth data
+export async function debugAuthData(): Promise<void> {
+  try {
+    console.log('🔍 Debug: Checking current auth data...');
+    const authData = await loadAuthData();
+    
+    console.log('📊 Auth Data Summary:', {
+      totalStudents: authData.students.length,
+      totalAdmins: authData.admins.length
+    });
+    
+    console.log('👥 All Students:');
+    authData.students.forEach((student, index) => {
+      console.log(`${index + 1}. ${student.name}`, {
+        email: student.email,
+        mobile: student.mobile,
+        id: student.id,
+        joinDate: student.joinDate
+      });
+    });
+    
+    // Check localStorage directly
+    if (typeof window !== 'undefined') {
+      const localData = localStorage.getItem('authData');
+      if (localData) {
+        const parsed = JSON.parse(localData);
+        console.log('💾 LocalStorage contains:', parsed.students.length, 'students');
+      } else {
+        console.log('❌ No data in localStorage');
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error in debugAuthData:', error);
+  }
+}
+
+// Function to force refresh auth data
+export async function refreshAuthData(): Promise<void> {
+  try {
+    console.log('🔄 Forcing auth data refresh...');
+    
+    // Clear localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authData');
+      console.log('🗑️ Cleared localStorage');
+    }
+    
+    // Reinitialize
+    await initializeAuthData();
+  } catch (error) {
+    console.error('❌ Error refreshing auth data:', error);
   }
 }
 
@@ -366,12 +450,13 @@ export async function getAllStudents(): Promise<Student[]> {
 
 export async function addStudent(student: Omit<Student, 'id' | 'role'>): Promise<boolean> {
   try {
+    console.log('🔄 Adding new student:', student.name);
     const authData = await loadAuthData();
     
     // Check if student with same email already exists
     const existingStudent = authData.students.find(s => s.email.toLowerCase() === student.email.toLowerCase());
     if (existingStudent) {
-      console.error('Student with this email already exists:', student.email);
+      console.error('❌ Student with this email already exists:', student.email);
       return false;
     }
     
@@ -386,25 +471,53 @@ export async function addStudent(student: Omit<Student, 'id' | 'role'>): Promise
       username: student.email.trim().toLowerCase()
     };
     
-    console.log('Adding new student:', {
+    console.log('👤 Creating student:', {
       name: newStudent.name,
       email: newStudent.email,
       mobile: newStudent.mobile,
-      username: newStudent.username
+      username: newStudent.username,
+      id: newStudent.id
     });
     
+    // Add to students array
     authData.students.push(newStudent);
+    
+    // Save the updated data
     const saved = await saveAuthData(authData);
     
     if (saved) {
-      console.log('Student added successfully:', newStudent.name);
+      console.log('✅ Student added successfully:', newStudent.name);
+      
+      // Verify the student was actually saved by reloading data
+      const verificationData = await loadAuthData();
+      const verifiedStudent = verificationData.students.find(s => s.id === newStudent.id);
+      
+      if (verifiedStudent) {
+        console.log('✅ Student verification successful:', verifiedStudent.name);
+        
+        // Also verify authentication will work
+        const authTest = verificationData.students.find(s => 
+          s.email.toLowerCase() === newStudent.email.toLowerCase() && 
+          s.mobile === newStudent.mobile
+        );
+        
+        if (authTest) {
+          console.log('✅ Authentication test passed for new student');
+        } else {
+          console.error('❌ Authentication test failed for new student');
+        }
+        
+        return true;
+      } else {
+        console.error('❌ Student verification failed - not found after save');
+        return false;
+      }
     } else {
-      console.error('Failed to save student data');
+      console.error('❌ Failed to save student data');
+      return false;
     }
-    
-    return saved;
   } catch (error) {
-    console.error('Error in addStudent:', error);
+    console.error('❌ Error in addStudent:', error);
     return false;
   }
 }
@@ -490,26 +603,67 @@ export function logout(): void {
 // Student authentication function for login page
 export async function authenticateStudent(email: string, mobile: string): Promise<Student | null> {
   try {
+    console.log('🔐 Authenticating student with:', { email, mobile });
     const authData = await loadAuthData();
     
-    // Debug logging
-    console.log('Authenticating student with email:', email, 'mobile:', mobile);
-    console.log('Available students:', authData.students.map(s => ({ email: s.email, mobile: s.mobile, name: s.name })));
+    console.log('👥 Available students:', authData.students.map(s => ({ 
+      name: s.name,
+      email: s.email, 
+      mobile: s.mobile,
+      id: s.id 
+    })));
+    
+    // Normalize inputs
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedMobile = mobile.trim();
+    
+    console.log('🔍 Searching for:', { normalizedEmail, normalizedMobile });
     
     // Authenticate using email and mobile number (mobile is used as password)
-    const student = authData.students.find(s => 
-      s.email.toLowerCase() === email.toLowerCase() && s.mobile === mobile
-    );
+    const student = authData.students.find(s => {
+      const studentEmailMatch = s.email.toLowerCase() === normalizedEmail;
+      const studentMobileMatch = s.mobile === normalizedMobile;
+      
+      console.log(`📋 Checking ${s.name}:`, {
+        email: s.email,
+        emailMatch: studentEmailMatch,
+        mobile: s.mobile, 
+        mobileMatch: studentMobileMatch,
+        overallMatch: studentEmailMatch && studentMobileMatch
+      });
+      
+      return studentEmailMatch && studentMobileMatch;
+    });
     
     if (student) {
-      console.log('Student found:', student.name);
+      console.log('✅ Student authentication successful:', {
+        name: student.name,
+        email: student.email,
+        mobile: student.mobile,
+        id: student.id
+      });
+      return student;
     } else {
-      console.log('No student found with provided credentials');
+      console.log('❌ No student found with provided credentials');
+      console.log('🔍 Double-checking with exact matches:');
+      
+      // Extra debugging - check each student individually
+      authData.students.forEach((s, index) => {
+        console.log(`Student ${index + 1}:`, {
+          name: s.name,
+          storedEmail: s.email,
+          inputEmail: normalizedEmail,
+          emailMatch: s.email === normalizedEmail,
+          storedMobile: s.mobile,
+          inputMobile: normalizedMobile,
+          mobileMatch: s.mobile === normalizedMobile
+        });
+      });
+      
+      return null;
     }
-    
-    return student || null;
   } catch (error) {
-    console.error('Error in authenticateStudent:', error);
+    console.error('❌ Error in authenticateStudent:', error);
     return null;
   }
 }
