@@ -310,16 +310,48 @@ export async function getAllStudents(): Promise<Student[]> {
 }
 
 export async function addStudent(student: Omit<Student, 'id' | 'role'>): Promise<boolean> {
-  const authData = await loadAuthData();
-  
-  const newStudent: Student = {
-    ...student,
-    id: 'student' + Date.now(),
-    role: 'student'
-  };
-  
-  authData.students.push(newStudent);
-  return await saveAuthData(authData);
+  try {
+    const authData = await loadAuthData();
+    
+    // Check if student with same email already exists
+    const existingStudent = authData.students.find(s => s.email.toLowerCase() === student.email.toLowerCase());
+    if (existingStudent) {
+      console.error('Student with this email already exists:', student.email);
+      return false;
+    }
+    
+    const newStudent: Student = {
+      ...student,
+      id: 'student' + Date.now(),
+      role: 'student',
+      // Ensure email and mobile are properly set for authentication
+      email: student.email.trim().toLowerCase(),
+      mobile: student.mobile.trim(),
+      // Set username to email for consistency (though mobile is used as password)
+      username: student.email.trim().toLowerCase()
+    };
+    
+    console.log('Adding new student:', {
+      name: newStudent.name,
+      email: newStudent.email,
+      mobile: newStudent.mobile,
+      username: newStudent.username
+    });
+    
+    authData.students.push(newStudent);
+    const saved = await saveAuthData(authData);
+    
+    if (saved) {
+      console.log('Student added successfully:', newStudent.name);
+    } else {
+      console.error('Failed to save student data');
+    }
+    
+    return saved;
+  } catch (error) {
+    console.error('Error in addStudent:', error);
+    return false;
+  }
 }
 
 export async function updateStudent(updatedStudent: Student): Promise<boolean> {
@@ -402,10 +434,29 @@ export function logout(): void {
 
 // Student authentication function for login page
 export async function authenticateStudent(email: string, mobile: string): Promise<Student | null> {
-  const authData = await loadAuthData();
-  // Authenticate using email and mobile number (mobile is used as password)
-  const student = authData.students.find(s => s.email === email && s.mobile === mobile);
-  return student || null;
+  try {
+    const authData = await loadAuthData();
+    
+    // Debug logging
+    console.log('Authenticating student with email:', email, 'mobile:', mobile);
+    console.log('Available students:', authData.students.map(s => ({ email: s.email, mobile: s.mobile, name: s.name })));
+    
+    // Authenticate using email and mobile number (mobile is used as password)
+    const student = authData.students.find(s => 
+      s.email.toLowerCase() === email.toLowerCase() && s.mobile === mobile
+    );
+    
+    if (student) {
+      console.log('Student found:', student.name);
+    } else {
+      console.log('No student found with provided credentials');
+    }
+    
+    return student || null;
+  } catch (error) {
+    console.error('Error in authenticateStudent:', error);
+    return null;
+  }
 }
 
 // Placeholder functions for features that will be implemented later
@@ -422,9 +473,23 @@ export function markNotificationAsRead(studentId: string, notificationId: string
   console.log('Mark notification as read feature coming soon');
 }
 
-// Legacy function - use addStudent instead
-export function authenticateAdmin(username: string, password: string): Admin | null {
-  const authData = getAuthData();
-  const admin = authData.admins.find(a => a.username === username && a.password === password);
-  return admin || null;
+// Admin authentication function
+export async function authenticateAdmin(username: string, password: string): Promise<Admin | null> {
+  try {
+    const authData = await loadAuthData();
+    console.log('Authenticating admin with username:', username);
+    
+    const admin = authData.admins.find(a => a.username === username && a.password === password);
+    
+    if (admin) {
+      console.log('Admin found:', admin.username);
+    } else {
+      console.log('No admin found with provided credentials');
+    }
+    
+    return admin || null;
+  } catch (error) {
+    console.error('Error in authenticateAdmin:', error);
+    return null;
+  }
 }

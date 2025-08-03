@@ -67,7 +67,7 @@ export default function Login() {
           return;
         }
         
-        const admin = authenticateAdmin(username, password);
+        const admin = await authenticateAdmin(username, password);
         if (admin) {
           setCurrentUser('admin', admin);
           setLoading(false);

@@ -218,8 +218,8 @@ export default function AdminDashboard() {
         name: newStudent.name,
         email: newStudent.email,
         mobile: newStudent.mobile,
-        username: newStudent.username,
-        password: newStudent.mobile, // Use mobile as password
+        username: newStudent.email, // Use email as username for consistency
+        password: newStudent.mobile, // Use mobile as password (this is how authentication works)
         course: newStudent.course,
         duration: newStudent.duration,
         monthlyFees: newStudent.monthlyFees,
@@ -1912,27 +1912,15 @@ export default function AdminDashboard() {
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                  <input
-                    type="text"
-                    value={newStudent.username}
-                    onChange={(e) => setNewStudent({ ...newStudent, username: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter username"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                  <input
-                    type="password"
-                    value={newStudent.password}
-                    onChange={(e) => setNewStudent({ ...newStudent, password: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter password"
-                    required
-                  />
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">Student Login Credentials</h4>
+                  <p className="text-sm text-blue-700">
+                    The student will login using:
+                  </p>
+                  <ul className="text-sm text-blue-700 mt-1 ml-4 list-disc">
+                    <li><strong>Username:</strong> Email address entered above</li>
+                    <li><strong>Password:</strong> Mobile number entered above</li>
+                  </ul>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
