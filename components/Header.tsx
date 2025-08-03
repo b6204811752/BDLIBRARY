@@ -98,51 +98,51 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-full bg-white border-t border-gray-200 shadow-lg z-50 mobile-menu-drawer">
+          <div className="md:hidden absolute left-0 right-0 top-full bg-gray-50 border-t-2 border-blue-200 shadow-xl z-50 mobile-menu-drawer">
             <nav className="px-3 py-4 space-y-1">
               <Link 
                 href="/" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
+                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <i className="ri-home-line mr-3 text-lg"></i>
+                <i className="ri-home-line mr-3 text-lg text-blue-600"></i>
                 Home
               </Link>
               <Link 
                 href="/about" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
+                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <i className="ri-information-line mr-3 text-lg"></i>
+                <i className="ri-information-line mr-3 text-lg text-blue-600"></i>
                 About
               </Link>
               <Link 
                 href="/courses" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
+                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <i className="ri-book-line mr-3 text-lg"></i>
+                <i className="ri-book-line mr-3 text-lg text-blue-600"></i>
                 Courses
               </Link>
               <Link 
                 href="/contact" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
+                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <i className="ri-phone-line mr-3 text-lg"></i>
+                <i className="ri-phone-line mr-3 text-lg text-blue-600"></i>
                 Contact
               </Link>
               
               {/* Mobile user actions */}
-              <div className="border-t border-gray-200 pt-3 mt-3">
+              <div className="border-t-2 border-gray-300 pt-3 mt-3">
                 {currentUser.type ? (
                   <>
-                    <div className="px-3 py-2 text-sm text-gray-500 border-b border-gray-100 mb-2">
+                    <div className="px-3 py-2 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-md mb-2">
                       Welcome, {currentUser.data?.name || currentUser.data?.username}
                     </div>
                     <Link 
                       href={currentUser.type === 'admin' ? '/admin' : '/student'} 
-                      className="mobile-menu-item block px-3 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors cursor-pointer mb-2"
+                      className="mobile-menu-item block px-3 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors cursor-pointer mb-2 shadow-md"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <i className="ri-dashboard-line mr-3 text-lg"></i>
@@ -153,7 +153,7 @@ export default function Header() {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="mobile-menu-item block w-full text-left px-3 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                      className="mobile-menu-item block w-full text-left px-3 py-3 text-base font-medium text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer"
                     >
                       <i className="ri-logout-circle-line mr-3 text-lg"></i>
                       Logout
@@ -162,7 +162,7 @@ export default function Header() {
                 ) : (
                   <Link 
                     href="/login" 
-                    className="mobile-menu-item block px-3 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors cursor-pointer text-center"
+                    className="mobile-menu-item block px-3 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors cursor-pointer text-center shadow-md"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <i className="ri-login-circle-line mr-3 text-lg"></i>
