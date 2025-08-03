@@ -1866,55 +1866,6 @@ export default function AdminDashboard() {
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Course Duration (Months)</label>
-                  <select
-                    value={newStudent.duration}
-                    onChange={(e) => setNewStudent({ ...newStudent, duration: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
-                    required
-                  >
-                    <option value="6">6 Months</option>
-                    <option value="12">12 Months</option>
-                    <option value="18">18 Months</option>
-                    <option value="24">24 Months</option>
-                  </select>
-                </div>
-
-                {/* Monthly Fee Amount */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Fee Amount (₹)</label>
-                  <input
-                    type="number"
-                    value={newStudent.monthlyFees}
-                    onChange={(e) => setNewStudent({ ...newStudent, monthlyFees: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter monthly fee amount"
-                    min="0"
-                    step="0.01"
-                    required
-                  />
-                </div>
-
-                {/* Total Fee Summary */}
-                {newStudent.monthlyFees > 0 && newStudent.duration && (
-                  <div className="bg-blue-50 p-4 rounded-md">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-blue-800">Total Course Fee:</span>
-                      <span className="text-lg font-bold text-blue-900">
-                        ₹{(newStudent.monthlyFees * newStudent.duration).toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-xs text-blue-600">Duration:</span>
-                      <span className="text-xs text-blue-600">{newStudent.duration} months</span>
-                    </div>
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-xs text-blue-600">Monthly Fee:</span>
-                      <span className="text-xs text-blue-600">₹{newStudent.monthlyFees.toLocaleString()}</span>
-                    </div>
-                  </div>
-                )}
                 <div className="flex space-x-4 pt-4">
                   <button
                     type="button"
@@ -1978,18 +1929,6 @@ export default function AdminDashboard() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                     placeholder="Enter 10-digit mobile number"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Duration (months)</label>
-                  <input
-                    type="number"
-                    value={selectedStudent.duration}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, duration: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                    min="1"
-                    max="24"
                   />
                 </div>
                 <div>
