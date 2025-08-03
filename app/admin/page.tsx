@@ -10,7 +10,6 @@ import {
   addStudent, 
   deleteStudent, 
   updateStudent,
-  Student,
   Admin,
   getCurrentUser,
   debugAuthData,
@@ -21,6 +20,7 @@ import {
   importDatabase,
   resetDatabase
 } from '@/lib/auth';
+import { Student } from '@/lib/database';
 import {
   getFeeTransactions,
   createFeeTransaction,
@@ -126,6 +126,10 @@ export default function AdminDashboard() {
   // Success popup state
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  
+  // Message and error states
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   // Payment, discount, library, exam, and counseling data states
   const [paymentData, setPaymentData] = useState({
@@ -222,40 +226,21 @@ export default function AdminDashboard() {
         name: newStudent.name,
         email: newStudent.email,
         mobile: newStudent.mobile,
-        username: newStudent.email, // Use email as username for consistency
-        password: newStudent.mobile, // Use mobile as password (this is how authentication works)
-        course: newStudent.course,
-        duration: newStudent.duration,
-        monthlyFees: newStudent.monthlyFees,
-        libraryAccess: true,
-        examsPassed: 0,
-        counselingBooked: false,
-        joinDate: new Date().toISOString().split('T')[0],
-        shift: 'morning', // Default shift
-        jobCategory: newStudent.course, // Use course as job category
-        attendance: {
-          present: 0,
-          absent: 0,
-          totalDays: 0
-        },
-        progress: {
-          materialsDownloaded: 0,
-          testsCompleted: 0,
-          totalPoints: 0,
-          currentStreak: 0,
-          lastActivity: new Date().toISOString().split('T')[0]
-        },
-        notifications: [
-          {
-            id: 'welcome_' + Date.now(),
-            title: 'Welcome!',
-            message: 'Welcome to BD Library. Your learning journey starts here.',
-            type: 'info',
-            read: false,
-            createdAt: new Date().toISOString().split('T')[0]
-          }
-        ]
+        course: newStudent.course || 'General'
       });
+
+      if (success) {
+        setMessage('Student added successfully!');
+        setNewStudent({
+          name: '',
+          email: '',
+          mobile: '',
+          course: ''
+        });
+        await loadData(); // Refresh the student list
+      } else {
+        setError('Failed to add student');
+      }
 
       if (success) {
         setNewStudent({
@@ -307,54 +292,19 @@ export default function AdminDashboard() {
             name,
             email,
             mobile: '9999999999', // Default mobile number
-            username: email, // Use email as username
-            password: '9999999999', // Default mobile as password
             course: course || 'General',
-            duration: 12, // Default duration
-            monthlyFees: 5000, // Default monthly fee amount
-            libraryAccess: true,
-            examsPassed: 0,
-            counselingBooked: false,
-            joinDate: new Date().toISOString().split('T')[0],
-            shift: 'morning', // Default shift
-            jobCategory: course || 'General', // Use course as job category
-            attendance: {
-              present: 0,
-              absent: 0,
-              totalDays: 0
-            },
-            progress: {
-              materialsDownloaded: 0,
-              testsCompleted: 0,
-              totalPoints: 0,
-              currentStreak: 0,
-              lastActivity: new Date().toISOString().split('T')[0]
-            },
-            notifications: []
+            enrollmentDate: new Date().toISOString().split('T')[0],
+            status: 'active' as const
           });
-          successCount++;
+          
+          setMessage('Student added successfully!');
+          setBulkStudents('');
+          setShowBulkUpload(false);
+          await loadData();
         } catch (error) {
           console.error('Error adding student:', error);
-          errorCount++;
+          setError('Failed to add student');
         }
-      }
-    }
-
-    setBulkStudents('');
-    setShowBulkUpload(false);
-    
-    // Show success popup for bulk upload
-    if (successCount > 0) {
-      setSuccessMessage(`Successfully added ${successCount} student${successCount > 1 ? 's' : ''}!${errorCount > 0 ? ` (${errorCount} failed)` : ''}`);
-      setShowSuccessPopup(true);
-      
-      // Auto-hide popup after 4 seconds for bulk upload
-      setTimeout(() => {
-        setShowSuccessPopup(false);
-      }, 4000);
-    }
-    
-    await loadData();
   };
 
   const handleDeleteStudent = async (id: string) => {
@@ -376,7 +326,7 @@ export default function AdminDashboard() {
   const handleUpdateStudent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedStudent) {
-      const success = await updateStudent(selectedStudent);
+      const success = await updateStudent(selectedStudent.id, selectedStudent);
       if (success) {
         setShowEditModal(false);
         setSelectedStudent(null);
