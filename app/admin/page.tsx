@@ -20,6 +20,33 @@ import {
   authenticateAdmin,
   getCurrentUser
 } from '@/lib/auth';
+import {
+  getFeeTransactions,
+  createFeeTransaction,
+  getStudentFeeHistory,
+  getOutstandingFees,
+  getFeeAnalytics,
+  getFeeDefaulters,
+  generateFeeReceipt,
+  sendFeeReminder,
+  applyFeeDiscount,
+  FeeTransaction
+} from '@/lib/fee-management';
+import {
+  getLeaderboardByCategory,
+  getTopPerformers,
+  getStudentStats,
+  createLeaderboardEntry,
+  checkAndAwardAchievements
+} from '@/lib/leaderboard';
+import {
+  getNotifications,
+  createNotification,
+  triggerFeeReminderNotifications,
+  sendAnnouncementToAll,
+  getUnreadCount,
+  runNotificationJobs
+} from '@/lib/notifications';
 
 export default function AdminDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -88,6 +115,12 @@ export default function AdminDashboard() {
     activeTests: 0,
     newNotifications: 0
   });
+
+  // Fee management states
+  const [feeTransactions, setFeeTransactions] = useState<FeeTransaction[]>([]);
+  const [feeAnalytics, setFeeAnalytics] = useState<any>(null);
+  const [showFeeModal, setShowFeeModal] = useState(false);
+  const [selectedStudentForFee, setSelectedStudentForFee] = useState<Student | null>(null);
 
   // Payment, discount, library, exam, and counseling data states
   const [paymentData, setPaymentData] = useState({
