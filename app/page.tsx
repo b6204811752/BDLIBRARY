@@ -12,7 +12,8 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    setCurrentUser(getCurrentUser());
+    const user = getCurrentUser();
+    setCurrentUser(user || { type: null, data: null });
   }, []);
 
   // Prevent hydration mismatch by not rendering user-specific content on server
