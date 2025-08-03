@@ -195,7 +195,7 @@ export default function StudentDashboard() {
       // Search through practice tests
       if (category === 'all' || category === 'tests') {
         const matchingTests = practiceTests.filter(test =>
-          test.title.toLowerCase().includes(query.toLowerCase()) ||
+          test.name.toLowerCase().includes(query.toLowerCase()) ||
           test.description.toLowerCase().includes(query.toLowerCase()) ||
           test.category.toLowerCase().includes(query.toLowerCase())
         );
@@ -1351,10 +1351,10 @@ export default function StudentDashboard() {
                         <div key={test.id} className="border border-orange-100 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:scale-105">
                           <div className="flex items-start justify-between mb-3">
                             <span className="text-sm font-medium text-orange-600 bg-orange-50 px-3 py-1 rounded-full">{test.category}</span>
-                            <span className="text-sm text-gray-500">{test.timeLimit} min</span>
+                            <span className="text-sm text-gray-500">{test.duration} min</span>
                           </div>
                           <h4 className="font-semibold text-gray-900 mb-2">{test.name}</h4>
-                          <p className="text-sm text-gray-600 mb-3">{test.questions.length} Questions • {test.timeLimit} Minutes</p>
+                          <p className="text-sm text-gray-600 mb-3">{test.questions.length} Questions • {test.duration} Minutes</p>
                           <div className="flex items-center justify-between">
                             <button
                               onClick={handleTakeTest}
