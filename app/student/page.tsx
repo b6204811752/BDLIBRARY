@@ -930,13 +930,13 @@ export default function StudentDashboard() {
                   { 
                     id: 'gk-mock-1',
                     name: 'General Knowledge Mock Test', 
-                    questions: 35, 
-                    duration: '60 minutes', 
+                    questions: 100, 
+                    duration: '120 minutes', 
                     difficulty: 'Medium', 
                     completed: false, 
                     score: null,
                     category: 'General Knowledge',
-                    totalMarks: 70,
+                    totalMarks: 200,
                     subjects: ['History', 'Geography', 'Science', 'Politics', 'Sports', 'Current Affairs']
                   }
                 ].map((test, index) => (

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { TestSet, Question, TestAttempt, practiceTests, createTestAttempt, saveTestAttempt, calculateScore } from '@/lib/practice-tests';
+import { TestSet, Question, TestAttempt, practiceTests, createTestAttempt, saveTestAttempt, calculateScore, getStudentAttempts } from '@/lib/practice-tests';
 
 interface PracticeTestProps {
   currentUser: any;
@@ -21,6 +21,13 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Check if user has completed a test
+  const getTestStatus = (testId: string) => {
+    const attempts = getStudentAttempts(currentUser.id, testId);
+    const completedAttempt = attempts.find(attempt => attempt.status === 'completed');
+    return completedAttempt ? { isCompleted: true, attempt: completedAttempt } : { isCompleted: false, attempt: null };
+  };
 
   useEffect(() => {
     if (isTestStarted && timeLeft > 0 && !isTestCompleted) {
@@ -205,16 +212,46 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 </div>
 
                 <div className="flex space-x-2">
-                  <button
+                  {(() => {
+                    const testStatus = getTestStatus(test.id);
+                    const isCompleted = testStatus.isCompleted;
+                    const lastAttempt = testStatus.attempt;
+                    
+                    return (
+                      <>
+                        <button
+                          onClick={() => {
+                            setSelectedTest(test);
+                            setShowInstructions(true);
+                          }}
+                          className={`flex-1 ${isCompleted ? 'bg-orange-600 hover:bg-orange-700' : 'bg-green-600 hover:bg-green-700'} text-white py-2 px-4 rounded-md transition-colors cursor-pointer`}
+                        >
+                          {isCompleted ? 'Retake Test' : 'Start Test'}
+                        </button>
+                        {isCompleted && lastAttempt && (
+                          <button
+                            onClick={() => {
+                              const selectedTestData = practiceTests.find(t => t.id === test.id);
+                              if (selectedTestData) {
+                                const score = calculateScore(lastAttempt, selectedTestData);
+                                const percentage = ((score / selectedTestData.totalMarks) * 100).toFixed(1);
+                                alert(`Last Attempt Results:\n\nScore: ${score}/${selectedTestData.totalMarks} (${percentage}%)\nDate: ${new Date(lastAttempt.endTime || lastAttempt.startTime).toLocaleDateString()}\nTime Taken: ${selectedTestData.duration} minutes\n\nClick 'Retake Test' to attempt again.`);
+                              }
+                            }}
+                            className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
+                          >
+                            <i className="ri-trophy-line"></i>
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()}
+                  <button 
                     onClick={() => {
-                      setSelectedTest(test);
-                      setShowInstructions(true);
+                      alert(`Test Information:\n\nName: ${test.name}\nQuestions: ${test.totalQuestions}\nDuration: ${test.duration} minutes\nTotal Marks: ${test.totalMarks}\nDifficulty: ${test.difficulty}\n\nSubjects covered:\n${test.subjects.join(', ')}\n\nThis test includes detailed explanations and bilingual support.`);
                     }}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors cursor-pointer"
+                    className="px-3 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 cursor-pointer"
                   >
-                    Start Test
-                  </button>
-                  <button className="px-3 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 cursor-pointer">
                     <i className="ri-information-line"></i>
                   </button>
                 </div>
