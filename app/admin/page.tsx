@@ -192,7 +192,31 @@ export default function AdminDashboard() {
         libraryAccess: true,
         examsPassed: 0,
         counselingBooked: false,
-        joinDate: new Date().toISOString().split('T')[0]
+        joinDate: new Date().toISOString().split('T')[0],
+        shift: 'morning', // Default shift
+        jobCategory: newStudent.course, // Use course as job category
+        attendance: {
+          present: 0,
+          absent: 0,
+          totalDays: 0
+        },
+        progress: {
+          materialsDownloaded: 0,
+          testsCompleted: 0,
+          totalPoints: 0,
+          currentStreak: 0,
+          lastActivity: new Date().toISOString().split('T')[0]
+        },
+        notifications: [
+          {
+            id: 'welcome_' + Date.now(),
+            title: 'Welcome!',
+            message: 'Welcome to BD Library. Your learning journey starts here.',
+            type: 'info',
+            read: false,
+            createdAt: new Date().toISOString().split('T')[0]
+          }
+        ]
       });
 
       if (success) {
@@ -241,7 +265,22 @@ export default function AdminDashboard() {
             libraryAccess: true,
             examsPassed: 0,
             counselingBooked: false,
-            joinDate: new Date().toISOString().split('T')[0]
+            joinDate: new Date().toISOString().split('T')[0],
+            shift: 'morning', // Default shift
+            jobCategory: course || 'General', // Use course as job category
+            attendance: {
+              present: 0,
+              absent: 0,
+              totalDays: 0
+            },
+            progress: {
+              materialsDownloaded: 0,
+              testsCompleted: 0,
+              totalPoints: 0,
+              currentStreak: 0,
+              lastActivity: new Date().toISOString().split('T')[0]
+            },
+            notifications: []
           });
         } catch (error) {
           console.error('Error adding student:', error);

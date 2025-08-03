@@ -7,6 +7,7 @@ const pacifico = Pacifico({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-pacifico',
+  fallback: ['serif']
 })
 
 const geistSans = Geist({

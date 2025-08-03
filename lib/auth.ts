@@ -15,6 +15,28 @@ export interface Student {
   examsPassed: number;
   counselingBooked: boolean;
   joinDate: string;
+  shift: 'morning' | 'evening';
+  jobCategory: string;
+  attendance: {
+    present: number;
+    absent: number;
+    totalDays: number;
+  };
+  progress: {
+    materialsDownloaded: number;
+    testsCompleted: number;
+    totalPoints: number;
+    currentStreak: number;
+    lastActivity: string;
+  };
+  notifications?: Array<{
+    id: string;
+    title: string;
+    message: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    read: boolean;
+    createdAt: string;
+  }>;
 }
 
 export interface Admin {
@@ -55,7 +77,31 @@ export const defaultAuthData: AuthData = {
       libraryAccess: true,
       examsPassed: 2,
       counselingBooked: false,
-      joinDate: '2024-01-15'
+      joinDate: '2024-01-15',
+      shift: 'morning',
+      jobCategory: 'Government Jobs',
+      attendance: {
+        present: 22,
+        absent: 3,
+        totalDays: 25
+      },
+      progress: {
+        materialsDownloaded: 15,
+        testsCompleted: 8,
+        totalPoints: 420,
+        currentStreak: 5,
+        lastActivity: '2024-01-20'
+      },
+      notifications: [
+        {
+          id: 'notif1',
+          title: 'Welcome!',
+          message: 'Welcome to BD Library. Your learning journey starts here.',
+          type: 'info',
+          read: false,
+          createdAt: '2024-01-15'
+        }
+      ]
     },
     {
       id: 'student2',
@@ -71,7 +117,22 @@ export const defaultAuthData: AuthData = {
       libraryAccess: true,
       examsPassed: 3,
       counselingBooked: true,
-      joinDate: '2024-02-01'
+      joinDate: '2024-02-01',
+      shift: 'evening',
+      jobCategory: 'Banking',
+      attendance: {
+        present: 28,
+        absent: 2,
+        totalDays: 30
+      },
+      progress: {
+        materialsDownloaded: 25,
+        testsCompleted: 12,
+        totalPoints: 680,
+        currentStreak: 8,
+        lastActivity: '2024-02-05'
+      },
+      notifications: []
     },
     {
       id: 'student3',
@@ -87,7 +148,22 @@ export const defaultAuthData: AuthData = {
       libraryAccess: true,
       examsPassed: 1,
       counselingBooked: false,
-      joinDate: '2024-01-20'
+      joinDate: '2024-01-20',
+      shift: 'morning',
+      jobCategory: 'SSC',
+      attendance: {
+        present: 18,
+        absent: 4,
+        totalDays: 22
+      },
+      progress: {
+        materialsDownloaded: 12,
+        testsCompleted: 5,
+        totalPoints: 280,
+        currentStreak: 3,
+        lastActivity: '2024-01-25'
+      },
+      notifications: []
     },
     {
       id: 'student4',
@@ -103,7 +179,22 @@ export const defaultAuthData: AuthData = {
       libraryAccess: true,
       examsPassed: 4,
       counselingBooked: true,
-      joinDate: '2024-01-10'
+      joinDate: '2024-01-10',
+      shift: 'evening',
+      jobCategory: 'Railway',
+      attendance: {
+        present: 35,
+        absent: 1,
+        totalDays: 36
+      },
+      progress: {
+        materialsDownloaded: 30,
+        testsCompleted: 18,
+        totalPoints: 920,
+        currentStreak: 12,
+        lastActivity: '2024-01-30'
+      },
+      notifications: []
     },
     {
       id: 'demo1',
@@ -119,7 +210,31 @@ export const defaultAuthData: AuthData = {
       libraryAccess: true,
       examsPassed: 0,
       counselingBooked: false,
-      joinDate: '2024-01-01'
+      joinDate: '2024-01-01',
+      shift: 'morning',
+      jobCategory: 'General',
+      attendance: {
+        present: 5,
+        absent: 0,
+        totalDays: 5
+      },
+      progress: {
+        materialsDownloaded: 3,
+        testsCompleted: 1,
+        totalPoints: 50,
+        currentStreak: 1,
+        lastActivity: '2024-01-01'
+      },
+      notifications: [
+        {
+          id: 'demo_notif1',
+          title: 'Demo Account',
+          message: 'This is a demo student account for testing purposes.',
+          type: 'info',
+          read: false,
+          createdAt: '2024-01-01'
+        }
+      ]
     }
   ],
   announcements: []
@@ -129,6 +244,12 @@ export const defaultAuthData: AuthData = {
 async function loadAuthData(): Promise<AuthData> {
   try {
     const response = await fetch('/api/auth');
+    
+    if (!response.ok) {
+      console.error('API response not ok:', response.status, response.statusText);
+      return defaultAuthData;
+    }
+    
     const result = await response.json();
     if (result.success) {
       return result.data;
@@ -151,6 +272,12 @@ async function saveAuthData(data: AuthData): Promise<boolean> {
       },
       body: JSON.stringify(data),
     });
+    
+    if (!response.ok) {
+      console.error('Save API response not ok:', response.status, response.statusText);
+      return false;
+    }
+    
     const result = await response.json();
     return result.success;
   } catch (error) {
