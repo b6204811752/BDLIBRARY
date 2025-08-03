@@ -1391,53 +1391,53 @@ export default function AdminDashboard() {
                           <div className="space-y-2">
                             <div className="text-sm font-medium text-gray-900">{student.course}</div>
                             <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
-                            student.libraryAccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            student.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
-                            {student.libraryAccess ? 'Library Access' : 'No Library Access'}
+                            {student.status === 'active' ? 'Active' : 'Inactive'}
                           </span>
                           </div>
                         </td>
                         <td className="px-6 py-6 whitespace-nowrap">
                           <div className="space-y-2">
                             <div className="flex items-center space-x-2 text-sm text-gray-900">
-                              <i className="ri-time-fill text-orange-500"></i>
-                              <span>Duration: {student.duration} months</span>
+                              <i className="ri-calendar-fill text-blue-500"></i>
+                              <span>Enrolled: {student.enrollmentDate}</span>
                             </div>
                             <div className="flex items-center space-x-2 text-sm font-medium text-green-600">
-                              <i className="ri-money-rupee-circle-fill text-green-500"></i>
-                              <span>₹{student.monthlyFees}/month</span>
+                              <i className="ri-book-fill text-green-500"></i>
+                              <span>{student.course || 'General'}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-6 whitespace-nowrap">
                           <div className="space-y-3">
                             <div className="flex items-center space-x-2">
-                              <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-500 rounded-lg flex items-center justify-center">
-                                <i className="ri-trophy-fill text-white text-sm"></i>
+                              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex items-center justify-center">
+                                <i className="ri-user-fill text-white text-sm"></i>
                               </div>
                               <div>
-                                <div className="text-sm font-medium text-gray-900">Exams Passed</div>
-                                <div className="text-lg font-bold text-purple-600">{student.examsPassed}</div>
+                                <div className="text-sm font-medium text-gray-900">Status</div>
+                                <div className="text-lg font-bold text-blue-600">{student.status}</div>
                               </div>
                             </div>
                             <div className="flex items-center space-x-2 text-sm">
-                              <i className={`ri-calendar-check-fill ${student.counselingBooked ? 'text-green-500' : 'text-gray-400'}`}></i>
-                              <span className={student.counselingBooked ? 'text-green-600 font-medium' : 'text-gray-500'}>
-                                Counseling {student.counselingBooked ? 'Booked' : 'Not Booked'}
+                              <i className="ri-mail-fill text-gray-400"></i>
+                              <span className="text-gray-500">
+                                Email: {student.email}
                               </span>
                             </div>
                             <div className="flex items-center space-x-2 text-sm text-gray-500">
-                              <i className="ri-calendar-fill text-blue-500"></i>
-                              <span>Joined: {student.joinDate}</span>
+                              <i className="ri-phone-fill text-green-500"></i>
+                              <span>Mobile: {student.mobile}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-6 whitespace-nowrap">
                           <span className={`inline-flex px-4 py-2 text-sm font-bold rounded-xl shadow-lg ${
-                            student.libraryAccess ? 'bg-gradient-to-r from-green-400 to-green-500 text-white' : 'bg-gradient-to-r from-red-400 to-red-500 text-white'
+                            student.status === 'active' ? 'bg-gradient-to-r from-green-400 to-green-500 text-white' : 'bg-gradient-to-r from-red-400 to-red-500 text-white'
                           }`}>
-                            <i className={`${student.libraryAccess ? 'ri-check-fill' : 'ri-close-fill'} mr-2`}></i>
-                            {student.libraryAccess ? 'Active' : 'Inactive'}
+                            <i className={`${student.status === 'active' ? 'ri-check-fill' : 'ri-close-fill'} mr-2`}></i>
+                            {student.status === 'active' ? 'Active' : 'Inactive'}
                           </span>
                         </td>
                         <td className="px-6 py-6 whitespace-nowrap">
