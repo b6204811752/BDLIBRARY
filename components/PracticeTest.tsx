@@ -516,6 +516,16 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 </div>
                 );
               })}
+
+            {/* Clear statement showing all questions displayed */}
+            <div className="text-center mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-blue-800 font-medium">
+                ✅ Displaying all {selectedTest.questions.length} questions from the test
+              </p>
+              <p className="text-blue-600 text-sm mt-1">
+                All questions are shown above with detailed analysis and explanations
+              </p>
+            </div>
           </div>
         </div>
 
