@@ -37,7 +37,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     const user = getCurrentUser();
-    if (!user.type || user.type !== 'student') {
+    if (!user || !user.type || user.type !== 'student') {
       router.push('/login');
       return;
     }
@@ -69,7 +69,7 @@ export default function StudentDashboard() {
   const loadData = () => {
     try {
       const user = getCurrentUser();
-      if (user.data) {
+      if (user && user.data) {
         setCurrentUser(user.data);
         // Ensure notifications is always an array - only for students
         if ('notifications' in user.data && Array.isArray(user.data.notifications)) {
