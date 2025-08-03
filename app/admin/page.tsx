@@ -372,7 +372,7 @@ export default function AdminDashboard() {
         aValue = a.email;
         bValue = b.email;
         break;
-      case 'joinDate':
+      case 'enrollmentDate':
         aValue = new Date(a.enrollmentDate);
         bValue = new Date(b.enrollmentDate);
         break;
@@ -1234,7 +1234,7 @@ export default function AdminDashboard() {
                     >
                       <option value="name">Name</option>
                       <option value="email">Email</option>
-                      <option value="joinDate">Join Date</option>
+                      <option value="enrollmentDate">Enrollment Date</option>
                       <option value="progress">Progress</option>
                       <option value="attendance">Attendance</option>
                       <option value="score">Score</option>
@@ -2199,7 +2199,7 @@ export default function AdminDashboard() {
                   
                   <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
                     <div className="text-2xl font-bold text-green-600">
-                      {students.filter(s => s.joinDate === new Date().toISOString().split('T')[0]).length}
+                      {students.filter(s => s.enrollmentDate === new Date().toISOString().split('T')[0]).length}
                     </div>
                     <div className="text-sm text-green-800">Added Today</div>
                   </div>
