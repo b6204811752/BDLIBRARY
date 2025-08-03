@@ -7,7 +7,6 @@ import Footer from '@/components/Footer';
 import PracticeTest from '@/components/PracticeTest';
 import { getCurrentUser, updateStudentProgress, subscribeToDataChanges, markNotificationAsRead, getAuthData } from '@/lib/auth';
 import { jobCategories } from '@/lib/study-materials';
-import { getScheduleByShift } from '@/lib/schedule';
 import { practiceTests } from '@/lib/practice-tests';
 
 export default function StudentDashboard() {
@@ -15,7 +14,6 @@ export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [realTimeData, setRealTimeData] = useState({
     onlineUsers: 0,
@@ -66,17 +64,6 @@ export default function StudentDashboard() {
         } else {
           setNotifications([]);
         }
-
-        // Load announcements - use caching to reduce localStorage calls
-        const authData = getAuthData();
-        const relevantAnnouncements = (authData.announcements || []).filter(
-          (ann: any) => {
-            if (!user.data) return false;
-            return ann.targetAudience === 'all' || 
-                   ('shift' in user.data && ann.targetAudience === user.data.shift);
-          }
-        );
-        setAnnouncements(relevantAnnouncements);
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -175,7 +162,6 @@ export default function StudentDashboard() {
     return null;
   }
 
-  const schedule = getScheduleByShift(currentUser.shift);
   const categoryData = jobCategories.find(cat => cat.id === currentUser.jobCategory.toLowerCase());
   const unreadNotifications = notifications.filter(n => !n.read).length;
 
@@ -261,12 +247,8 @@ export default function StudentDashboard() {
                 { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
                 { id: 'fees', label: 'Fees & Payments', icon: 'ri-money-rupee-circle-line' },
                 { id: 'materials', label: 'Study Materials', icon: 'ri-book-line' },
-                { id: 'library', label: 'Library', icon: 'ri-book-open-line' },
-                { id: 'schedule', label: 'Schedule', icon: 'ri-calendar-line' },
                 { id: 'tests', label: 'Practice Tests', icon: 'ri-quiz-line' },
-                { id: 'progress', label: 'Progress', icon: 'ri-bar-chart-line' },
-                { id: 'certificates', label: 'Certificates', icon: 'ri-award-line' },
-                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-line' }
+                { id: 'progress', label: 'Progress', icon: 'ri-bar-chart-line' }
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -641,157 +623,6 @@ export default function StudentDashboard() {
           </div>
         )}
 
-        {/* Library Tab */}
-        {activeTab === 'library' && (
-          <div className="space-y-6">
-            {/* Currently Issued Books */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Currently Issued Books</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {currentUser.library?.booksIssued?.filter((book: any) => book.status === 'issued').map((book: any, index: number) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{book.bookName}</h3>
-                        <p className="text-sm text-gray-600">Issued: {new Date(book.issueDate).toLocaleDateString()}</p>
-                      </div>
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          book.status === 'overdue' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
-                        }`}
-                      >
-                        {book.status}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Due: {new Date(book.dueDate).toLocaleDateString()}
-                    </div>
-                    {book.fine && (
-                      <div className="text-sm text-red-600 mt-2">
-                        Fine: ₹{book.fine}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Book History */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Book History</h2>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book Name</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Return Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fine</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {currentUser.library?.booksIssued?.map((book: any, index: number) => (
-                      <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{book.bookName}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {new Date(book.issueDate).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {new Date(book.dueDate).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {book.returnDate ? new Date(book.returnDate).toLocaleDateString() : '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              book.status === 'returned' ? 'bg-green-100 text-green-800' :
-                                book.status === 'overdue' ? 'bg-red-100 text-red-800' :
-                                  'bg-blue-100 text-blue-800'
-                            }`}
-                          >
-                            {book.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {book.fine ? `₹${book.fine}` : '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Pending Fines */}
-            {currentUser.library?.fines?.filter((fine: any) => fine.status === 'pending').length > 0 && (
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Pending Fines</h2>
-                <div className="space-y-3">
-                  {currentUser.library.fines.filter((fine: any) => fine.status === 'pending').map((fine: any, index: number) => (
-                    <div key={index} className="flex justify-between items-center py-2 border-b">
-                      <div>
-                        <div className="font-medium text-gray-900">{fine.reason}</div>
-                        <div className="text-sm text-gray-600">{new Date(fine.date).toLocaleDateString()}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-red-600">₹{fine.amount}</div>
-                        <div className="text-sm text-gray-600">Pending</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Certificates Tab */}
-        {activeTab === 'certificates' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">My Certificates</h2>
-              {currentUser.certificates?.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {currentUser.certificates.map((certificate: any, index: number) => (
-                    <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{certificate.name}</h3>
-                          <p className="text-sm text-gray-600">Certificate No: {certificate.certificateNo}</p>
-                        </div>
-                        <span
-                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                            certificate.type === 'course_completion' ? 'bg-green-100 text-green-800' :
-                              certificate.type === 'achievement' ? 'bg-blue-100 text-blue-800' :
-                                'bg-purple-100 text-purple-800'
-                          }`}
-                        >
-                          {certificate.type.replace('_', ' ')}
-                        </span>
-                      </div>
-                      <div className="text-sm text-gray-600 mb-3">
-                        Issued: {new Date(certificate.issueDate).toLocaleDateString()}
-                      </div>
-                      <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap cursor-pointer">
-                        Download Certificate
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <i className="ri-award-line text-4xl text-gray-400 mb-4"></i>
-                  <p className="text-gray-500">No certificates earned yet</p>
-                  <p className="text-sm text-gray-400 mt-2">Complete courses and achieve milestones to earn certificates</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
         {/* Study Materials Tab */}
         {activeTab === 'materials' && categoryData && (
           <div className="space-y-6">
@@ -836,57 +667,6 @@ export default function StudentDashboard() {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Schedule Tab */}
-        {activeTab === 'schedule' && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-900">Your Schedule - {currentUser.shift.charAt(0).toUpperCase() + currentUser.shift.slice(1)} Shift</h2>
-                <div className="text-sm text-gray-500">
-                  Today: {new Date().toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Topic</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {schedule.map((item, index) => {
-                    const isCompleted = Math.random() > 0.3;
-                    return (
-                      <tr key={item.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.time}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.subject}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.topic}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.instructor}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.room}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              isCompleted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                            }`}
-                          >
-                            {isCompleted ? 'Completed' : 'Upcoming'}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
             </div>
           </div>
         )}
@@ -1098,50 +878,6 @@ export default function StudentDashboard() {
           </div>
         )}
 
-        {/* Announcements Tab */}
-        {activeTab === 'announcements' && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Latest Announcements</h2>
-
-              <div className="space-y-4">
-                {announcements.length === 0 ? (
-                  <div className="text-center py-8">
-                    <i className="ri-megaphone-line text-4xl text-gray-400 mb-4"></i>
-                    <p className="text-gray-500">No announcements available</p>
-                  </div>
-                ) : (
-                  announcements.map((announcement) => (
-                    <div key={announcement.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold text-gray-900">{announcement.title}</h3>
-                          <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              announcement.priority === 'high' ? 'bg-red-100 text-red-800' :
-                                announcement.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-green-100 text-green-800'
-                            }`}
-                          >
-                            {announcement.priority}
-                          </span>
-                        </div>
-                        <span className="text-xs text-gray-500">{announcement.date}</span>
-                      </div>
-                      <p className="text-gray-600 mb-2">{announcement.message}</p>
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span>By {announcement.author}</span>
-                        {announcement.expiryDate && (
-                          <span>Expires: {announcement.expiryDate}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       <Footer />
