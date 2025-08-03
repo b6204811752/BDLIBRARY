@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { TestSet, Question, TestAttempt, practiceTests, createTestAttempt, saveTestAttempt, calculateScore, getStudentAttempts } from '@/lib/practice-tests';
 
 interface PracticeTestProps {
@@ -21,8 +21,6 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [showAllQuestions, setShowAllQuestions] = useState(true);
-  const [questionsPerPage, setQuestionsPerPage] = useState(100); // Show all by default
-  const [currentPage, setCurrentPage] = useState(1);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Check if user has completed a test
@@ -518,31 +516,6 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 </div>
                 );
               })}
-              
-                      {/* Pagination controls at bottom */}
-              {questionsPerPage < selectedTest.questions.length && (
-                <div className="flex justify-center items-center mt-6 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                      disabled={currentPage === 1}
-                      className="px-3 py-1 text-xs bg-white text-blue-700 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Previous
-                    </button>
-                    <span className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-md">
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                      disabled={currentPage === totalPages}
-                      className="px-3 py-1 text-xs bg-white text-blue-700 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              )}
           </div>
         </div>
 
