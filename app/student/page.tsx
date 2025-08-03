@@ -928,16 +928,16 @@ export default function StudentDashboard() {
                     subjects: ['Banking Awareness', 'Financial Awareness']
                   },
                   { 
-                    id: 'general-mock-1',
+                    id: 'gk-mock-1',
                     name: 'General Knowledge Mock Test', 
-                    questions: 50, 
-                    duration: '30 minutes', 
-                    difficulty: 'Easy', 
-                    completed: true, 
-                    score: 85,
-                    category: 'General',
-                    totalMarks: 100,
-                    subjects: ['General Knowledge', 'Current Affairs']
+                    questions: 35, 
+                    duration: '60 minutes', 
+                    difficulty: 'Medium', 
+                    completed: false, 
+                    score: null,
+                    category: 'General Knowledge',
+                    totalMarks: 70,
+                    subjects: ['History', 'Geography', 'Science', 'Politics', 'Sports', 'Current Affairs']
                   }
                 ].map((test, index) => (
                   <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
