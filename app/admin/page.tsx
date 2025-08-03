@@ -559,7 +559,8 @@ export default function AdminDashboard() {
       amount: '',
       description: '',
       method: 'cash',
-      transactionId: ''
+      transactionId: '',
+      receiptNo: ''
     });
     setShowPaymentModal(true);
   };
@@ -826,130 +827,286 @@ export default function AdminDashboard() {
             </div>
 
             {/* Enhanced Quick Actions */}
-            <div className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl shadow-xl border border-gray-200">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">Quick Actions</h2>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                  <i className="ri-flashlight-fill text-white text-xl"></i>
+            <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 sm:p-8 rounded-2xl shadow-xl border border-blue-200 relative overflow-hidden">
+              {/* Background decorative elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-200/30 to-blue-200/30 rounded-full blur-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg mb-4">
+                    <i className="ri-flashlight-fill text-3xl text-white"></i>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    Quick Actions
+                  </h2>
+                  <p className="text-gray-600 text-lg">Streamline your administrative tasks</p>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <button
-                  onClick={() => setShowAddModal(true)}
-                  className="group bg-gradient-to-br from-blue-500 to-blue-600 text-white py-4 px-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-blue-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-user-add-fill text-2xl"></i>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+                  {/* Add Student */}
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-blue-200 hover:border-blue-400 relative overflow-hidden quick-action-button"
+                  >
+                    {/* Hover glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/10 group-hover:to-blue-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-user-add-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-blue-700 transition-colors">Add Student</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-blue-600 transition-colors">Register new students</p>
+                      
+                      {/* Progress indicator */}
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full w-3/4 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      {/* Floating badge */}
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-add-line text-white text-xs font-bold"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Bulk Upload */}
+                  <button
+                    onClick={() => setShowBulkUpload(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-indigo-50 hover:to-indigo-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-indigo-200 hover:border-indigo-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-400/0 to-indigo-600/0 group-hover:from-indigo-400/10 group-hover:to-indigo-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-file-upload-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-indigo-700 transition-colors">Bulk Upload</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-indigo-600 transition-colors">Import multiple records</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full w-1/2 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-upload-line text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Add Payment */}
+                  <button
+                    onClick={() => setShowPaymentModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-green-200 hover:border-green-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-400/0 to-green-600/0 group-hover:from-green-400/10 group-hover:to-green-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-money-rupee-circle-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-green-700 transition-colors">Add Payment</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-green-600 transition-colors">Record fee payments</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full w-4/5 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <span className="text-white text-xs font-bold">₹</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Apply Discount */}
+                  <button
+                    onClick={() => setShowDiscountModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-orange-50 hover:to-orange-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-orange-200 hover:border-orange-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/0 to-orange-600/0 group-hover:from-orange-400/10 group-hover:to-orange-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-discount-percent-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-orange-700 transition-colors">Apply Discount</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-orange-600 transition-colors">Manage fee discounts</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full w-2/3 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <span className="text-white text-xs font-bold">%</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Library Management */}
+                  <button
+                    onClick={() => setShowLibraryModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-purple-50 hover:to-purple-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-purple-200 hover:border-purple-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/10 group-hover:to-purple-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-book-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-purple-700 transition-colors">Library</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-purple-600 transition-colors">Book management</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full w-3/5 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-book-line text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Quick Announcements */}
+                  <button
+                    onClick={() => setShowAnnouncementModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-pink-50 hover:to-pink-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-pink-200 hover:border-pink-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-pink-400/0 to-pink-600/0 group-hover:from-pink-400/10 group-hover:to-pink-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-500 to-pink-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-megaphone-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-pink-700 transition-colors">Announcements</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-pink-600 transition-colors">Broadcast messages</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full w-1/2 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-volume-up-line text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Exam Management */}
+                  <button
+                    onClick={() => setShowExamModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-cyan-50 hover:to-cyan-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-cyan-200 hover:border-cyan-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/0 to-cyan-600/0 group-hover:from-cyan-400/10 group-hover:to-cyan-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-quiz-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-cyan-700 transition-colors">Exams</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-cyan-600 transition-colors">Manage exam results</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-full w-1/2 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-question-line text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Export Data */}
+                  <button
+                    onClick={() => setShowExportModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-gray-50 hover:to-gray-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-gray-200 hover:border-gray-400 relative overflow-hidden quick-action-button"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-400/0 to-gray-600/0 group-hover:from-gray-400/10 group-hover:to-gray-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-download-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-gray-700 transition-colors">Export Data</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-gray-600 transition-colors">Download reports</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-gray-500 to-gray-600 rounded-full w-full transform transition-all duration-500"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-check-line text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Certificate Management */}
+                  <button
+                    onClick={() => setShowCertificateModal(true)}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-yellow-50 hover:to-yellow-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-yellow-200 hover:border-yellow-400 relative overflow-hidden quick-action-button col-span-2 sm:col-span-1"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/0 to-yellow-600/0 group-hover:from-yellow-400/10 group-hover:to-yellow-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-award-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle icon-glow"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-yellow-700 transition-colors">Certificates</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-yellow-600 transition-colors">Issue certificates</p>
+                      
+                      <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full w-1/3 transform transition-all duration-500 group-hover:w-full"></div>
+                      </div>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce floating-badge">
+                        <i className="ri-star-fill text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Quick Stats and Tips Section */}
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/60 p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i className="ri-bar-chart-fill text-white text-sm"></i>
+                      </div>
+                      <h4 className="font-semibold text-gray-800">Today's Activity</h4>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 text-center">
+                      <div>
+                        <p className="text-lg font-bold text-blue-600">{Math.floor(Math.random() * 10) + 5}</p>
+                        <p className="text-xs text-gray-600">New Students</p>
+                      </div>
+                      <div>
+                        <p className="text-lg font-bold text-green-600">₹{(Math.floor(Math.random() * 50) + 20) * 1000}</p>
+                        <p className="text-xs text-gray-600">Payments</p>
+                      </div>
+                      <div>
+                        <p className="text-lg font-bold text-purple-600">{Math.floor(Math.random() * 5) + 2}</p>
+                        <p className="text-xs text-gray-600">Announcements</p>
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-semibold text-sm">Add Student</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-3/4"></div>
+                  
+                  <div className="bg-white/50 backdrop-blur-sm rounded-xl border border-white/60 p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                        <i className="ri-lightbulb-fill text-white text-sm"></i>
+                      </div>
+                      <h4 className="font-semibold text-gray-800">Admin Tip</h4>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      {[
+                        "Use bulk upload to save time when adding multiple students.",
+                        "Regular announcements keep students and parents informed.",
+                        "Monitor payment dues weekly to maintain cash flow.",
+                        "Export data regularly for backup and analysis.",
+                        "Use discounts strategically to improve enrollment."
+                      ][Math.floor(Math.random() * 5)]}
+                    </p>
                   </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowBulkUpload(true)}
-                  className="group bg-gradient-to-br from-indigo-500 to-indigo-600 text-white py-4 px-4 rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-indigo-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-file-upload-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Bulk Upload</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-1/2"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowPaymentModal(true)}
-                  className="group bg-gradient-to-br from-green-500 to-green-600 text-white py-4 px-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-green-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-money-rupee-circle-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Add Payment</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-4/5"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowDiscountModal(true)}
-                  className="group bg-gradient-to-br from-orange-500 to-orange-600 text-white py-4 px-4 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-orange-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-discount-percent-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Apply Discount</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-2/3"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowLibraryModal(true)}
-                  className="group bg-gradient-to-br from-purple-500 to-purple-600 text-white py-4 px-4 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-purple-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-book-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Library</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-3/5"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowExamModal(true)}
-                  className="group bg-gradient-to-br from-pink-500 to-pink-600 text-white py-4 px-4 rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-pink-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-quiz-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Add Exam</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-1/2"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowCounselingModal(true)}
-                  className="group bg-gradient-to-br from-teal-500 to-teal-600 text-white py-4 px-4 rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-teal-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-user-heart-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Counseling</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-2/5"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowCertificateModal(true)}
-                  className="group bg-gradient-to-br from-cyan-500 to-cyan-600 text-white py-4 px-4 rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-cyan-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-award-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Certificate</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-1/3"></div>
-                  </div>
-                </button>
-                
-                <button
-                  onClick={() => setShowExportModal(true)}
-                  className="group bg-gradient-to-br from-gray-500 to-gray-600 text-white py-4 px-4 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-gray-400"
-                >
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-download-fill text-2xl"></i>
-                  </div>
-                  <span className="font-semibold text-sm">Export Data</span>
-                  <div className="w-full h-1 bg-white/20 rounded-full">
-                    <div className="h-full bg-white/40 rounded-full w-full"></div>
-                  </div>
-                </button>
+                </div>
               </div>
             </div>
 
