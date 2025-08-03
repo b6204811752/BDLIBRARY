@@ -315,34 +315,64 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {stats.map((stat, index) => (
-              <div key={index} className="group text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer border border-gray-100 hover:border-transparent relative overflow-hidden">
+              <div 
+                key={index} 
+                className="group text-center bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-700 hover:scale-110 hover:-translate-y-4 cursor-pointer border border-gray-100 hover:border-transparent relative overflow-hidden transform animate-slide-up-fade-in"
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
                 
-                {/* Gradient background overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl`}></div>
+                {/* Enhanced gradient background overlay with animation */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-15 transition-all duration-700 rounded-2xl animate-pulse`}></div>
                 
-                {/* Sparkle effects */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute -top-2 -right-2 w-2 h-2 bg-blue-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                {/* Multiple sparkle effects with different colors */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-blue-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="absolute top-1 left-1 w-2 h-2 bg-green-400 rounded-full animate-ping opacity-0 group-hover:opacity-75 transition-opacity duration-400"></div>
+                <div className="absolute bottom-1 right-1 w-2 h-2 bg-pink-400 rounded-full animate-bounce opacity-0 group-hover:opacity-75 transition-opacity duration-600"></div>
+                
+                {/* Shooting star effect */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-full transition-all duration-1000"></div>
                 
                 <div className="relative z-10">
-                  <div className={`w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gradient-to-br ${stat.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-xl`}>
-                    <i className={`${stat.icon} text-xl sm:text-2xl text-white group-hover:scale-110 group-hover:animate-wiggle transition-all duration-300`}></i>
+                  <div className={`w-14 h-14 sm:w-18 sm:h-18 mx-auto mb-3 sm:mb-4 bg-gradient-to-br ${stat.gradient} rounded-2xl flex items-center justify-center group-hover:scale-125 group-hover:rotate-12 transition-all duration-700 shadow-lg group-hover:shadow-2xl relative overflow-hidden animate-float`}>
+                    {/* Enhanced icon glow effect */}
+                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/40 transition-colors duration-500 rounded-2xl animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-full transition-all duration-1000 rounded-2xl"></div>
+                    <i className={`${stat.icon} text-xl sm:text-3xl text-white group-hover:scale-125 group-hover:animate-bounce transition-all duration-500 relative z-10`}></i>
+                    
+                    {/* Success indicator pulse */}
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
+                      <i className="ri-check-line text-xs text-white"></i>
+                    </div>
                   </div>
                   
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-1 sm:mb-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                  {/* Multiple floating ring animations */}
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-40 transition-opacity duration-700">
+                    <div className="w-8 h-8 border-2 border-blue-300 rounded-full animate-spin"></div>
+                  </div>
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-30 transition-opacity duration-1000 animation-delay-300">
+                    <div className="w-4 h-4 border border-purple-300 rounded-full animate-ping"></div>
+                  </div>
+                  
+                  {/* Counter animation effect */}
+                  <div className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-800 mb-1 sm:mb-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-500 transform group-hover:scale-110 animate-number-count">
                     {stat.number}
                   </div>
                   
-                  <div className="text-xs sm:text-sm lg:text-base text-gray-600 font-medium group-hover:text-gray-700 transition-colors duration-300">
+                  <div className="text-xs sm:text-sm lg:text-base text-gray-600 font-medium group-hover:text-gray-700 transition-colors duration-500 transform group-hover:translate-y-1">
                     {stat.label}
+                  </div>
+                  
+                  {/* Progress indicator */}
+                  <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className={`h-full bg-gradient-to-r ${stat.gradient} rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000 ease-out`}></div>
                   </div>
                 </div>
                 
-                {/* Floating ring animation */}
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
-                  <div className="w-6 h-6 border-2 border-blue-300 rounded-full animate-spin-slow"></div>
-                </div>
+                {/* Corner accents */}
+                <div className="absolute top-0 right-0 w-6 h-6 bg-gradient-to-bl from-yellow-400/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-tr from-blue-400/20 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               </div>
             ))}
           </div>
@@ -363,44 +393,80 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {jobCategories.map((category, index) => (
-              <div key={index} className={`group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 p-4 sm:p-6 cursor-pointer transform hover:scale-105 hover:-translate-y-3 border border-gray-100 ${category.borderColor} relative overflow-hidden`}>
+              <div 
+                key={index} 
+                className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-700 p-4 sm:p-6 cursor-pointer transform hover:scale-110 hover:-translate-y-4 border border-gray-100 ${category.borderColor} relative overflow-hidden animate-slide-up-fade-in`}
+                style={{ animationDelay: `${index * 120}ms` }}
+              >
                 
-                {/* Gradient background overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gray-50/50 group-hover:to-blue-50/50 transition-all duration-500 rounded-xl"></div>
+                {/* Enhanced gradient background overlay with animation */}
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gray-50/50 group-hover:to-blue-50/80 transition-all duration-700 rounded-2xl animate-pulse"></div>
                 
-                {/* Enhanced floating particles */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute -top-2 -right-2 w-2 h-2 bg-green-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                {/* Enhanced floating particles with different colors and animations */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="absolute top-2 left-2 w-2 h-2 bg-blue-400 rounded-full animate-ping opacity-0 group-hover:opacity-75 transition-opacity duration-400"></div>
+                <div className="absolute bottom-2 right-2 w-2 h-2 bg-pink-400 rounded-full animate-bounce opacity-0 group-hover:opacity-75 transition-opacity duration-600"></div>
+                
+                {/* Shooting star effect */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-full transition-all duration-1000"></div>
                 
                 <div className="relative z-10">
-                  <div className={`w-14 h-14 sm:w-16 sm:h-16 ${category.color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-xl relative overflow-hidden`}>
+                  <div className={`w-14 h-14 sm:w-18 sm:h-18 ${category.color} rounded-2xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-700 shadow-lg group-hover:shadow-2xl relative overflow-hidden animate-float`}>
                     
-                    {/* Icon glow effect */}
-                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors duration-300 rounded-xl"></div>
-                    <i className={`${category.icon} text-xl sm:text-2xl text-white relative z-10 group-hover:scale-110 group-hover:animate-wiggle transition-all duration-300`}></i>
+                    {/* Enhanced icon glow effect */}
+                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/40 transition-colors duration-500 rounded-2xl animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-full transition-all duration-1000 rounded-2xl"></div>
+                    <i className={`${category.icon} text-xl sm:text-3xl text-white relative z-10 group-hover:scale-125 group-hover:animate-bounce transition-all duration-500`}></i>
                     
-                    {/* Success indicator */}
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
+                    {/* Success indicator with animation */}
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
                       <i className="ri-check-line text-xs text-white"></i>
+                    </div>
+                    
+                    {/* Floating achievement badge */}
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-bounce">
+                      <i className="ri-star-fill text-xs text-white"></i>
                     </div>
                   </div>
                   
-                  {/* Floating ring animation */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
-                    <div className="w-8 h-8 border-2 border-blue-300 rounded-full animate-spin-slow"></div>
+                  {/* Multiple floating ring animations */}
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-40 transition-opacity duration-700">
+                    <div className="w-10 h-10 border-2 border-blue-300 rounded-full animate-spin"></div>
+                  </div>
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-30 transition-opacity duration-1000 animation-delay-300">
+                    <div className="w-6 h-6 border border-purple-300 rounded-full animate-ping"></div>
                   </div>
                   
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">{category.name}</h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{category.description}</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-500 transform group-hover:scale-105">{category.name}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed group-hover:text-gray-700 transition-colors duration-500 transform group-hover:translate-y-1">{category.description}</p>
                   
+                  {/* Enhanced CTA with multiple animations */}
                   <Link 
                     href="/login"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base cursor-pointer group-hover:translate-x-2 transition-all duration-300"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base cursor-pointer group-hover:translate-x-2 transition-all duration-500 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
                   >
-                    <span className="group-hover:mr-2 transition-all duration-300">Explore Course</span>
-                    <i className="ri-arrow-right-line ml-1 group-hover:ml-3 group-hover:scale-125 group-hover:animate-bounce transition-all duration-300"></i>
+                    <span className="animate-fade-in">Enroll Now</span>
+                    <i className="ri-arrow-right-s-line ml-1 group-hover:animate-bounce-horizontal transform group-hover:translate-x-1"></i>
                   </Link>
+                  
+                  {/* Progress bar animation */}
+                  <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000 ease-out"></div>
+                  </div>
+                </div>
+                
+                {/* Corner accents with animation */}
+                <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-yellow-400/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-fade-in"></div>
+                <div className="absolute bottom-0 left-0 w-6 h-6 bg-gradient-to-tr from-blue-400/20 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 animate-fade-in"></div>
+                
+                {/* Floating success indicators */}
+                <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                </div>
+                <div className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"></div>
                 </div>
               </div>
             ))}
@@ -512,40 +578,61 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 p-4 sm:p-6 cursor-pointer hover:scale-105 hover:-translate-y-3 border border-gray-100 hover:border-transparent relative overflow-hidden">
+              <div 
+                key={index} 
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-700 p-4 sm:p-6 cursor-pointer hover:scale-110 hover:-translate-y-4 border border-gray-100 hover:border-transparent relative overflow-hidden transform animate-slide-up-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 
-                {/* Animated gradient background overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl`}></div>
+                {/* Enhanced animated gradient background overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-all duration-700 rounded-2xl animate-pulse`}></div>
                 
-                {/* Enhanced floating sparkle effects */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute -top-2 -right-2 w-2 h-2 bg-blue-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="absolute top-2 left-2 w-1 h-1 bg-green-400 rounded-full animate-ping opacity-0 group-hover:opacity-75 transition-opacity duration-400"></div>
+                {/* Multiple floating sparkle effects */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-blue-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="absolute top-2 left-2 w-2 h-2 bg-green-400 rounded-full animate-ping opacity-0 group-hover:opacity-75 transition-opacity duration-400"></div>
+                <div className="absolute bottom-2 right-2 w-2 h-2 bg-pink-400 rounded-full animate-bounce opacity-0 group-hover:opacity-75 transition-opacity duration-600"></div>
+                
+                {/* Shooting star effect */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-full transition-all duration-1000"></div>
                 
                 <div className="relative z-10 mb-3 sm:mb-4">
-                  <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-xl relative overflow-hidden`}>
-                    {/* Icon glow effect */}
-                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors duration-300 rounded-xl"></div>
-                    <i className={`${feature.icon} text-lg sm:text-2xl text-white relative z-10 group-hover:scale-110 group-hover:animate-wiggle transition-all duration-300`}></i>
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center group-hover:scale-125 group-hover:rotate-12 transition-all duration-700 shadow-lg group-hover:shadow-2xl relative overflow-hidden animate-float`}>
+                    {/* Enhanced icon glow effect */}
+                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/40 transition-colors duration-500 rounded-2xl animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-full transition-all duration-1000 rounded-2xl"></div>
+                    <i className={`${feature.icon} text-lg sm:text-2xl text-white relative z-10 group-hover:scale-125 group-hover:animate-bounce transition-all duration-500`}></i>
                   </div>
                   
-                  {/* Floating micro-animation ring */}
-                  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
-                    <div className="w-8 h-8 border-2 border-blue-300 rounded-full animate-spin-slow"></div>
+                  {/* Multiple floating ring animations */}
+                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-40 transition-opacity duration-700">
+                    <div className="w-10 h-10 border-2 border-blue-300 rounded-full animate-spin"></div>
+                  </div>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-30 transition-opacity duration-1000 animation-delay-300">
+                    <div className="w-6 h-6 border border-purple-300 rounded-full animate-ping"></div>
                   </div>
                 </div>
                 
                 <div className="relative z-10">
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-800 mb-2 sm:mb-3 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">{feature.title}</h3>
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{feature.description}</p>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-800 mb-2 sm:mb-3 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-500 transform group-hover:scale-105">{feature.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-500 transform group-hover:translate-y-1">{feature.description}</p>
                   
-                  {/* Enhanced CTA arrow */}
-                  <div className="mt-3 flex items-center text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2">
-                    <span className="text-sm font-medium">Explore feature</span>
-                    <i className="ri-arrow-right-s-line ml-1 text-sm group-hover:animate-bounce"></i>
+                  {/* Enhanced CTA with multiple animations */}
+                  <div className="mt-4 flex items-center text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 group-hover:translate-x-2">
+                    <span className="text-sm font-medium animate-fade-in">Explore feature</span>
+                    <i className="ri-arrow-right-s-line ml-1 text-sm group-hover:animate-bounce-horizontal transform group-hover:translate-x-1"></i>
+                  </div>
+                  
+                  {/* Progress bar animation */}
+                  <div className="mt-3 w-full h-1 bg-gray-200 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className={`h-full bg-gradient-to-r ${feature.gradient} rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000 ease-out`}></div>
                   </div>
                 </div>
+                
+                {/* Corner accent */}
+                <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-yellow-400/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute bottom-0 left-0 w-6 h-6 bg-gradient-to-tr from-blue-400/20 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               </div>
             ))}
           </div>
