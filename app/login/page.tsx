@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { authenticateStudent, authenticateAdmin, setCurrentUser } from '@/lib/auth';
+import { authenticateStudent, authenticateAdmin, setCurrentUser, initializeAuthData } from '@/lib/auth';
 
 export default function Login() {
   const [userType, setUserType] = useState<'student' | 'admin'>('student');
@@ -17,7 +17,24 @@ export default function Login() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [initializing, setInitializing] = useState(true);
   const router = useRouter();
+
+  // Initialize auth data on component mount
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await initializeAuthData();
+        console.log('Auth data initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize auth data:', error);
+      } finally {
+        setInitializing(false);
+      }
+    };
+    
+    init();
+  }, []);
 
   // Reset form when switching user type
   useEffect(() => {
@@ -40,6 +57,8 @@ export default function Login() {
         const email = formData.email.trim();
         const mobile = formData.mobile.trim();
         
+        console.log('Student login attempt:', { email, mobile });
+        
         if (!email || !mobile) {
           setError('Please enter both email and mobile number');
           setLoading(false);
@@ -47,19 +66,24 @@ export default function Login() {
         }
         
         const student = await authenticateStudent(email, mobile);
+        console.log('Student authentication result:', student ? 'Success' : 'Failed');
+        
         if (student) {
+          console.log('Setting student user and redirecting...');
           setCurrentUser('student', student);
           setLoading(false);
           router.push('/student');
           return;
         } else {
-          setError('Invalid email or mobile number. Please check the demo credentials below.');
+          setError('Invalid email or mobile number. Please check the demo credentials below and ensure email is in the first field, mobile in the second field.');
           setLoading(false);
           return;
         }
       } else {
         const username = formData.username.trim();
         const password = formData.password.trim();
+        
+        console.log('Admin login attempt:', { username });
         
         if (!username || !password) {
           setError('Please enter both username and password');
@@ -68,13 +92,16 @@ export default function Login() {
         }
         
         const admin = await authenticateAdmin(username, password);
+        console.log('Admin authentication result:', admin ? 'Success' : 'Failed');
+        
         if (admin) {
+          console.log('Setting admin user and redirecting...');
           setCurrentUser('admin', admin);
           setLoading(false);
           router.push('/admin');
           return;
         } else {
-          setError('Invalid admin credentials. Please check the demo credentials below.');
+          setError('Invalid admin credentials. Use admin/admin123 for demo.');
           setLoading(false);
           return;
         }
@@ -85,6 +112,18 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  // Show loading during initialization
+  if (initializing) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Initializing authentication system...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -240,23 +240,42 @@ export const defaultAuthData: AuthData = {
   announcements: []
 };
 
-// API-based data functions for persistent file storage
+// Vercel-compatible localStorage-based data functions
 async function loadAuthData(): Promise<AuthData> {
   try {
-    const response = await fetch('/api/auth');
-    
-    if (!response.ok) {
-      console.error('API response not ok:', response.status, response.statusText);
-      return defaultAuthData;
+    // First, try to load from localStorage
+    if (typeof window !== 'undefined') {
+      const localData = localStorage.getItem('authData');
+      if (localData) {
+        console.log('Loading auth data from localStorage');
+        return JSON.parse(localData);
+      }
     }
     
-    const result = await response.json();
-    if (result.success) {
-      return result.data;
-    } else {
-      console.error('Failed to load auth data:', result.error);
-      return defaultAuthData;
+    // If localStorage is empty, try to load from API (fallback)
+    try {
+      const response = await fetch('/api/auth');
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          // Save to localStorage for future use
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('authData', JSON.stringify(result.data));
+          }
+          console.log('Loading auth data from API and caching to localStorage');
+          return result.data;
+        }
+      }
+    } catch (apiError) {
+      console.log('API not available, using localStorage/default data');
     }
+    
+    // If both fail, initialize with default data
+    console.log('Initializing with default auth data');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('authData', JSON.stringify(defaultAuthData));
+    }
+    return defaultAuthData;
   } catch (error) {
     console.error('Error loading auth data:', error);
     return defaultAuthData;
@@ -265,21 +284,31 @@ async function loadAuthData(): Promise<AuthData> {
 
 async function saveAuthData(data: AuthData): Promise<boolean> {
   try {
-    const response = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    
-    if (!response.ok) {
-      console.error('Save API response not ok:', response.status, response.statusText);
-      return false;
+    // Always save to localStorage for Vercel compatibility
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('authData', JSON.stringify(data));
+      console.log('Auth data saved to localStorage successfully');
     }
     
-    const result = await response.json();
-    return result.success;
+    // Try to save to API as well (if available), but don't fail if it doesn't work
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Auth data also saved to API:', result.success);
+      }
+    } catch (apiError) {
+      console.log('API save failed, but localStorage save succeeded');
+    }
+    
+    return true; // Return true since localStorage save succeeded
   } catch (error) {
     console.error('Error saving auth data:', error);
     return false;
@@ -287,21 +316,47 @@ async function saveAuthData(data: AuthData): Promise<boolean> {
 }
 
 export async function authenticate(username: string, password: string): Promise<{ success: boolean; user?: Admin | Student; role?: 'admin' | 'student' }> {
-  const authData = await loadAuthData();
-  
-  // Check admin credentials
-  const admin = authData.admins.find(a => a.username === username && a.password === password);
-  if (admin) {
-    return { success: true, user: admin, role: 'admin' };
+  try {
+    const authData = await loadAuthData();
+    
+    console.log('Authentication attempt:', { username, password });
+    console.log('Available students:', authData.students.map(s => ({ email: s.email, mobile: s.mobile, name: s.name })));
+    
+    // Check admin credentials
+    const admin = authData.admins.find(a => a.username === username && a.password === password);
+    if (admin) {
+      console.log('Admin authentication successful');
+      return { success: true, user: admin, role: 'admin' };
+    }
+    
+    // Check student credentials (email as username, mobile as password)
+    // Use case-insensitive email matching
+    const student = authData.students.find(s => 
+      s.email.toLowerCase() === username.toLowerCase() && s.mobile === password
+    );
+    
+    if (student) {
+      console.log('Student authentication successful:', student.name);
+      return { success: true, user: student, role: 'student' };
+    }
+    
+    console.log('Authentication failed - no matching credentials found');
+    return { success: false };
+  } catch (error) {
+    console.error('Error during authentication:', error);
+    return { success: false };
   }
-  
-  // Check student credentials (email as username, mobile as password)
-  const student = authData.students.find(s => s.email === username && s.mobile === password);
-  if (student) {
-    return { success: true, user: student, role: 'student' };
+}
+
+// Initialize auth data on first load
+export async function initializeAuthData(): Promise<void> {
+  try {
+    console.log('Initializing authentication data...');
+    const authData = await loadAuthData();
+    console.log('Auth data initialized with', authData.students.length, 'students and', authData.admins.length, 'admins');
+  } catch (error) {
+    console.error('Error initializing auth data:', error);
   }
-  
-  return { success: false };
 }
 
 export async function getAllStudents(): Promise<Student[]> {
