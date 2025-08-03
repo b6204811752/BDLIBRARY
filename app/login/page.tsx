@@ -126,168 +126,326 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/3 -right-10 w-32 h-32 bg-gradient-to-br from-indigo-400/20 to-pink-400/20 rounded-full blur-2xl animate-bounce"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-28 h-28 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-10 right-1/3 w-24 h-24 bg-gradient-to-br from-pink-400/20 to-indigo-400/20 rounded-full blur-xl animate-bounce"></div>
+      </div>
+
       <Header />
       
-      <div className="flex items-center justify-center py-20">
-        <div className="max-w-md w-full mx-4">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-              <p className="text-gray-600">Sign in to your account</p>
-            </div>
-
-            {/* User Type Toggle */}
-            <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
-              <button
-                type="button"
-                onClick={() => setUserType('student')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  userType === 'student'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Student Login
-              </button>
-              <button
-                type="button"
-                onClick={() => setUserType('admin')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                  userType === 'admin'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Admin Login
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                  {error}
+      <div className="relative z-10 flex items-center justify-center min-h-screen py-12 px-4">
+        <div className="max-w-md w-full">
+          {/* Main login card */}
+          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            {/* Header section with gradient */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-center relative">
+              {/* Decorative elements */}
+              <div className="absolute top-4 left-4 w-6 h-6 bg-white/20 rounded-full animate-ping"></div>
+              <div className="absolute top-6 right-8 w-4 h-4 bg-yellow-300/30 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-6 left-8 w-3 h-3 bg-white/30 rounded-full animate-bounce"></div>
+              
+              <div className="relative">
+                <div className="w-20 h-20 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                  <i className="ri-graduation-cap-fill text-4xl text-white"></i>
                 </div>
-              )}
+                <h2 className="text-3xl font-bold text-white mb-2">Welcome Back!</h2>
+                <p className="text-blue-100">Sign in to continue your learning journey</p>
+              </div>
+            </div>
 
-              {userType === 'student' ? (
-                <>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter your email"
-                      required
-                      disabled={loading}
-                    />
-                  </div>
+            <div className="p-8">
+              {/* Enhanced User Type Toggle */}
+              <div className="relative bg-gray-50 rounded-2xl p-1 mb-8 shadow-inner">
+                <div className={`absolute top-1 transition-all duration-300 ease-in-out bg-gradient-to-r ${
+                  userType === 'student' 
+                    ? 'from-blue-500 to-indigo-600 left-1' 
+                    : 'from-purple-500 to-pink-600 right-1'
+                } w-[calc(50%-4px)] h-[calc(100%-8px)] rounded-xl shadow-lg`}></div>
+                
+                <div className="relative flex">
+                  <button
+                    type="button"
+                    onClick={() => setUserType('student')}
+                    className={`flex-1 py-4 px-6 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center space-x-2 ${
+                      userType === 'student'
+                        ? 'text-white transform scale-105'
+                        : 'text-gray-600 hover:text-gray-800'
+                    }`}
+                  >
+                    <i className="ri-user-line text-lg"></i>
+                    <span>Student Login</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUserType('admin')}
+                    className={`flex-1 py-4 px-6 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center space-x-2 ${
+                      userType === 'admin'
+                        ? 'text-white transform scale-105'
+                        : 'text-gray-600 hover:text-gray-800'
+                    }`}
+                  >
+                    <i className="ri-admin-line text-lg"></i>
+                    <span>Admin Login</span>
+                  </button>
+                </div>
+              </div>
 
-                  <div>
-                    <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-1">
-                      Mobile Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="mobile"
-                      name="mobile"
-                      value={formData.mobile}
-                      onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter your mobile number"
-                      required
-                      disabled={loading}
-                    />
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 text-red-700 px-6 py-4 rounded-lg shadow-sm">
+                    <div className="flex items-center">
+                      <i className="ri-error-warning-line text-red-500 mr-3 text-lg"></i>
+                      <span className="font-medium">{error}</span>
+                    </div>
                   </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      id="username"
-                      name="username"
-                      value={formData.username}
-                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter admin username"
-                      required
-                      disabled={loading}
-                    />
-                  </div>
+                )}
 
-                  <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter admin password"
-                      required
-                      disabled={loading}
-                    />
-                  </div>
-                </>
-              )}
+                {userType === 'student' ? (
+                  <div className="space-y-6">
+                    <div className="group">
+                      <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-blue-600 transition-colors">
+                        <i className="ri-mail-line mr-2"></i>Email Address
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 bg-gray-50 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          placeholder="Enter your email address"
+                          required
+                          disabled={loading}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                          <i className="ri-mail-line text-lg"></i>
+                        </div>
+                      </div>
+                    </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap cursor-pointer"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Signing In...
+                    <div className="group">
+                      <label htmlFor="mobile" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-blue-600 transition-colors">
+                        <i className="ri-phone-line mr-2"></i>Mobile Number
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="tel"
+                          id="mobile"
+                          name="mobile"
+                          value={formData.mobile}
+                          onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 bg-gray-50 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          placeholder="Enter your mobile number"
+                          required
+                          disabled={loading}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                          <i className="ri-phone-line text-lg"></i>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
-                  'Sign In'
-                )}
-              </button>
-            </form>
+                  <div className="space-y-6">
+                    <div className="group">
+                      <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-purple-600 transition-colors">
+                        <i className="ri-user-line mr-2"></i>Username
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          id="username"
+                          name="username"
+                          value={formData.username}
+                          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 bg-gray-50 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          placeholder="Enter admin username"
+                          required
+                          disabled={loading}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">
+                          <i className="ri-user-line text-lg"></i>
+                        </div>
+                      </div>
+                    </div>
 
-            {userType === 'student' && (
+                    <div className="group">
+                      <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-purple-600 transition-colors">
+                        <i className="ri-lock-line mr-2"></i>Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="password"
+                          id="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 bg-gray-50 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          placeholder="Enter admin password"
+                          required
+                          disabled={loading}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors">
+                          <i className="ri-lock-line text-lg"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Enhanced Submit Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`relative w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl ${
+                    userType === 'student'
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:ring-blue-500/50'
+                      : 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 focus:ring-purple-500/50'
+                  }`}
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
+                      <span>Signing In...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      <i className={`${userType === 'student' ? 'ri-login-circle-line' : 'ri-admin-line'} text-lg`}></i>
+                      <span>Sign In as {userType === 'student' ? 'Student' : 'Admin'}</span>
+                    </div>
+                  )}
+                </button>
+              </form>
+
+              {/* Demo Credentials Section */}
+              {userType === 'student' && (
+                <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 flex items-center justify-center">
+                      <i className="ri-information-line text-blue-600 mr-2"></i>
+                      Demo Student Credentials
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">Use these credentials to test the system</p>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {[
+                      { email: 'rajesh@email.com', mobile: '9065541346', name: 'Rajesh Kumar' },
+                      { email: 'priya@email.com', mobile: '9876543211', name: 'Priya Sharma' },
+                      { email: 'amit@email.com', mobile: '9876543212', name: 'Amit Singh' },
+                      { email: 'john@example.com', mobile: '9876543210', name: 'John Doe' },
+                      { email: 'demo@student.com', mobile: '1234567890', name: 'Demo Student' }
+                    ].map((cred, index) => (
+                      <div key={index} className="bg-white/70 backdrop-blur-sm p-3 rounded-lg border border-blue-200/50 hover:bg-white/90 transition-all duration-200 cursor-pointer group" 
+                           onClick={() => setFormData({ ...formData, email: cred.email, mobile: cred.mobile })}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center text-sm font-semibold text-gray-800 mb-1">
+                              <i className="ri-user-3-line text-blue-600 mr-2"></i>
+                              {cred.name}
+                            </div>
+                            <div className="text-xs text-gray-600 space-y-1">
+                              <div className="flex items-center">
+                                <i className="ri-mail-line text-gray-400 mr-1"></i>
+                                <span className="font-mono">{cred.email}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <i className="ri-phone-line text-gray-400 mr-1"></i>
+                                <span className="font-mono">{cred.mobile}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i className="ri-arrow-right-circle-line text-xl"></i>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-100/50 rounded-lg border border-blue-200">
+                    <p className="text-xs text-blue-800 text-center font-medium">
+                      <i className="ri-lightbulb-line mr-1"></i>
+                      <strong>Note:</strong> Enter Email in first field and Mobile Number in second field
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {userType === 'admin' && (
+                <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-200">
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-bold text-gray-800 flex items-center justify-center">
+                      <i className="ri-admin-line text-purple-600 mr-2"></i>
+                      Admin Demo Credentials
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">Use these credentials for admin access</p>
+                  </div>
+                  
+                  <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50 hover:bg-white/90 transition-all duration-200 cursor-pointer group"
+                       onClick={() => setFormData({ ...formData, username: 'admin', password: 'admin123' })}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center text-sm font-semibold text-gray-800 mb-2">
+                          <i className="ri-shield-user-line text-purple-600 mr-2"></i>
+                          Administrator Account
+                        </div>
+                        <div className="text-xs text-gray-600 space-y-1">
+                          <div className="flex items-center">
+                            <i className="ri-user-line text-gray-400 mr-1"></i>
+                            <span className="font-mono">admin</span>
+                          </div>
+                          <div className="flex items-center">
+                            <i className="ri-lock-line text-gray-400 mr-1"></i>
+                            <span className="font-mono">admin123</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i className="ri-arrow-right-circle-line text-xl"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Additional Info */}
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don&apos;t have an account?{' '}
-                  <span className="text-blue-600">Contact admin for registration</span>
+                  Don't have an account?{' '}
+                  <button 
+                    type="button"
+                    className="text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+                    onClick={() => {/* Handle contact admin */}}
+                  >
+                    Contact admin for registration
+                  </button>
                 </p>
-                <div className="mt-4 p-3 bg-blue-50 rounded-md">
-                  <p className="text-sm font-medium text-blue-800">Demo Student Credentials:</p>
-                  <div className="space-y-1 mt-2">
-                    <p className="text-xs text-blue-600">Email: rajesh@email.com | Mobile: 9065541346</p>
-                    <p className="text-xs text-blue-600">Email: priya@email.com | Mobile: 9876543211</p>
-                    <p className="text-xs text-blue-600">Email: amit@email.com | Mobile: 9876543212</p>
-                    <p className="text-xs text-blue-600">Email: john@example.com | Mobile: 9876543210</p>
-                    <p className="text-xs text-blue-600">Email: demo@student.com | Mobile: 1234567890</p>
-                  </div>
-                  <p className="text-xs text-blue-500 mt-2 font-medium">Note: Enter Email in first field and Mobile Number in second field</p>
-                </div>
               </div>
-            )}
+            </div>
+          </div>
 
-            {userType === 'admin' && (
-              <div className="mt-6 text-center">
-                <div className="p-3 bg-green-50 rounded-md">
-                  <p className="text-sm font-medium text-green-800">Demo Admin Credentials:</p>
-                  <p className="text-xs text-green-600 mt-1">Username: admin | Password: admin123</p>
-                </div>
+          {/* Additional Features */}
+          <div className="mt-8 text-center">
+            <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+              <div className="flex items-center">
+                <i className="ri-shield-check-line text-green-500 mr-1"></i>
+                <span>Secure Login</span>
               </div>
-            )}
+              <div className="flex items-center">
+                <i className="ri-time-line text-blue-500 mr-1"></i>
+                <span>24/7 Access</span>
+              </div>
+              <div className="flex items-center">
+                <i className="ri-customer-service-line text-purple-500 mr-1"></i>
+                <span>Support Available</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
