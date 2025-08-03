@@ -389,20 +389,20 @@ export default function AdminDashboard() {
         bValue = b.email;
         break;
       case 'joinDate':
-        aValue = new Date(a.joinDate);
-        bValue = new Date(b.joinDate);
+        aValue = new Date(a.enrollmentDate);
+        bValue = new Date(b.enrollmentDate);
         break;
       case 'progress':
-        aValue = a.examsPassed;
-        bValue = b.examsPassed;
+        aValue = 0; // examsPassed not available in simplified interface
+        bValue = 0;
         break;
       case 'attendance':
         aValue = 0; // Attendance not available in simplified interface
         bValue = 0;
         break;
       case 'score':
-        aValue = a.examsPassed; // Use examsPassed as score proxy
-        bValue = b.examsPassed;
+        aValue = 0; // Use 0 as default score
+        bValue = 0;
         break;
       default:
         aValue = a.name;
