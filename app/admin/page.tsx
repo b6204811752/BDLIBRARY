@@ -556,204 +556,391 @@ export default function AdminDashboard() {
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Enhanced Admin Header */}
         <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-              <p className="text-gray-600">Real-time monitoring and management system</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-600">Online: {realTimeStats.onlineUsers}</span>
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
+            <div className="flex-1">
+              <div className="flex items-center space-x-4 mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg">
+                  <i className="ri-admin-fill text-2xl text-white"></i>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Admin Dashboard
+                  </h1>
+                  <p className="text-gray-600 text-lg">Real-time monitoring and management system</p>
+                </div>
               </div>
-              <div className="bg-white px-4 py-2 rounded-lg shadow flex items-center space-x-2">
-                <i className="ri-test-tube-line text-blue-600"></i>
-                <span className="text-sm text-gray-600">Active Tests: {realTimeStats.activeTests}</span>
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg"></div>
+                  <span className="text-sm font-medium text-gray-700">System Status: Online</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <i className="ri-time-line text-gray-500"></i>
+                  <span className="text-sm text-gray-600">Last updated: {new Date().toLocaleTimeString()}</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Enhanced Real-time Stats */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 rounded-xl shadow-lg border border-blue-400">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-blue-100 text-sm font-medium">Online Users</p>
+                    <p className="text-white text-xl font-bold">{realTimeStats.onlineUsers}</p>
+                  </div>
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i className="ri-user-line text-white text-lg"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-green-500 to-green-600 px-4 py-3 rounded-xl shadow-lg border border-green-400">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-green-100 text-sm font-medium">Active Tests</p>
+                    <p className="text-white text-xl font-bold">{realTimeStats.activeTests}</p>
+                  </div>
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i className="ri-test-tube-line text-white text-lg"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-3 rounded-xl shadow-lg border border-purple-400 col-span-2 lg:col-span-1">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100 text-sm font-medium">Notifications</p>
+                    <p className="text-white text-xl font-bold">{realTimeStats.newNotifications}</p>
+                  </div>
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i className="ri-notification-line text-white text-lg"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Enhanced Navigation Tabs */}
         <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <nav className="flex flex-wrap">
               {[ 
-                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-                { id: 'students', label: 'Students', icon: 'ri-user-line' },
-                { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-line' },
-                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-line' },
-                { id: 'reports', label: 'Reports', icon: 'ri-file-chart-line' },
-                { id: 'settings', label: 'Settings', icon: 'ri-settings-line' }
+                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-fill', color: 'blue' },
+                { id: 'students', label: 'Students', icon: 'ri-user-fill', color: 'green' },
+                { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-fill', color: 'purple' },
+                { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-fill', color: 'orange' },
+                { id: 'reports', label: 'Reports', icon: 'ri-file-chart-fill', color: 'red' },
+                { id: 'settings', label: 'Settings', icon: 'ri-settings-fill', color: 'gray' }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap cursor-pointer ${
+                  className={`flex items-center space-x-3 px-6 py-4 font-medium text-sm transition-all duration-300 cursor-pointer border-b-4 hover:bg-gray-50 flex-1 justify-center min-w-0 ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? `border-blue-500 bg-blue-50 text-blue-700`
+                      : 'border-transparent text-gray-600 hover:text-gray-800'
                   }`}
                 >
-                  <i className={`${tab.icon} text-lg`}></i>
-                  <span>{tab.label}</span>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                    activeTab === tab.id 
+                      ? `bg-blue-500 text-white shadow-lg scale-110` 
+                      : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    <i className={`${tab.icon} text-lg`}></i>
+                  </div>
+                  <span className="font-semibold truncate">{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
                 </button>
               ))}
             </nav>
           </div>
         </div>
 
-        {/* Dashboard Tab */}
+        {/* Enhanced Dashboard Tab */}
         {activeTab === 'dashboard' && analytics && financialAnalytics && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Enhanced Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-user-line text-xl text-blue-600"></i>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-blue-400">
+                <div className="flex items-center justify-between">
+                  <div className="text-white">
+                    <p className="text-blue-100 text-sm font-medium mb-1">Total Students</p>
+                    <p className="text-3xl font-bold mb-2">{analytics.totalStudents}</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <i className="ri-arrow-up-line text-green-300"></i>
+                        <span className="text-green-300 text-sm font-medium">+{Math.floor(Math.random() * 5)} this week</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Students</p>
-                    <p className="text-2xl font-bold text-gray-900">{analytics.totalStudents}</p>
-                    <p className="text-xs text-green-600">+{Math.floor(Math.random() * 5)} this week</p>
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i className="ri-user-fill text-3xl text-white"></i>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-blue-400/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-blue-100">Active: {analytics.activeStudents}</span>
+                    <span className="text-blue-100">Growth: +5.2%</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-money-rupee-circle-line text-xl text-green-600"></i>
+              <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-green-400">
+                <div className="flex items-center justify-between">
+                  <div className="text-white">
+                    <p className="text-green-100 text-sm font-medium mb-1">Total Revenue</p>
+                    <p className="text-3xl font-bold mb-2">₹{financialAnalytics.totalRevenue.toLocaleString()}</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <i className="ri-arrow-up-line text-green-300"></i>
+                        <span className="text-green-300 text-sm font-medium">This month</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalRevenue.toLocaleString()}</p>
-                    <p className="text-xs text-green-600">This month</p>
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i className="ri-money-rupee-circle-fill text-3xl text-white"></i>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-green-400/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-green-100">Target: ₹{(financialAnalytics.totalRevenue * 1.2).toLocaleString()}</span>
+                    <span className="text-green-100">Monthly: +12.5%</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-money-rupee-circle-line text-xl text-red-600"></i>
+              <div className="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-red-400">
+                <div className="flex items-center justify-between">
+                  <div className="text-white">
+                    <p className="text-red-100 text-sm font-medium mb-1">Total Dues</p>
+                    <p className="text-3xl font-bold mb-2">₹{financialAnalytics.totalDues.toLocaleString()}</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <i className="ri-alert-line text-red-300"></i>
+                        <span className="text-red-300 text-sm font-medium">{financialAnalytics.overduePayments} overdue</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Dues</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDues.toLocaleString()}</p>
-                    <p className="text-xs text-red-600">{financialAnalytics.overduePayments} overdue</p>
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i className="ri-money-rupee-circle-line text-3xl text-white"></i>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-red-400/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-red-100">Collection Rate: 78%</span>
+                    <span className="text-red-100">Urgent: {Math.ceil(financialAnalytics.overduePayments/2)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-calendar-check-line text-xl text-purple-600"></i>
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-purple-400">
+                <div className="flex items-center justify-between">
+                  <div className="text-white">
+                    <p className="text-purple-100 text-sm font-medium mb-1">Avg Attendance</p>
+                    <p className="text-3xl font-bold mb-2">{Math.round(analytics.averageAttendance)}%</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <i className="ri-arrow-up-line text-purple-300"></i>
+                        <span className="text-purple-300 text-sm font-medium">+2% this month</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Avg Attendance</p>
-                    <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageAttendance)}%</p>
-                    <p className="text-xs text-green-600">+2% this month</p>
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i className="ri-calendar-check-fill text-3xl text-white"></i>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-purple-400/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-purple-100">Target: 90%</span>
+                    <span className="text-purple-100">Weekly: +1.5%</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-trophy-line text-xl text-yellow-600"></i>
+              <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-yellow-400">
+                <div className="flex items-center justify-between">
+                  <div className="text-white">
+                    <p className="text-yellow-100 text-sm font-medium mb-1">Avg Score</p>
+                    <p className="text-3xl font-bold mb-2">{Math.round(analytics.averageScore)}</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <i className="ri-arrow-up-line text-yellow-300"></i>
+                        <span className="text-yellow-300 text-sm font-medium">+3 pts this week</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Avg Score</p>
-                    <p className="text-2xl font-bold text-gray-900">{Math.round(analytics.averageScore)}</p>
-                    <p className="text-xs text-green-600">+3 pts this week</p>
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i className="ri-trophy-fill text-3xl text-white"></i>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-yellow-400/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-yellow-100">Top Score: 95</span>
+                    <span className="text-yellow-100">Improvement: +8%</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-discount-percent-line text-xl text-orange-600"></i>
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-orange-400">
+                <div className="flex items-center justify-between">
+                  <div className="text-white">
+                    <p className="text-orange-100 text-sm font-medium mb-1">Discounts Given</p>
+                    <p className="text-3xl font-bold mb-2">₹{financialAnalytics.totalDiscounts.toLocaleString()}</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
+                        <i className="ri-discount-percent-line text-orange-300"></i>
+                        <span className="text-orange-300 text-sm font-medium">Total given</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Discounts</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{financialAnalytics.totalDiscounts.toLocaleString()}</p>
-                    <p className="text-xs text-orange-600">Total given</p>
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i className="ri-discount-percent-fill text-3xl text-white"></i>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-orange-400/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-orange-100">Students: {Math.floor(financialAnalytics.totalDiscounts/1000)}</span>
+                    <span className="text-orange-100">Avg: ₹{Math.round(financialAnalytics.totalDiscounts/Math.max(1, Math.floor(financialAnalytics.totalDiscounts/1000)))}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Enhanced Quick Actions */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl shadow-xl border border-gray-200">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">Quick Actions</h2>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                  <i className="ri-flashlight-fill text-white text-xl"></i>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-blue-500 to-blue-600 text-white py-4 px-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-blue-400"
                 >
-                  <i className="ri-user-add-line"></i>
-                  <span>Add Student</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-user-add-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Add Student</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-3/4"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowBulkUpload(true)}
-                  className="bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-indigo-500 to-indigo-600 text-white py-4 px-4 rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-indigo-400"
                 >
-                  <i className="ri-file-upload-line"></i>
-                  <span>Bulk Upload</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-file-upload-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Bulk Upload</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-1/2"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowPaymentModal(true)}
-                  className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-green-500 to-green-600 text-white py-4 px-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-green-400"
                 >
-                  <i className="ri-money-rupee-circle-line"></i>
-                  <span>Add Payment</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-money-rupee-circle-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Add Payment</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-4/5"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowDiscountModal(true)}
-                  className="bg-orange-600 text-white py-3 px-4 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-orange-500 to-orange-600 text-white py-4 px-4 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-orange-400"
                 >
-                  <i className="ri-discount-percent-line"></i>
-                  <span>Apply Discount</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-discount-percent-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Apply Discount</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-2/3"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowLibraryModal(true)}
-                  className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-purple-500 to-purple-600 text-white py-4 px-4 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-purple-400"
                 >
-                  <i className="ri-book-line"></i>
-                  <span>Library</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-book-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Library</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-3/5"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowExamModal(true)}
-                  className="bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-pink-500 to-pink-600 text-white py-4 px-4 rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-pink-400"
                 >
-                  <i className="ri-quiz-line"></i>
-                  <span>Add Exam</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-quiz-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Add Exam</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-1/2"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowCounselingModal(true)}
-                  className="bg-pink-600 text-white py-3 px-4 rounded-lg hover:bg-pink-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-teal-500 to-teal-600 text-white py-4 px-4 rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-teal-400"
                 >
-                  <i className="ri-user-heart-line"></i>
-                  <span>Counseling</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-user-heart-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Counseling</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-2/5"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowCertificateModal(true)}
-                  className="bg-teal-600 text-white py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-cyan-500 to-cyan-600 text-white py-4 px-4 rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-cyan-400"
                 >
-                  <i className="ri-award-line"></i>
-                  <span>Certificate</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-award-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Certificate</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-1/3"></div>
+                  </div>
                 </button>
+                
                 <button
                   onClick={() => setShowExportModal(true)}
-                  className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                  className="group bg-gradient-to-br from-gray-500 to-gray-600 text-white py-4 px-4 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 flex flex-col items-center space-y-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 border border-gray-400"
                 >
-                  <i className="ri-download-line"></i>
-                  <span>Export</span>
+                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i className="ri-download-fill text-2xl"></i>
+                  </div>
+                  <span className="font-semibold text-sm">Export Data</span>
+                  <div className="w-full h-1 bg-white/20 rounded-full">
+                    <div className="h-full bg-white/40 rounded-full w-full"></div>
+                  </div>
                 </button>
               </div>
             </div>
