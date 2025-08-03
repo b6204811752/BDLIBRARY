@@ -30,74 +30,88 @@ export default function Home() {
 
   const features = [
     {
-      icon: 'ri-book-open-line',
+      icon: 'ri-book-open-fill',
       title: 'Comprehensive Study Materials',
-      description: 'Access to thousands of study materials, notes, and practice papers for all government exams'
+      description: 'Access to thousands of study materials, notes, and practice papers for all government exams',
+      gradient: 'from-blue-500 to-indigo-600'
     },
     {
-      icon: 'ri-time-line',
+      icon: 'ri-time-fill',
       title: 'Flexible Time Shifts',
-      description: 'Choose from morning, afternoon, or evening shifts that fit your schedule'
+      description: 'Choose from morning, afternoon, or evening shifts that fit your schedule',
+      gradient: 'from-orange-500 to-red-600'
     },
     {
-      icon: 'ri-user-star-line',
+      icon: 'ri-user-star-fill',
       title: 'Expert Faculty',
-      description: 'Learn from experienced teachers with proven track records in government job preparation'
+      description: 'Learn from experienced teachers with proven track records in government job preparation',
+      gradient: 'from-purple-500 to-pink-600'
     },
     {
-      icon: 'ri-bar-chart-line',
+      icon: 'ri-line-chart-fill',
       title: 'Progress Tracking',
-      description: 'Monitor your learning progress with detailed analytics and performance insights'
+      description: 'Monitor your learning progress with detailed analytics and performance insights',
+      gradient: 'from-green-500 to-teal-600'
     },
     {
-      icon: 'ri-quiz-line',
+      icon: 'ri-file-list-3-fill',
       title: 'Mock Tests',
-      description: 'Take unlimited practice tests and mock exams to evaluate your preparation level'
+      description: 'Take unlimited practice tests and mock exams to evaluate your preparation level',
+      gradient: 'from-yellow-500 to-orange-600'
     },
     {
-      icon: 'ri-trophy-line',
+      icon: 'ri-trophy-fill',
       title: 'Success Stories',
-      description: 'Join thousands of successful candidates who cleared their exams with our guidance'
+      description: 'Join thousands of successful candidates who cleared their exams with our guidance',
+      gradient: 'from-amber-500 to-yellow-600'
     },
     {
-      icon: 'ri-wifi-line',
+      icon: 'ri-wifi-fill',
       title: 'High Speed WiFi',
-      description: 'Stay connected with unlimited high-speed internet access for online research and study'
+      description: 'Stay connected with unlimited high-speed internet access for online research and study',
+      gradient: 'from-cyan-500 to-blue-600'
     },
     {
-      icon: 'ri-temp-cold-line',
+      icon: 'ri-temp-cold-fill',
       title: 'Fully AC Conditioned',
-      description: 'Comfortable study environment with centralized air conditioning throughout the facility'
+      description: 'Comfortable study environment with centralized air conditioning throughout the facility',
+      gradient: 'from-sky-500 to-indigo-600'
     },
     {
-      icon: 'ri-newspaper-line',
+      icon: 'ri-newspaper-fill',
       title: 'Daily Newspapers',
-      description: 'Stay updated with current affairs through complimentary daily newspapers and magazines'
+      description: 'Stay updated with current affairs through complimentary daily newspapers and magazines',
+      gradient: 'from-gray-600 to-gray-800'
     },
     {
-      icon: 'ri-camera-line',
+      icon: 'ri-shield-check-fill',
       title: 'CCTV Surveillance',
-      description: 'Complete security with 24/7 CCTV monitoring for a safe and secure learning environment'
+      description: 'Complete security with 24/7 CCTV monitoring for a safe and secure learning environment',
+      gradient: 'from-red-500 to-pink-600'
     },
     {
-      icon: 'ri-computer-line',
+      icon: 'ri-computer-fill',
       title: 'Online/Offline Test Series',
-      description: 'Comprehensive test series available both online and offline to suit your preference'
+      description: 'Comprehensive test series available both online and offline to suit your preference',
+      gradient: 'from-violet-500 to-purple-600'
     },
     {
-      icon: 'ri-time-line',
+      icon: 'ri-24-hours-fill',
       title: '24×7 Open Access',
-      description: 'Round-the-clock access for both girls and boys with separate study areas and facilities'
+      description: 'Round-the-clock access for both girls and boys with separate study areas and facilities',
+      gradient: 'from-emerald-500 to-green-600'
     },
     {
-      icon: 'ri-drop-line',
+      icon: 'ri-drop-fill',
       title: 'RO Drinking Water',
-      description: 'Pure and safe drinking water available through advanced RO filtration system'
+      description: 'Pure and safe drinking water available through advanced RO filtration system',
+      gradient: 'from-blue-400 to-cyan-600'
     },
     {
-      icon: 'ri-volume-mute-line',
+      icon: 'ri-volume-mute-fill',
       title: 'Silent Environment',
-      description: 'Peaceful and distraction-free study atmosphere designed for maximum concentration'
+      description: 'Peaceful and distraction-free study atmosphere designed for maximum concentration',
+      gradient: 'from-slate-500 to-gray-600'
     }
   ];
 
@@ -105,38 +119,44 @@ export default function Home() {
     {
       name: 'Banking Exams',
       description: 'SBI, IBPS, RRB Banking',
-      icon: 'ri-bank-line',
-      color: 'bg-blue-500'
+      icon: 'ri-bank-fill',
+      color: 'bg-gradient-to-br from-blue-500 to-blue-700',
+      borderColor: 'hover:border-blue-300'
     },
     {
       name: 'SSC Exams',
       description: 'SSC CGL, CHSL, MTS, GD',
-      icon: 'ri-government-line',
-      color: 'bg-green-500'
+      icon: 'ri-government-fill',
+      color: 'bg-gradient-to-br from-green-500 to-green-700',
+      borderColor: 'hover:border-green-300'
     },
     {
       name: 'Railway Exams',
       description: 'RRB NTPC, Group D, JE',
-      icon: 'ri-train-line',
-      color: 'bg-purple-500'
+      icon: 'ri-train-fill',
+      color: 'bg-gradient-to-br from-purple-500 to-purple-700',
+      borderColor: 'hover:border-purple-300'
     },
     {
       name: 'UPSC Civil Services',
       description: 'IAS, IPS, IFS',
-      icon: 'ri-medal-line',
-      color: 'bg-orange-500'
+      icon: 'ri-medal-fill',
+      color: 'bg-gradient-to-br from-orange-500 to-orange-700',
+      borderColor: 'hover:border-orange-300'
     },
     {
       name: 'State Government',
       description: 'Various State Jobs',
-      icon: 'ri-building-line',
-      color: 'bg-red-500'
+      icon: 'ri-building-fill',
+      color: 'bg-gradient-to-br from-red-500 to-red-700',
+      borderColor: 'hover:border-red-300'
     },
     {
       name: 'Defense Exams',
       description: 'NDA, CDS, AFCAT',
-      icon: 'ri-shield-line',
-      color: 'bg-indigo-500'
+      icon: 'ri-shield-fill',
+      color: 'bg-gradient-to-br from-indigo-500 to-indigo-700',
+      borderColor: 'hover:border-indigo-300'
     }
   ];
 
@@ -165,10 +185,30 @@ export default function Home() {
   ];
 
   const stats = [
-    { number: '10,000+', label: 'Students Enrolled' },
-    { number: '500+', label: 'Success Stories' },
-    { number: '50+', label: 'Expert Faculty' },
-    { number: '15+', label: 'Years Experience' }
+    { 
+      number: '10,000+', 
+      label: 'Students Enrolled',
+      icon: 'ri-user-fill',
+      gradient: 'from-blue-500 to-blue-700'
+    },
+    { 
+      number: '500+', 
+      label: 'Success Stories',
+      icon: 'ri-trophy-fill',
+      gradient: 'from-green-500 to-green-700'
+    },
+    { 
+      number: '50+', 
+      label: 'Expert Faculty',
+      icon: 'ri-user-star-fill',
+      gradient: 'from-purple-500 to-purple-700'
+    },
+    { 
+      number: '15+', 
+      label: 'Years Experience',
+      icon: 'ri-time-fill',
+      gradient: 'from-orange-500 to-orange-700'
+    }
   ];
 
   return (
@@ -274,33 +314,37 @@ export default function Home() {
       <section className="py-12 sm:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            {stats.map((stat, index) => {
-              const statIcons = [
-                'ri-group-line',
-                'ri-trophy-line', 
-                'ri-user-star-line',
-                'ri-time-line'
-              ];
-              const iconColors = [
-                'text-blue-600',
-                'text-green-600',
-                'text-purple-600',
-                'text-orange-600'
-              ];
-              return (
-                <div key={index} className="group text-center bg-white rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                  <div className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform duration-500`}>
-                    <i className={`${statIcons[index]} text-xl sm:text-2xl ${iconColors[index]} group-hover:scale-110 transition-transform duration-300`}></i>
+            {stats.map((stat, index) => (
+              <div key={index} className="group text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer border border-gray-100 hover:border-transparent relative overflow-hidden">
+                
+                {/* Gradient background overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl`}></div>
+                
+                {/* Sparkle effects */}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -top-2 -right-2 w-2 h-2 bg-blue-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                <div className="relative z-10">
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gradient-to-br ${stat.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-xl`}>
+                    <i className={`${stat.icon} text-xl sm:text-2xl text-white group-hover:scale-110 group-hover:animate-wiggle transition-all duration-300`}></i>
                   </div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-1 sm:mb-2 group-hover:text-purple-600 transition-colors duration-300">
+                  
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-1 sm:mb-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
                     {stat.number}
                   </div>
-                  <div className="text-xs sm:text-sm lg:text-base text-gray-600 font-medium">
+                  
+                  <div className="text-xs sm:text-sm lg:text-base text-gray-600 font-medium group-hover:text-gray-700 transition-colors duration-300">
                     {stat.label}
                   </div>
                 </div>
-              );
-            })}
+                
+                {/* Floating ring animation */}
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
+                  <div className="w-6 h-6 border-2 border-blue-300 rounded-full animate-spin-slow"></div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -319,26 +363,45 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {jobCategories.map((category, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-4 sm:p-6 cursor-pointer group transform hover:scale-105 hover:-translate-y-2">
-                <div className="relative">
-                  <div className={`w-12 h-12 sm:w-16 sm:h-16 ${category.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 relative overflow-hidden`}>
-                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors duration-300"></div>
-                    <i className={`${category.icon} text-lg sm:text-2xl text-white relative z-10 group-hover:scale-125 transition-transform duration-300`}></i>
-                    <div className="absolute top-1 right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping group-hover:animate-bounce"></div>
+              <div key={index} className={`group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 p-4 sm:p-6 cursor-pointer transform hover:scale-105 hover:-translate-y-3 border border-gray-100 ${category.borderColor} relative overflow-hidden`}>
+                
+                {/* Gradient background overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gray-50/50 group-hover:to-blue-50/50 transition-all duration-500 rounded-xl"></div>
+                
+                {/* Enhanced floating particles */}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -top-2 -right-2 w-2 h-2 bg-green-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                <div className="relative z-10">
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 ${category.color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-xl relative overflow-hidden`}>
+                    
+                    {/* Icon glow effect */}
+                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors duration-300 rounded-xl"></div>
+                    <i className={`${category.icon} text-xl sm:text-2xl text-white relative z-10 group-hover:scale-110 group-hover:animate-wiggle transition-all duration-300`}></i>
+                    
+                    {/* Success indicator */}
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
+                      <i className="ri-check-line text-xs text-white"></i>
+                    </div>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
-                    <i className="ri-check-line text-sm text-white"></i>
+                  
+                  {/* Floating ring animation */}
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
+                    <div className="w-8 h-8 border-2 border-blue-300 rounded-full animate-spin-slow"></div>
                   </div>
+                  
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">{category.name}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{category.description}</p>
+                  
+                  <Link 
+                    href="/login"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base cursor-pointer group-hover:translate-x-2 transition-all duration-300"
+                  >
+                    <span className="group-hover:mr-2 transition-all duration-300">Explore Course</span>
+                    <i className="ri-arrow-right-line ml-1 group-hover:ml-3 group-hover:scale-125 group-hover:animate-bounce transition-all duration-300"></i>
+                  </Link>
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors duration-300">{category.name}</h3>
-                <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">{category.description}</p>
-                <Link 
-                  href="/login"
-                  className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base cursor-pointer group-hover:translate-x-2 transition-all duration-300"
-                >
-                  <span className="group-hover:mr-2 transition-all duration-300">Learn More</span>
-                  <i className="ri-arrow-right-line ml-1 group-hover:ml-3 group-hover:scale-125 transition-all duration-300"></i>
-                </Link>
               </div>
             ))}
           </div>
@@ -449,21 +512,39 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-4 sm:p-6 group cursor-pointer hover:scale-105 hover:-translate-y-1 border border-transparent hover:border-blue-200">
-                <div className="relative mb-3 sm:mb-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300"></div>
-                    <i className={`${feature.icon} text-lg sm:text-2xl text-blue-600 relative z-10 group-hover:text-blue-700 group-hover:scale-125 transition-all duration-300`}></i>
+              <div key={index} className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 p-4 sm:p-6 cursor-pointer hover:scale-105 hover:-translate-y-3 border border-gray-100 hover:border-transparent relative overflow-hidden">
+                
+                {/* Animated gradient background overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl`}></div>
+                
+                {/* Enhanced floating sparkle effects */}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -top-2 -right-2 w-2 h-2 bg-blue-400 rounded-full animate-bounce opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="absolute top-2 left-2 w-1 h-1 bg-green-400 rounded-full animate-ping opacity-0 group-hover:opacity-75 transition-opacity duration-400"></div>
+                
+                <div className="relative z-10 mb-3 sm:mb-4">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-xl relative overflow-hidden`}>
+                    {/* Icon glow effect */}
+                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors duration-300 rounded-xl"></div>
+                    <i className={`${feature.icon} text-lg sm:text-2xl text-white relative z-10 group-hover:scale-110 group-hover:animate-wiggle transition-all duration-300`}></i>
                   </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
-                    <i className="ri-sparkle-fill text-xs text-white"></i>
+                  
+                  {/* Floating micro-animation ring */}
+                  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
+                    <div className="w-8 h-8 border-2 border-blue-300 rounded-full animate-spin-slow"></div>
                   </div>
                 </div>
-                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 leading-tight group-hover:text-blue-600 transition-colors duration-300">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{feature.description}</p>
-                <div className="mt-3 flex items-center text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2">
-                  <span className="text-sm font-medium">Learn more</span>
-                  <i className="ri-arrow-right-s-line ml-1 text-sm"></i>
+                
+                <div className="relative z-10">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-800 mb-2 sm:mb-3 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">{feature.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{feature.description}</p>
+                  
+                  {/* Enhanced CTA arrow */}
+                  <div className="mt-3 flex items-center text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2">
+                    <span className="text-sm font-medium">Explore feature</span>
+                    <i className="ri-arrow-right-s-line ml-1 text-sm group-hover:animate-bounce"></i>
+                  </div>
                 </div>
               </div>
             ))}
