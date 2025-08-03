@@ -235,18 +235,6 @@ export default function AdminDashboard() {
           name: '',
           email: '',
           mobile: '',
-          course: ''
-        });
-        await loadData(); // Refresh the student list
-      } else {
-        setError('Failed to add student');
-      }
-
-      if (success) {
-        setNewStudent({
-          name: '',
-          email: '',
-          mobile: '',
           username: '',
           password: '',
           course: '',
@@ -268,9 +256,9 @@ export default function AdminDashboard() {
           setShowSuccessPopup(false);
         }, 3000);
         
-        await loadData(); // Reload data after adding
+        await loadData(); // Refresh the student list
       } else {
-        console.error('Failed to add student');
+        setError('Failed to add student');
       }
     } catch (error) {
       console.error('Error adding student:', error);
@@ -292,9 +280,7 @@ export default function AdminDashboard() {
             name,
             email,
             mobile: '9999999999', // Default mobile number
-            course: course || 'General',
-            enrollmentDate: new Date().toISOString().split('T')[0],
-            status: 'active' as const
+            course: course || 'General'
           });
           successCount++;
         } catch (error) {
