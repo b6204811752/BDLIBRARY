@@ -12,13 +12,14 @@ import {
   updateStudent,
   Student,
   Admin,
-  AuthData,
-  authenticate,
-  authenticateAdmin,
   getCurrentUser,
   debugAuthData,
   refreshAuthData,
-  authenticateStudent
+  authenticateStudent,
+  testAuthentication,
+  exportDatabase,
+  importDatabase,
+  resetDatabase
 } from '@/lib/auth';
 import {
   getFeeTransactions,
@@ -679,6 +680,7 @@ export default function AdminDashboard() {
                 { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-fill', color: 'blue' },
                 { id: 'students', label: 'Students', icon: 'ri-user-fill', color: 'green' },
                 { id: 'analytics', label: 'Analytics', icon: 'ri-bar-chart-fill', color: 'purple' },
+                { id: 'database', label: 'Database', icon: 'ri-database-fill', color: 'indigo' },
                 { id: 'announcements', label: 'Announcements', icon: 'ri-megaphone-fill', color: 'orange' },
                 { id: 'reports', label: 'Reports', icon: 'ri-file-chart-fill', color: 'red' },
                 { id: 'debug', label: 'Debug', icon: 'ri-bug-fill', color: 'yellow' },
@@ -2360,6 +2362,200 @@ export default function AdminDashboard() {
                     <li>• Check browser console for detailed debug information</li>
                     <li>• If students still can't login, try "Refresh Auth Data"</li>
                   </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Database Management Tab */}
+        {activeTab === 'database' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i className="ri-database-fill text-white text-lg"></i>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">File-Based Database Management</h3>
+                    <p className="text-indigo-100 text-sm">Manage your data with a simple file-based approach</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Database Info */}
+                  <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-200">
+                    <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                      <i className="ri-information-line text-indigo-600 mr-2"></i>
+                      Database Information
+                    </h4>
+                    
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Storage Method:</span>
+                        <span className="font-semibold text-indigo-600">localStorage (Browser)</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Total Students:</span>
+                        <span className="font-semibold text-gray-800">{students.length}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Active Students:</span>
+                        <span className="font-semibold text-green-600">
+                          {students.filter(s => s.status === 'active').length}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Last Updated:</span>
+                        <span className="font-semibold text-gray-600 text-sm">
+                          {new Date().toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 p-4 bg-white/60 rounded-lg border border-indigo-200">
+                      <h5 className="font-semibold text-gray-800 mb-2">How it works:</h5>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Data is stored in browser's localStorage</li>
+                        <li>• Acts like a simple JSON database file</li>
+                        <li>• Persists across browser sessions</li>
+                        <li>• Admin can export/import data easily</li>
+                        <li>• Perfect for small to medium datasets</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Database Operations */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                    <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                      <i className="ri-tools-line text-blue-600 mr-2"></i>
+                      Database Operations
+                    </h4>
+                    
+                    <div className="space-y-4">
+                      {/* Export Database */}
+                      <button
+                        onClick={async () => {
+                          try {
+                            const data = await exportDatabase();
+                            const blob = new Blob([data], { type: 'application/json' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `bd_library_database_${new Date().toISOString().split('T')[0]}.json`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            alert('✅ Database exported successfully!');
+                          } catch (error) {
+                            alert('❌ Failed to export database');
+                            console.error('Export error:', error);
+                          }
+                        }}
+                        className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                      >
+                        <i className="ri-download-line text-lg"></i>
+                        <span>Export Database (JSON)</span>
+                      </button>
+
+                      {/* Import Database */}
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          Import Database File:
+                        </label>
+                        <input
+                          type="file"
+                          accept=".json"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              try {
+                                const text = await file.text();
+                                const success = await importDatabase(text);
+                                if (success) {
+                                  alert('✅ Database imported successfully!');
+                                  window.location.reload(); // Refresh to show new data
+                                } else {
+                                  alert('❌ Failed to import database. Please check the file format.');
+                                }
+                              } catch (error) {
+                                alert('❌ Error importing database');
+                                console.error('Import error:', error);
+                              }
+                            }
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+
+                      {/* Reset Database */}
+                      <button
+                        onClick={async () => {
+                          if (confirm('⚠️ Are you sure you want to reset the database? This will restore default demo data and cannot be undone!')) {
+                            try {
+                              await resetDatabase();
+                              alert('✅ Database reset successfully!');
+                              window.location.reload(); // Refresh to show reset data
+                            } catch (error) {
+                              alert('❌ Failed to reset database');
+                              console.error('Reset error:', error);
+                            }
+                          }
+                        }}
+                        className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                      >
+                        <i className="ri-refresh-line text-lg"></i>
+                        <span>Reset to Default Data</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* File-Based Concept Explanation */}
+                <div className="mt-6 p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border border-gray-200">
+                  <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                    <i className="ri-lightbulb-line text-yellow-600 mr-2"></i>
+                    File-Based Database Concept
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h5 className="font-semibold text-gray-800 mb-2">✅ Advantages:</h5>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Simple to understand and implement</li>
+                        <li>• No database server required</li>
+                        <li>• Easy backup and restore (just copy files)</li>
+                        <li>• Perfect for small applications</li>
+                        <li>• Human-readable JSON format</li>
+                        <li>• Version control friendly</li>
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h5 className="font-semibold text-gray-800 mb-2">⚠️ Considerations:</h5>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Limited to single-user access</li>
+                        <li>• No advanced querying capabilities</li>
+                        <li>• Manual backup management needed</li>
+                        <li>• File size limitations on large datasets</li>
+                        <li>• No built-in data validation</li>
+                        <li>• Concurrent access handling required</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-4 bg-blue-100/50 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-800 font-medium">
+                      <i className="ri-information-line mr-1"></i>
+                      <strong>Current Implementation:</strong> This system uses localStorage as a file-like database. 
+                      In a real file-based system, you would store data in JSON files on your server and read/write them as needed.
+                      For production use, consider upgrading to a proper database like SQLite, PostgreSQL, or MongoDB.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
