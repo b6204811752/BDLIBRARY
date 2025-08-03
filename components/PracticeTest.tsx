@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { TestSet, Question, TestAttempt, practiceTests, createTestAttempt, saveTestAttempt, calculateScore, getStudentAttempts } from '@/lib/practice-tests';
 
 interface PracticeTestProps {
@@ -207,7 +207,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 </div>
 
                 <div className="flex flex-wrap gap-1 mb-4">
-                  {test.subjects.map((subject, index) => (
+                  {test.subjects.map((subject: string, index: number) => (
                     <span key={index} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
                       {subject}
                     </span>
@@ -384,7 +384,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 </div>
                 <select
                   value={questionsPerPage}
-                  onChange={(e) => {
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     setQuestionsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
@@ -525,7 +525,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                     </p>
                     
                     <div className="grid grid-cols-1 gap-2 mb-4">
-                      {question.options.map((option, optIndex) => (
+                      {question.options.map((option: string, optIndex: number) => (
                         <div
                           key={optIndex}
                           className={`p-3 rounded border text-sm ${
@@ -694,7 +694,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 </p>
 
                 <div className="space-y-3">
-                  {currentQuestion.options.map((option, index) => (
+                  {currentQuestion.options.map((option: string, index: number) => (
                     <div
                       key={index}
                       onClick={() => handleAnswerSelect(currentQuestion.id, index)}
@@ -765,7 +765,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                 <h3 className="font-semibold text-gray-900 mb-4">Questions</h3>
                 
                 <div className="grid grid-cols-5 gap-2">
-                  {selectedTest.questions.map((question, index) => {
+                  {selectedTest.questions.map((question: any, index: number) => {
                     const status = getQuestionStatus(question);
                     return (
                       <button
