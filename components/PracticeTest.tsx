@@ -543,11 +543,8 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
                   </div>
                 </div>
               )}
-            </>
-          );
-        })()}
-      </div>
-    </div>
+          </div>
+        </div>
 
         <div className="text-center">
           <button
