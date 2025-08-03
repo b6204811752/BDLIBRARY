@@ -16,7 +16,7 @@ export function useRealtimeStats() {
 export function useRealtimeNotifications() {
   const getNotifications = () => {
     const user = getCurrentUser();
-    if (!user.data?.id) return { notifications: [], unreadCount: 0 };
+    if (!user || !user.data?.id) return { notifications: [], unreadCount: 0 };
 
     try {
       const userId = user.data.id;
@@ -35,7 +35,7 @@ export function useRealtimeNotifications() {
 
   const markAsRead = (notificationId: string) => {
     const user = getCurrentUser();
-    if (!user.data?.id) return;
+    if (!user || !user.data?.id) return;
 
     try {
       const userId = user.data.id;
@@ -62,7 +62,7 @@ export function useRealtimeNotifications() {
 
   const markAllAsRead = () => {
     const user = getCurrentUser();
-    if (!user.data?.id) return;
+    if (!user || !user.data?.id) return;
 
     try {
       const userId = user.data.id;
@@ -95,7 +95,7 @@ export function useRealtimeNotifications() {
 export function useActivityTracker() {
   const trackActivity = (action: string, details?: any) => {
     const user = getCurrentUser();
-    if (user.data?.id) {
+    if (user && user.data?.id) {
       realtimeIntegration.trackUserActivity(user.data.id, action, details);
     }
   };
@@ -108,8 +108,9 @@ export function useActivityTracker() {
     trackActivity('test_complete', { testId, testName, score, timeSpent });
     
     // Broadcast test completion for real-time updates
+    const user = getCurrentUser();
     realtimeIntegration.broadcastTestCompletion({
-      userId: getCurrentUser().data?.id,
+      userId: user?.data?.id,
       testId,
       testName,
       score,
@@ -122,8 +123,9 @@ export function useActivityTracker() {
     trackActivity('material_download', { materialId, materialName, category });
     
     // Broadcast material download for real-time updates
+    const user = getCurrentUser();
     realtimeIntegration.broadcastMaterialDownload({
-      userId: getCurrentUser().data?.id,
+      userId: user?.data?.id,
       materialId,
       materialName,
       category,
@@ -135,8 +137,9 @@ export function useActivityTracker() {
     trackActivity('payment_made', { amount, receiptNo, method });
     
     // Broadcast payment for real-time updates
+    const user = getCurrentUser();
     realtimeIntegration.broadcastPayment({
-      userId: getCurrentUser().data?.id,
+      userId: user?.data?.id,
       amount,
       receiptNo,
       method,
@@ -162,7 +165,7 @@ export function useActivityTracker() {
 export function useRealtimeConnection() {
   const connectUser = () => {
     const user = getCurrentUser();
-    if (user.data?.id) {
+    if (user && user.data?.id) {
       // Connect to real-time system
       realtimeIntegration.connectUser(user.data.id, user.type || 'student');
       
