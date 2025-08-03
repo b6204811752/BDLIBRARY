@@ -83,15 +83,7 @@ export default function AdminDashboard() {
     name: '',
     email: '',
     mobile: '',
-    username: '',
-    password: '',
-    course: '',
-    duration: 6,
-    monthlyFees: 0,
-    libraryAccess: false,
-    examsPassed: 0,
-    counselingBooked: false,
-    joinDate: new Date().toISOString().split('T')[0]
+    course: ''
   });
 
   const [bulkStudents, setBulkStudents] = useState('');
@@ -235,15 +227,7 @@ export default function AdminDashboard() {
           name: '',
           email: '',
           mobile: '',
-          username: '',
-          password: '',
-          course: '',
-          duration: 6,
-          monthlyFees: 0,
-          libraryAccess: false,
-          examsPassed: 0,
-          counselingBooked: false,
-          joinDate: new Date().toISOString().split('T')[0]
+          course: ''
         });
         setShowAddModal(false);
         
@@ -1524,9 +1508,9 @@ export default function AdminDashboard() {
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
-                    <span className="text-gray-600 font-medium">Library Access</span>
+                    <span className="text-gray-600 font-medium">Active Students</span>
                     <span className="font-bold text-blue-600 text-lg">
-                      {students.filter(s => s.libraryAccess).length}
+                      {students.filter(s => s.status === 'active').length}
                     </span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
@@ -1536,9 +1520,9 @@ export default function AdminDashboard() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
-                    <span className="text-gray-600 font-medium">Counseling Booked</span>
+                    <span className="text-gray-600 font-medium">Inactive Students</span>
                     <span className="font-bold text-orange-600 text-lg">
-                      {students.filter(s => s.counselingBooked).length}
+                      {students.filter(s => s.status === 'inactive').length}
                     </span>
                   </div>
                 </div>
@@ -1553,21 +1537,21 @@ export default function AdminDashboard() {
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
-                    <span className="text-gray-600 font-medium">Total Exams Passed</span>
+                    <span className="text-gray-600 font-medium">Total Students</span>
                     <span className="font-bold text-blue-600 text-lg">
-                      {students.reduce((sum, s) => sum + s.examsPassed, 0)}
+                      {students.length}
                     </span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
-                    <span className="text-gray-600 font-medium">Avg Exams Per Student</span>
+                    <span className="text-gray-600 font-medium">Active Students</span>
                     <span className="font-bold text-green-600 text-lg">
-                      {Math.round(students.reduce((sum, s) => sum + s.examsPassed, 0) / students.length)}
+                      {students.filter(s => s.status === 'active').length}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">High Performers</span>
+                    <span className="text-gray-600">Course Distribution</span>
                     <span className="font-bold text-purple-600">
-                      {students.filter(s => s.examsPassed > 2).length}
+                      {new Set(students.map(s => s.course)).size} courses
                     </span>
                   </div>
                 </div>
@@ -1940,15 +1924,7 @@ export default function AdminDashboard() {
                         name: '',
                         email: '',
                         mobile: '',
-                        username: '',
-                        password: '',
-                        course: '',
-                        duration: 6,
-                        monthlyFees: 0,
-                        libraryAccess: false,
-                        examsPassed: 0,
-                        counselingBooked: false,
-                        joinDate: new Date().toISOString().split('T')[0]
+                        course: ''
                       });
                     }}
                     className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors whitespace-nowrap cursor-pointer"
@@ -2028,15 +2004,15 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Library Access</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <select
-                    value={selectedStudent.libraryAccess ? 'true' : 'false'}
-                    onChange={(e) => setSelectedStudent({ ...selectedStudent, libraryAccess: e.target.value === 'true' })}
+                    value={selectedStudent.status}
+                    onChange={(e) => setSelectedStudent({ ...selectedStudent, status: e.target.value as 'active' | 'inactive' })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
                     required
                   >
-                    <option value="true">Enabled</option>
-                    <option value="false">Disabled</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                   </select>
                 </div>
                 <div className="flex space-x-4 pt-4">
