@@ -46,9 +46,13 @@ export default function StudentDashboard() {
     loadData();
     setLoading(false);
 
+    let unsubscribe: (() => void) | null = null;
+
     // Subscribe to real-time updates (but less frequently)
-    const unsubscribe = subscribeToDataChanges(() => {
+    subscribeToDataChanges(() => {
       loadData();
+    }).then((unsub) => {
+      unsubscribe = unsub;
     });
 
     // Simulate real-time updates every 2 minutes instead of 30 seconds
@@ -61,7 +65,9 @@ export default function StudentDashboard() {
     }, 120000); // Changed from 30000 to 120000 (2 minutes)
 
     return () => {
-      unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+      }
       clearInterval(interval);
     };
   }, [router]);

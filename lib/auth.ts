@@ -338,11 +338,17 @@ export function logout(): void {
   clearCurrentUser();
 }
 
-export async function subscribeToDataChanges(callback: () => void): Promise<void> {
+export async function subscribeToDataChanges(callback: () => void): Promise<() => void> {
   // For file-based system, we can implement this with storage events
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', callback);
+    // Return unsubscribe function
+    return () => {
+      window.removeEventListener('storage', callback);
+    };
   }
+  // Return empty function if not in browser
+  return () => {};
 }
 
 export async function updateStudentProgress(studentId: string, progress: any): Promise<boolean> {
