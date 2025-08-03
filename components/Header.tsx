@@ -107,75 +107,98 @@ export default function Header() {
             
             {/* Menu drawer */}
             <div className="md:hidden absolute left-0 right-0 top-full bg-white border-t-4 border-blue-500 shadow-2xl z-50 mobile-menu-drawer">
-              <nav className="px-4 py-5 space-y-2">
+              <nav className="px-4 py-5 space-y-3">
                 <Link 
                   href="/" 
-                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  className="mobile-menu-item group flex items-center px-4 py-4 text-base font-medium text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 rounded-xl transition-all duration-300 cursor-pointer border border-blue-100 hover:border-blue-500 shadow-sm hover:shadow-lg transform hover:scale-[1.02]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <i className="ri-home-line mr-3 text-xl text-blue-600"></i>
-                  Home
+                  <div className="w-10 h-10 bg-blue-100 group-hover:bg-white/20 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                    <i className="ri-home-fill text-xl text-blue-600 group-hover:text-white transition-colors duration-300"></i>
+                  </div>
+                  <span className="font-semibold">Home</span>
+                  <i className="ri-arrow-right-s-line ml-auto text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300"></i>
                 </Link>
                 <Link 
                   href="/about" 
-                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  className="mobile-menu-item group flex items-center px-4 py-4 text-base font-medium text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 rounded-xl transition-all duration-300 cursor-pointer border border-green-100 hover:border-green-500 shadow-sm hover:shadow-lg transform hover:scale-[1.02]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <i className="ri-information-line mr-3 text-xl text-blue-600"></i>
-                  About
+                  <div className="w-10 h-10 bg-green-100 group-hover:bg-white/20 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                    <i className="ri-information-fill text-xl text-green-600 group-hover:text-white transition-colors duration-300"></i>
+                  </div>
+                  <span className="font-semibold">About</span>
+                  <i className="ri-arrow-right-s-line ml-auto text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300"></i>
                 </Link>
                 <Link 
                   href="/courses" 
-                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  className="mobile-menu-item group flex items-center px-4 py-4 text-base font-medium text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 rounded-xl transition-all duration-300 cursor-pointer border border-purple-100 hover:border-purple-500 shadow-sm hover:shadow-lg transform hover:scale-[1.02]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <i className="ri-book-line mr-3 text-xl text-blue-600"></i>
-                  Courses
+                  <div className="w-10 h-10 bg-purple-100 group-hover:bg-white/20 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                    <i className="ri-book-fill text-xl text-purple-600 group-hover:text-white transition-colors duration-300"></i>
+                  </div>
+                  <span className="font-semibold">Courses</span>
+                  <i className="ri-arrow-right-s-line ml-auto text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300"></i>
                 </Link>
                 <Link 
                   href="/contact" 
-                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  className="mobile-menu-item group flex items-center px-4 py-4 text-base font-medium text-gray-900 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 rounded-xl transition-all duration-300 cursor-pointer border border-orange-100 hover:border-orange-500 shadow-sm hover:shadow-lg transform hover:scale-[1.02]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <i className="ri-phone-line mr-3 text-xl text-blue-600"></i>
-                  Contact
+                  <div className="w-10 h-10 bg-orange-100 group-hover:bg-white/20 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                    <i className="ri-phone-fill text-xl text-orange-600 group-hover:text-white transition-colors duration-300"></i>
+                  </div>
+                  <span className="font-semibold">Contact</span>
+                  <i className="ri-arrow-right-s-line ml-auto text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300"></i>
                 </Link>
                 
                 {/* Mobile user actions */}
-                <div className="border-t-2 border-blue-100 pt-4 mt-4">
+                <div className="border-t-2 border-gray-100 pt-4 mt-4">
                   {currentUser.type ? (
                     <>
-                      <div className="px-4 py-3 text-sm font-medium text-gray-700 bg-blue-100 border-2 border-blue-300 rounded-lg mb-3">
-                        <i className="ri-user-line mr-2 text-blue-600"></i>
-                        Welcome, {currentUser.data?.name || currentUser.data?.username}
+                      <div className="px-4 py-4 text-sm font-medium text-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl mb-4 flex items-center shadow-sm">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                          <i className="ri-user-fill text-blue-600"></i>
+                        </div>
+                        <span className="font-semibold">Welcome, {currentUser.data?.name || currentUser.data?.username}</span>
                       </div>
                       <Link 
                         href={currentUser.type === 'admin' ? '/admin' : '/student'} 
-                        className="mobile-menu-item flex items-center justify-center px-4 py-3 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors cursor-pointer mb-3 shadow-lg border-2 border-blue-700"
+                        className="mobile-menu-item group flex items-center justify-center px-4 py-4 text-base font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl transition-all duration-300 cursor-pointer mb-4 shadow-lg border-2 border-blue-700 hover:shadow-xl transform hover:scale-[1.02]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <i className="ri-dashboard-line mr-3 text-xl"></i>
-                        Go to Dashboard
+                        <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                          <i className="ri-dashboard-fill text-xl text-white"></i>
+                        </div>
+                        <span>Go to Dashboard</span>
+                        <i className="ri-arrow-right-s-line ml-auto text-white group-hover:translate-x-1 transition-transform duration-300"></i>
                       </Link>
                       <button 
                         onClick={() => {
                           handleLogout();
                           setIsMobileMenuOpen(false);
                         }}
-                        className="mobile-menu-item flex items-center justify-center w-full px-4 py-3 text-base font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors cursor-pointer border-2 border-red-700"
+                        className="mobile-menu-item group flex items-center justify-center w-full px-4 py-4 text-base font-bold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-xl transition-all duration-300 cursor-pointer border-2 border-red-700 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
                       >
-                        <i className="ri-logout-circle-line mr-3 text-xl"></i>
-                        Logout
+                        <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                          <i className="ri-logout-circle-fill text-xl text-white"></i>
+                        </div>
+                        <span>Logout</span>
+                        <i className="ri-arrow-right-s-line ml-auto text-white group-hover:translate-x-1 transition-transform duration-300"></i>
                       </button>
                     </>
                   ) : (
                     <Link 
                       href="/login" 
-                      className="mobile-menu-item flex items-center justify-center px-4 py-3 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors cursor-pointer shadow-lg border-2 border-blue-700"
+                      className="mobile-menu-item group flex items-center justify-center px-4 py-4 text-base font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl transition-all duration-300 cursor-pointer shadow-lg border-2 border-blue-700 hover:shadow-xl transform hover:scale-[1.02]"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <i className="ri-login-circle-line mr-3 text-xl"></i>
-                      Login Now
+                      <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                        <i className="ri-login-circle-fill text-xl text-white"></i>
+                      </div>
+                      <span>Login Now</span>
+                      <i className="ri-arrow-right-s-line ml-auto text-white group-hover:translate-x-1 transition-transform duration-300"></i>
                     </Link>
                   )}
                 </div>
