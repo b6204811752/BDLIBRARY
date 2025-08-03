@@ -98,80 +98,90 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-full bg-gray-50 border-t-2 border-blue-200 shadow-xl z-50 mobile-menu-drawer">
-            <nav className="px-3 py-4 space-y-1">
-              <Link 
-                href="/" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="ri-home-line mr-3 text-lg text-blue-600"></i>
-                Home
-              </Link>
-              <Link 
-                href="/about" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="ri-information-line mr-3 text-lg text-blue-600"></i>
-                About
-              </Link>
-              <Link 
-                href="/courses" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="ri-book-line mr-3 text-lg text-blue-600"></i>
-                Courses
-              </Link>
-              <Link 
-                href="/contact" 
-                className="mobile-menu-item block px-3 py-3 text-base font-medium text-gray-800 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-colors cursor-pointer"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="ri-phone-line mr-3 text-lg text-blue-600"></i>
-                Contact
-              </Link>
-              
-              {/* Mobile user actions */}
-              <div className="border-t-2 border-gray-300 pt-3 mt-3">
-                {currentUser.type ? (
-                  <>
-                    <div className="px-3 py-2 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-md mb-2">
-                      Welcome, {currentUser.data?.name || currentUser.data?.username}
-                    </div>
+          <>
+            {/* Backdrop overlay */}
+            <div 
+              className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+              onClick={() => setIsMobileMenuOpen(false)}
+            ></div>
+            
+            {/* Menu drawer */}
+            <div className="md:hidden absolute left-0 right-0 top-full bg-white border-t-4 border-blue-500 shadow-2xl z-50 mobile-menu-drawer">
+              <nav className="px-4 py-5 space-y-2">
+                <Link 
+                  href="/" 
+                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <i className="ri-home-line mr-3 text-xl text-blue-600"></i>
+                  Home
+                </Link>
+                <Link 
+                  href="/about" 
+                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <i className="ri-information-line mr-3 text-xl text-blue-600"></i>
+                  About
+                </Link>
+                <Link 
+                  href="/courses" 
+                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <i className="ri-book-line mr-3 text-xl text-blue-600"></i>
+                  Courses
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="mobile-menu-item flex items-center px-4 py-3 text-base font-medium text-gray-900 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-blue-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <i className="ri-phone-line mr-3 text-xl text-blue-600"></i>
+                  Contact
+                </Link>
+                
+                {/* Mobile user actions */}
+                <div className="border-t-2 border-blue-100 pt-4 mt-4">
+                  {currentUser.type ? (
+                    <>
+                      <div className="px-4 py-3 text-sm font-medium text-gray-700 bg-blue-100 border-2 border-blue-300 rounded-lg mb-3">
+                        <i className="ri-user-line mr-2 text-blue-600"></i>
+                        Welcome, {currentUser.data?.name || currentUser.data?.username}
+                      </div>
+                      <Link 
+                        href={currentUser.type === 'admin' ? '/admin' : '/student'} 
+                        className="mobile-menu-item flex items-center justify-center px-4 py-3 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors cursor-pointer mb-3 shadow-lg border-2 border-blue-700"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <i className="ri-dashboard-line mr-3 text-xl"></i>
+                        Go to Dashboard
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          handleLogout();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="mobile-menu-item flex items-center justify-center w-full px-4 py-3 text-base font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors cursor-pointer border-2 border-red-700"
+                      >
+                        <i className="ri-logout-circle-line mr-3 text-xl"></i>
+                        Logout
+                      </button>
+                    </>
+                  ) : (
                     <Link 
-                      href={currentUser.type === 'admin' ? '/admin' : '/student'} 
-                      className="mobile-menu-item block px-3 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors cursor-pointer mb-2 shadow-md"
+                      href="/login" 
+                      className="mobile-menu-item flex items-center justify-center px-4 py-3 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors cursor-pointer shadow-lg border-2 border-blue-700"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <i className="ri-dashboard-line mr-3 text-lg"></i>
-                      Dashboard
+                      <i className="ri-login-circle-line mr-3 text-xl"></i>
+                      Login Now
                     </Link>
-                    <button 
-                      onClick={() => {
-                        handleLogout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="mobile-menu-item block w-full text-left px-3 py-3 text-base font-medium text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer"
-                    >
-                      <i className="ri-logout-circle-line mr-3 text-lg"></i>
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link 
-                    href="/login" 
-                    className="mobile-menu-item block px-3 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors cursor-pointer text-center shadow-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <i className="ri-login-circle-line mr-3 text-lg"></i>
-                    Login
-                  </Link>
-                )}
-              </div>
-            </nav>
-          </div>
+                  )}
+                </div>
+              </nav>
+            </div>
+          </>
         )}
       </div>
     </header>
