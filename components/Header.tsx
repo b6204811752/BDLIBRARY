@@ -54,44 +54,40 @@ export default function Header() {
             </Link>
           </nav>
 
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Desktop user section */}
+          <div className="hidden md:flex items-center space-x-4">
             {currentUser.type ? (
-              <div className="flex items-center space-x-2 sm:space-x-4">
-                <span className="hidden sm:inline text-xs sm:text-sm text-gray-600 max-w-32 truncate">
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600 max-w-40 truncate">
                   Welcome, {currentUser.data?.name || currentUser.data?.username}
                 </span>
                 <Link 
                   href={currentUser.type === 'admin' ? '/admin' : '/student'} 
-                  className="bg-blue-600 text-white px-2 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap cursor-pointer"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
                 >
-                  <span className="sm:hidden">
-                    <i className="ri-dashboard-line"></i>
-                  </span>
-                  <span className="hidden sm:inline">Dashboard</span>
+                  Dashboard
                 </Link>
                 <button 
                   onClick={handleLogout}
-                  className="text-gray-600 hover:text-red-600 transition-colors text-xs sm:text-sm whitespace-nowrap cursor-pointer p-1"
+                  className="text-gray-600 hover:text-red-600 transition-colors text-sm whitespace-nowrap cursor-pointer"
                   title="Logout"
                 >
-                  <span className="sm:hidden">
-                    <i className="ri-logout-circle-line text-lg"></i>
-                  </span>
-                  <span className="hidden sm:inline">Logout</span>
+                  Logout
                 </button>
               </div>
             ) : (
               <Link 
                 href="/login" 
-                className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium whitespace-nowrap cursor-pointer"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
               >
                 Login
               </Link>
             )}
           </div>
 
+          {/* Mobile hamburger menu button */}
           <button 
-            className="md:hidden p-2 -mr-2 flex items-center justify-center cursor-pointer rounded-md hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 ml-2 flex items-center justify-center cursor-pointer rounded-md hover:bg-gray-100 transition-colors flex-shrink-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
