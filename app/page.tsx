@@ -176,7 +176,23 @@ export default function Home() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-purple-700 text-white py-12 sm:py-16 lg:py-20">
+      <section className="relative bg-gradient-to-r from-blue-600 to-purple-700 text-white py-12 sm:py-16 lg:py-20 overflow-hidden">
+        {/* Floating Icons Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="floating-icon absolute top-10 left-10 opacity-20">
+            <i className="ri-book-open-line text-4xl text-white animate-bounce"></i>
+          </div>
+          <div className="floating-icon absolute top-20 right-20 opacity-20 animation-delay-1000">
+            <i className="ri-graduation-cap-line text-3xl text-yellow-300 animate-pulse"></i>
+          </div>
+          <div className="floating-icon absolute bottom-20 left-20 opacity-20 animation-delay-2000">
+            <i className="ri-trophy-line text-5xl text-white animate-bounce"></i>
+          </div>
+          <div className="floating-icon absolute bottom-10 right-10 opacity-20 animation-delay-1500">
+            <i className="ri-star-line text-3xl text-yellow-300 animate-spin-slow"></i>
+          </div>
+        </div>
+        
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{
@@ -185,10 +201,20 @@ export default function Home() {
         ></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
+            <div className="mb-6 flex justify-center">
+              <div className="relative">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm animate-pulse">
+                  <i className="ri-graduation-cap-fill text-3xl sm:text-4xl text-yellow-300 animate-bounce"></i>
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center animate-ping">
+                  <i className="ri-star-fill text-sm text-white"></i>
+                </div>
+              </div>
+            </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
               Welcome to{' '}
               <span 
-                className="block sm:inline text-yellow-300" 
+                className="block sm:inline text-yellow-300 animate-gradient" 
                 style={{ fontFamily: 'Pacifico, serif' }}
               >
                 B.D Library GOH

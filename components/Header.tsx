@@ -27,14 +27,14 @@ export default function Header() {
           <div className="flex items-center min-w-0 flex-1 lg:flex-none">
             <Link href="/" className="flex items-center space-x-1 sm:space-x-2 min-w-0">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-sm sm:text-lg">BD</span>
+                <span className="text-white font-bold text-sm sm:text-lg">B.D</span>
               </div>
               <span 
                 className="text-lg sm:text-xl font-bold text-gray-900 truncate" 
                 style={{ fontFamily: 'Pacifico, serif' }}
               >
                 <span className="hidden sm:inline">B.D Library GOH</span>
-                <span className="sm:hidden">BD Library</span>
+                <span className="sm:hidden">B.D Library</span>
               </span>
             </Link>
           </div>
