@@ -170,118 +170,219 @@ export default function StudentDashboard() {
       <Header />
 
       <div className="container-responsive py-4 sm:py-6 lg:py-8">
-        {/* Enhanced Header Section */}
+        {/* Enhanced Header Section with Personalized Welcome */}
         <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 truncate">
-                Welcome back, {currentUser.name}!
-              </h1>
-              <p className="text-sm sm:text-base text-gray-600">
-                <span className="block sm:inline">
-                  {currentUser.shift.charAt(0).toUpperCase() + currentUser.shift.slice(1)} Shift
-                </span>
-                <span className="hidden sm:inline"> • </span>
-                <span className="block sm:inline">
-                  {currentUser.jobCategory} Category
-                </span>
-              </p>
+          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-2xl shadow-2xl overflow-hidden relative">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-4 left-4 w-16 h-16 bg-white rounded-full animate-pulse"></div>
+              <div className="absolute top-8 right-8 w-12 h-12 bg-yellow-300 rounded-full animate-bounce"></div>
+              <div className="absolute bottom-6 left-12 w-8 h-8 bg-white rounded-full animate-ping"></div>
+              <div className="absolute bottom-8 right-16 w-6 h-6 bg-yellow-300 rounded-full animate-pulse"></div>
             </div>
             
-            {/* Mobile-optimized action section */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-              <div className="bg-white px-3 sm:px-4 py-2 rounded-lg shadow flex items-center justify-center sm:justify-start space-x-2">
-                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs sm:text-sm text-gray-600">Online: {realTimeData.onlineUsers}</span>
-              </div>
-              
-              {/* Mobile-friendly notification button */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="w-full sm:w-auto bg-white p-2.5 sm:p-2 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer relative flex items-center justify-center"
-                >
-                  <i className="ri-notification-line text-lg sm:text-xl text-gray-600"></i>
-                  <span className="ml-2 sm:hidden text-sm text-gray-600">Notifications</span>
-                  {unreadNotifications > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
-                      {unreadNotifications}
-                    </span>
-                  )}
-                </button>
-
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-lg shadow-lg z-50 max-h-80 sm:max-h-96 overflow-y-auto border">
-                    <div className="p-3 sm:p-4 border-b">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Notifications</h3>
-                        <button 
-                          onClick={() => setShowNotifications(false)}
-                          className="sm:hidden text-gray-400 hover:text-gray-600"
-                        >
-                          <i className="ri-close-line text-lg"></i>
-                        </button>
+            <div className="relative p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-6">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center mb-3">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4">
+                      <i className="ri-graduation-cap-fill text-2xl sm:text-3xl text-yellow-300"></i>
+                    </div>
+                    <div>
+                      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1">
+                        Welcome back, <span className="text-yellow-300">{currentUser.name}!</span>
+                      </h1>
+                      <div className="flex flex-wrap items-center gap-3 text-sm">
+                        <div className="flex items-center text-blue-100">
+                          <i className="ri-time-line mr-1"></i>
+                          <span>{currentUser.shift.charAt(0).toUpperCase() + currentUser.shift.slice(1)} Shift</span>
+                        </div>
+                        <div className="hidden sm:block text-blue-200">•</div>
+                        <div className="flex items-center text-blue-100">
+                          <i className="ri-bookmark-line mr-1"></i>
+                          <span>{currentUser.jobCategory} Category</span>
+                        </div>
+                        <div className="hidden sm:block text-blue-200">•</div>
+                        <div className="flex items-center text-green-300">
+                          <i className="ri-calendar-line mr-1"></i>
+                          <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="divide-y">
-                      {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-gray-500">
-                          <i className="ri-notification-off-line text-2xl mb-2 block"></i>
-                          <span className="text-sm">No notifications</span>
-                        </div>
-                      ) : (
-                        notifications.map((notification) => (
-                          <div
-                            key={notification.id}
-                            className={`p-3 sm:p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                              !notification.read ? 'bg-blue-50' : ''
-                            }`}
-                            onClick={() => handleMarkNotificationAsRead(notification.id)}
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-gray-900 leading-relaxed">{notification.message}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {new Date(notification.timestamp).toLocaleString()}
-                                </p>
-                              </div>
-                              {!notification.read && (
-                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></div>
-                              )}
-                            </div>
-                          </div>
-                        ))
-                      )}
+                  </div>
+                  
+                  {/* Achievement badges */}
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
+                    {currentUser.progress?.currentStreak > 0 && (
+                      <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs sm:text-sm">
+                        <i className="ri-fire-fill text-orange-400 mr-1"></i>
+                        <span className="text-white font-medium">{currentUser.progress.currentStreak} Day Streak</span>
+                      </div>
+                    )}
+                    {(currentUser.progress?.totalPoints || 0) > 500 && (
+                      <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs sm:text-sm">
+                        <i className="ri-star-fill text-yellow-400 mr-1"></i>
+                        <span className="text-white font-medium">High Achiever</span>
+                      </div>
+                    )}
+                    {(currentUser.progress?.testsCompleted || 0) > 10 && (
+                      <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs sm:text-sm">
+                        <i className="ri-trophy-fill text-yellow-400 mr-1"></i>
+                        <span className="text-white font-medium">Test Champion</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Mobile-optimized action section */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-4">
+                  <div className="bg-white/20 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg border border-white/30">
+                    <div className="flex items-center justify-between sm:justify-start sm:space-x-3">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse mr-2"></div>
+                        <span className="text-sm font-medium text-white">Online Students</span>
+                      </div>
+                      <span className="text-lg font-bold text-yellow-300">{realTimeData.onlineUsers}</span>
                     </div>
                   </div>
-                )}
+                  
+                  {/* Enhanced notification button */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowNotifications(!showNotifications)}
+                      className="group w-full sm:w-auto bg-white/20 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/30 hover:bg-white/30 transition-all duration-300 cursor-pointer flex items-center justify-center relative"
+                    >
+                      <i className="ri-notification-fill text-xl text-white group-hover:scale-110 transition-transform duration-300"></i>
+                      <span className="ml-2 sm:hidden text-sm text-white font-medium">Notifications</span>
+                      {unreadNotifications > 0 && (
+                        <div className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-bounce shadow-lg">
+                          {unreadNotifications}
+                        </div>
+                      )}
+                    </button>
+
+                    {showNotifications && (
+                      <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl z-50 max-h-96 overflow-hidden border border-gray-100">
+                        <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-gray-900 text-lg flex items-center">
+                              <i className="ri-notification-fill text-blue-600 mr-2"></i>
+                              Notifications
+                            </h3>
+                            <button 
+                              onClick={() => setShowNotifications(false)}
+                              className="sm:hidden text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+                            >
+                              <i className="ri-close-line text-lg"></i>
+                            </button>
+                          </div>
+                          {unreadNotifications > 0 && (
+                            <p className="text-xs text-blue-600 mt-1">{unreadNotifications} unread messages</p>
+                          )}
+                        </div>
+                        <div className="divide-y divide-gray-100 max-h-80 overflow-y-auto">
+                          {notifications.length === 0 ? (
+                            <div className="p-6 text-center text-gray-500">
+                              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i className="ri-notification-off-line text-2xl text-gray-400"></i>
+                              </div>
+                              <p className="font-medium">No notifications yet</p>
+                              <p className="text-xs text-gray-400 mt-1">Check back later for updates</p>
+                            </div>
+                          ) : (
+                            notifications.map((notification) => (
+                              <div
+                                key={notification.id}
+                                className={`p-4 hover:bg-gray-50 cursor-pointer transition-all duration-200 group ${
+                                  !notification.read ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''
+                                }`}
+                                onClick={() => handleMarkNotificationAsRead(notification.id)}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                    !notification.read ? 'bg-blue-500' : 'bg-gray-300'
+                                  }`}>
+                                    <i className={`ri-mail-line text-sm ${!notification.read ? 'text-white' : 'text-gray-600'}`}></i>
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-gray-900 leading-relaxed font-medium">{notification.message}</p>
+                                    <div className="flex items-center justify-between mt-2">
+                                      <p className="text-xs text-gray-500">
+                                        {new Date(notification.timestamp).toLocaleString()}
+                                      </p>
+                                      {!notification.read && (
+                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Navigation Tabs */}
+        {/* Enhanced Navigation Tabs with Modern Design */}
         <div className="mb-6 sm:mb-8">
-          <div className="border-b border-gray-200 overflow-x-auto">
-            <nav className="flex space-x-1 sm:space-x-4 lg:space-x-8 min-w-max px-4 sm:px-0">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <nav className="flex overflow-x-auto scrollbar-hide">
               {[
-                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-line' },
-                { id: 'fees', label: 'Fees & Payments', icon: 'ri-money-rupee-circle-line' },
-                { id: 'materials', label: 'Study Materials', icon: 'ri-book-line' },
-                { id: 'tests', label: 'Practice Tests', icon: 'ri-quiz-line' },
-                { id: 'progress', label: 'Progress', icon: 'ri-bar-chart-line' }
+                { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-fill', color: 'blue', count: null },
+                { id: 'fees', label: 'Fees & Payments', icon: 'ri-money-rupee-circle-fill', color: 'green', count: currentUser.fees?.dueAmount > 0 ? '!' : null },
+                { id: 'materials', label: 'Study Materials', icon: 'ri-book-fill', color: 'purple', count: realTimeData.todayMaterials },
+                { id: 'tests', label: 'Practice Tests', icon: 'ri-quiz-fill', color: 'orange', count: realTimeData.activeTests },
+                { id: 'progress', label: 'Progress', icon: 'ri-bar-chart-fill', color: 'red', count: null }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-1 sm:space-x-2 py-3 sm:py-4 px-2 sm:px-3 lg:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap cursor-pointer transition-colors ${
+                  className={`group relative flex-shrink-0 flex items-center justify-center space-x-2 sm:space-x-3 py-4 px-4 sm:px-6 lg:px-8 font-semibold text-sm sm:text-base transition-all duration-300 cursor-pointer min-w-0 ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? `text-${tab.color}-600 bg-gradient-to-r from-${tab.color}-50 to-${tab.color}-100`
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
                   }`}
                 >
-                  <i className={`${tab.icon} text-base sm:text-lg`}></i>
-                  <span className="hidden xs:inline sm:inline">{tab.label}</span>
+                  {/* Active indicator */}
+                  {activeTab === tab.id && (
+                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-${tab.color}-500 to-${tab.color}-700 rounded-t-full`}></div>
+                  )}
+                  
+                  <div className={`relative w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                    activeTab === tab.id 
+                      ? `bg-gradient-to-br from-${tab.color}-500 to-${tab.color}-700 shadow-lg scale-110` 
+                      : 'bg-gray-100 group-hover:bg-gray-200'
+                  }`}>
+                    <i className={`${tab.icon} text-sm sm:text-base ${
+                      activeTab === tab.id ? 'text-white' : `text-${tab.color}-600 group-hover:text-${tab.color}-700`
+                    } transition-colors duration-300`}></i>
+                    
+                    {/* Notification badge */}
+                    {tab.count && (
+                      <div className={`absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg ${
+                        activeTab === tab.id ? 'animate-bounce' : 'animate-pulse'
+                      }`}>
+                        <span className="text-white text-xs font-bold">
+                          {typeof tab.count === 'number' ? (tab.count > 9 ? '9+' : tab.count) : tab.count}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <span className={`hidden sm:block font-semibold transition-all duration-300 ${
+                    activeTab === tab.id ? 'transform scale-105' : ''
+                  }`}>
+                    {tab.label}
+                  </span>
+                  
+                  {/* Hover effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r from-${tab.color}-500/0 to-${tab.color}-500/0 group-hover:from-${tab.color}-500/5 group-hover:to-${tab.color}-500/10 transition-all duration-300 rounded-lg`}></div>
                 </button>
               ))}
             </nav>
@@ -290,72 +391,101 @@ export default function StudentDashboard() {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-6">
-            {/* Enhanced Stats Cards */}
+          <div className="space-y-6 sm:space-y-8">
+            {/* Enhanced Stats Cards with Modern Design */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+              <div className="group bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 p-4 sm:p-5 lg:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 border border-blue-200 hover:border-blue-300 relative overflow-hidden">
+                {/* Floating sparkle effects */}
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-blue-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
                 <div className="flex items-center">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-quiz-line text-sm sm:text-lg lg:text-xl text-blue-600"></i>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                    <i className="ri-quiz-fill text-lg sm:text-xl lg:text-2xl text-white group-hover:animate-wiggle"></i>
                   </div>
-                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Tests Completed</p>
-                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.progress?.testsCompleted || 0}</p>
-                    <p className="text-xs text-blue-600 hidden sm:block">Streak: {currentUser.progress?.currentStreak || 0}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-money-rupee-circle-line text-sm sm:text-lg lg:text-xl text-green-600"></i>
-                  </div>
-                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Fees Paid</p>
-                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">₹{(currentUser.fees?.paidAmount || 0).toLocaleString()}</p>
-                    <p className="text-xs text-green-600 hidden sm:block">Due: ₹{(currentUser.fees?.dueAmount || 0).toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-book-line text-sm sm:text-lg lg:text-xl text-purple-600"></i>
-                  </div>
-                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Books Issued</p>
-                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.library?.booksIssued?.length || 0}</p>
-                    <p className="text-xs text-purple-600 hidden sm:block">
-                      {currentUser.library?.booksIssued?.filter((book: any) => book.status === 'issued').length || 0} active
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-blue-700 truncate group-hover:text-blue-800 transition-colors">Tests Completed</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">{currentUser.progress?.testsCompleted || 0}</p>
+                    <p className="text-xs text-blue-600 flex items-center mt-1">
+                      <i className="ri-fire-line mr-1"></i>
+                      Streak: {currentUser.progress?.currentStreak || 0}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+              <div className="group bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 p-4 sm:p-5 lg:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 border border-green-200 hover:border-green-300 relative overflow-hidden">
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-green-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
                 <div className="flex items-center">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-trophy-line text-sm sm:text-lg lg:text-xl text-yellow-600"></i>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                    <i className="ri-money-rupee-circle-fill text-lg sm:text-xl lg:text-2xl text-white group-hover:animate-wiggle"></i>
                   </div>
-                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Points</p>
-                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.progress?.totalPoints || 0}</p>
-                    <p className="text-xs text-yellow-600 hidden sm:block">Rank: #{Math.floor(Math.random() * 10) + 1}</p>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-green-700 truncate group-hover:text-green-800 transition-colors">Fees Paid</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-green-600 group-hover:to-emerald-600 group-hover:bg-clip-text transition-all duration-300">₹{(currentUser.fees?.paidAmount || 0).toLocaleString()}</p>
+                    <p className="text-xs text-green-600 flex items-center mt-1">
+                      <i className="ri-alert-line mr-1"></i>
+                      Due: ₹{(currentUser.fees?.dueAmount || 0).toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow hover:shadow-md transition-shadow col-span-2 sm:col-span-3 lg:col-span-1">
+              <div className="group bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 p-4 sm:p-5 lg:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 border border-purple-200 hover:border-purple-300 relative overflow-hidden">
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-purple-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
                 <div className="flex items-center">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <i className="ri-award-line text-sm sm:text-lg lg:text-xl text-red-600"></i>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                    <i className="ri-book-fill text-lg sm:text-xl lg:text-2xl text-white group-hover:animate-wiggle"></i>
                   </div>
-                  <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Certificates</p>
-                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{currentUser.certificates?.length || 0}</p>
-                    <p className="text-xs text-red-600 hidden sm:block">Earned</p>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-purple-700 truncate group-hover:text-purple-800 transition-colors">Books Issued</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300">{currentUser.library?.booksIssued?.length || 0}</p>
+                    <p className="text-xs text-purple-600 flex items-center mt-1">
+                      <i className="ri-bookmark-line mr-1"></i>
+                      Active: {currentUser.library?.booksIssued?.filter((book: any) => book.status === 'issued').length || 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 p-4 sm:p-5 lg:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 border border-orange-200 hover:border-orange-300 relative overflow-hidden">
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-orange-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className="flex items-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-orange-500 to-orange-700 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                    <i className="ri-trophy-fill text-lg sm:text-xl lg:text-2xl text-white group-hover:animate-wiggle"></i>
+                  </div>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-orange-700 truncate group-hover:text-orange-800 transition-colors">Total Points</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-yellow-600 group-hover:bg-clip-text transition-all duration-300">{currentUser.progress?.totalPoints || 0}</p>
+                    <p className="text-xs text-orange-600 flex items-center mt-1">
+                      <i className="ri-medal-line mr-1"></i>
+                      Rank: #{Math.floor(Math.random() * 10) + 1}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 p-4 sm:p-5 lg:p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 border border-red-200 hover:border-red-300 relative overflow-hidden col-span-2 sm:col-span-3 lg:col-span-1">
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-red-400 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className="flex items-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                    <i className="ri-award-fill text-lg sm:text-xl lg:text-2xl text-white group-hover:animate-wiggle"></i>
+                  </div>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-semibold text-red-700 truncate group-hover:text-red-800 transition-colors">Certificates</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-900 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-red-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300">{currentUser.certificates?.length || 0}</p>
+                    <p className="text-xs text-red-600 flex items-center mt-1">
+                      <i className="ri-star-line mr-1"></i>
+                      Earned
+                    </p>
                   </div>
                 </div>
               </div>
@@ -416,69 +546,145 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* Performance Overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Performance Overview</h2>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-700">Average Score</span>
-                      <span className="text-sm text-gray-500">{currentUser.progress?.averageScore || 0}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full"
-                        style={{ width: `${currentUser.progress?.averageScore || 0}%` }}
-                      ></div>
-                    </div>
+            {/* Enhanced Performance Overview with Modern Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+              <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-200 relative overflow-hidden group">
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center mr-3">
+                        <i className="ri-line-chart-fill text-white"></i>
+                      </div>
+                      Performance Overview
+                    </h2>
+                    <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
                   </div>
+                  
+                  <div className="space-y-6">
+                    <div className="group">
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center">
+                          <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center mr-2">
+                            <i className="ri-trophy-line text-blue-600 text-sm"></i>
+                          </div>
+                          <span className="text-sm font-semibold text-gray-700">Average Score</span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-lg font-bold text-blue-600 mr-2">{currentUser.progress?.averageScore || 0}%</span>
+                          <i className="ri-arrow-up-line text-green-500"></i>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div
+                          className="bg-gradient-to-r from-blue-500 to-blue-700 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                          style={{ width: `${currentUser.progress?.averageScore || 0}%` }}
+                        >
+                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
+                      </div>
+                    </div>
 
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-700">Completion Rate</span>
-                      <span className="text-sm text-gray-500">{currentUser.progress?.completionRate || 0}%</span>
+                    <div className="group">
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center">
+                          <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center mr-2">
+                            <i className="ri-check-double-line text-green-600 text-sm"></i>
+                          </div>
+                          <span className="text-sm font-semibold text-gray-700">Completion Rate</span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-lg font-bold text-green-600 mr-2">{currentUser.progress?.completionRate || 0}%</span>
+                          <i className="ri-arrow-up-line text-green-500"></i>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div
+                          className="bg-gradient-to-r from-green-500 to-green-700 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                          style={{ width: `${currentUser.progress?.completionRate || 0}%` }}
+                        >
+                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-green-600 h-2 rounded-full"
-                        style={{ width: `${currentUser.progress?.completionRate || 0}%` }}
-                      ></div>
-                    </div>
-                  </div>
 
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-700">Attendance</span>
-                      <span className="text-sm text-gray-500">{Math.round(getAttendancePercentage())}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-purple-600 h-2 rounded-full"
-                        style={{ width: `${getAttendancePercentage()}%` }}
-                      ></div>
+                    <div className="group">
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center">
+                          <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
+                            <i className="ri-calendar-check-line text-purple-600 text-sm"></i>
+                          </div>
+                          <span className="text-sm font-semibold text-gray-700">Attendance</span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-lg font-bold text-purple-600 mr-2">{Math.round(getAttendancePercentage())}%</span>
+                          <i className="ri-arrow-up-line text-green-500"></i>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div
+                          className="bg-gradient-to-r from-purple-500 to-purple-700 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                          style={{ width: `${getAttendancePercentage()}%` }}
+                        >
+                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Subject Performance</h2>
-                <div className="space-y-3">
-                  {currentUser.performance?.subjectWiseScore && Object.entries(currentUser.performance.subjectWiseScore).map(([subject, score]) => (
-                    <div key={subject} className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700">{subject}</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-blue-500 h-2 rounded-full"
-                            style={{ width: `${score as number}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 w-10">{score as number}%</span>
+              <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-purple-200 relative overflow-hidden group">
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center">
+                      <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg flex items-center justify-center mr-3">
+                        <i className="ri-book-2-fill text-white"></i>
                       </div>
-                    </div>
-                  ))}
+                      Subject Performance
+                    </h2>
+                    <div className="w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {currentUser.performance?.subjectWiseScore && Object.entries(currentUser.performance.subjectWiseScore).map(([subject, score], index) => (
+                      <div key={subject} className="group p-3 rounded-xl hover:bg-purple-50 transition-colors duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            <div className={`w-6 h-6 bg-gradient-to-br ${['from-blue-400 to-blue-600', 'from-green-400 to-green-600', 'from-orange-400 to-orange-600', 'from-red-400 to-red-600'][index % 4]} rounded-lg flex items-center justify-center mr-3`}>
+                              <i className="ri-book-line text-white text-xs"></i>
+                            </div>
+                            <span className="text-sm font-semibold text-gray-700">{subject}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm font-bold text-purple-600">{score as number}%</span>
+                            {(score as number) >= 80 && <i className="ri-star-fill text-yellow-500"></i>}
+                          </div>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`bg-gradient-to-r ${['from-blue-400 to-blue-600', 'from-green-400 to-green-600', 'from-orange-400 to-orange-600', 'from-red-400 to-red-600'][index % 4]} h-2 rounded-full transition-all duration-1000 ease-out relative overflow-hidden`}
+                            style={{ width: `${score as number}%` }}
+                          >
+                            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )) || (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <i className="ri-bar-chart-line text-2xl text-gray-400"></i>
+                        </div>
+                        <p className="text-gray-500 font-medium">Complete more tests to see your subject performance</p>
+                        <p className="text-xs text-gray-400 mt-1">Take practice tests to unlock detailed analytics</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
