@@ -1,10 +1,7 @@
 
-
 'use client';
 
-import * as React from 'react';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -551,6 +548,22 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleViewStudent = (student: Student) => {
+    console.log('View student details:', student);
+    // View student feature will be implemented later
+  };
+
+  const handleStudentPayment = (student: Student) => {
+    setPaymentData({
+      studentId: student.id,
+      amount: '',
+      description: '',
+      method: 'cash',
+      transactionId: ''
+    });
+    setShowPaymentModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -656,11 +669,6 @@ export default function AdminDashboard() {
                   {activeTab === tab.id && (
                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                   )}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
                 </button>
               ))}
             </nav>
