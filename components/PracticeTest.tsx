@@ -20,6 +20,7 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
   const [showQuestionPalette, setShowQuestionPalette] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [showAllQuestions, setShowAllQuestions] = useState(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Check if user has completed a test
@@ -373,79 +374,147 @@ export default function PracticeTest({ currentUser, onTestComplete }: PracticeTe
         {/* Detailed Analysis */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b">
-            <h3 className="text-xl font-bold text-gray-900">Detailed Analysis</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold text-gray-900">Question Analysis</h3>
+              <div className="flex items-center space-x-4">
+                <div className="text-sm text-gray-600">
+                  Showing all {selectedTest.questions.length} questions
+                </div>
+                <button
+                  onClick={() => setShowAllQuestions(!showAllQuestions)}
+                  className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 cursor-pointer"
+                >
+                  {showAllQuestions ? 'Collapse' : 'Expand All'}
+                </button>
+              </div>
+            </div>
+            
+            {/* Question Summary Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div className="text-center p-3 bg-green-50 rounded-lg">
+                <div className="text-lg font-bold text-green-600">
+                  {Object.keys(currentAttempt.answers).filter(qId => {
+                    const question = selectedTest.questions.find(q => q.id === qId);
+                    return question && currentAttempt.answers[qId] === question.correctAnswer;
+                  }).length}
+                </div>
+                <div className="text-xs text-green-800">Correct</div>
+              </div>
+              <div className="text-center p-3 bg-red-50 rounded-lg">
+                <div className="text-lg font-bold text-red-600">
+                  {Object.keys(currentAttempt.answers).filter(qId => {
+                    const question = selectedTest.questions.find(q => q.id === qId);
+                    return question && currentAttempt.answers[qId] !== undefined && currentAttempt.answers[qId] !== question.correctAnswer;
+                  }).length}
+                </div>
+                <div className="text-xs text-red-800">Incorrect</div>
+              </div>
+              <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <div className="text-lg font-bold text-gray-600">
+                  {selectedTest.questions.length - Object.keys(currentAttempt.answers).length}
+                </div>
+                <div className="text-xs text-gray-800">Not Attempted</div>
+              </div>
+              <div className="text-center p-3 bg-blue-50 rounded-lg">
+                <div className="text-lg font-bold text-blue-600">
+                  {selectedTest.questions.length}
+                </div>
+                <div className="text-xs text-blue-800">Total Questions</div>
+              </div>
+            </div>
           </div>
           
-          <div className="p-6 space-y-6">
+          <div className={`${showAllQuestions ? 'p-6 space-y-6' : 'p-6 space-y-6 max-h-96 overflow-y-auto'}`}>
             {selectedTest.questions.map((question, index) => {
               const userAnswer = currentAttempt.answers[question.id];
               const isCorrect = userAnswer === question.correctAnswer;
               const wasAttempted = userAnswer !== undefined;
 
               return (
-                <div key={question.id} className="border rounded-lg p-4">
+                <div key={question.id} className="border rounded-lg p-4 bg-gray-50">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center space-x-3">
-                      <span className="text-sm font-medium text-gray-600">Q{index + 1}.</span>
+                      <span className="text-sm font-medium text-gray-600 bg-white px-2 py-1 rounded">
+                        Question {index + 1} of {selectedTest.questions.length}
+                      </span>
                       <div className="flex items-center space-x-2">
                         {wasAttempted ? (
-                          <span className={`px-2 py-1 text-xs rounded-full ${
+                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${
                             isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
-                            {isCorrect ? 'Correct' : 'Incorrect'}
+                            {isCorrect ? '✓ Correct' : '✗ Incorrect'}
                           </span>
                         ) : (
-                          <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
-                            Not Attempted
+                          <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800 font-medium">
+                            ⚪ Not Attempted
                           </span>
                         )}
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
                           {question.marks} marks
+                        </span>
+                        <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                          {question.subject}
+                        </span>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          question.difficulty === 'Easy' ? 'bg-green-50 text-green-700' :
+                          question.difficulty === 'Medium' ? 'bg-yellow-50 text-yellow-700' :
+                          'bg-red-50 text-red-700'
+                        }`}>
+                          {question.difficulty}
                         </span>
                       </div>
                     </div>
                     <button
                       onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-                      className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded cursor-pointer"
+                      className="px-2 py-1 text-xs bg-white text-gray-600 rounded cursor-pointer hover:bg-gray-100"
                     >
                       {language === 'en' ? 'हिंदी' : 'EN'}
                     </button>
                   </div>
 
-                  <div className="mb-4">
-                    <p className="text-gray-900 font-medium mb-2">
+                  <div className="bg-white rounded-lg p-4 mb-4">
+                    <p className="text-gray-900 font-medium mb-3 text-base leading-relaxed">
                       {language === 'en' ? question.question : question.questionHindi}
                     </p>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                    <div className="grid grid-cols-1 gap-2 mb-4">
                       {question.options.map((option, optIndex) => (
                         <div
                           key={optIndex}
-                          className={`p-2 rounded border text-sm ${
+                          className={`p-3 rounded border text-sm ${
                             optIndex === question.correctAnswer
-                              ? 'bg-green-100 border-green-300 text-green-800'
+                              ? 'bg-green-100 border-green-300 text-green-800 font-medium'
                               : optIndex === userAnswer
-                              ? 'bg-red-100 border-red-300 text-red-800'
+                              ? 'bg-red-100 border-red-300 text-red-800 font-medium'
                               : 'bg-gray-50 border-gray-200'
                           }`}
                         >
-                          <span className="font-medium">
-                            {String.fromCharCode(65 + optIndex)}.
-                          </span>{' '}
-                          {language === 'en' ? option : question.optionsHindi[optIndex]}
-                          {optIndex === question.correctAnswer && (
-                            <i className="ri-check-line text-green-600 ml-2"></i>
-                          )}
-                          {optIndex === userAnswer && optIndex !== question.correctAnswer && (
-                            <i className="ri-close-line text-red-600 ml-2"></i>
-                          )}
+                          <div className="flex items-center justify-between">
+                            <span>
+                              <span className="font-bold mr-2">
+                                {String.fromCharCode(65 + optIndex)}.
+                              </span>
+                              {language === 'en' ? option : question.optionsHindi[optIndex]}
+                            </span>
+                            <div className="flex items-center space-x-2">
+                              {optIndex === question.correctAnswer && (
+                                <span className="text-green-600 font-bold">✓ Correct Answer</span>
+                              )}
+                              {optIndex === userAnswer && optIndex !== question.correctAnswer && (
+                                <span className="text-red-600 font-bold">✗ Your Answer</span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="bg-blue-50 p-3 rounded">
-                      <h4 className="font-medium text-blue-900 mb-1">Explanation:</h4>
-                      <p className="text-sm text-blue-800">
+                    <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                      <h4 className="font-medium text-blue-900 mb-2 flex items-center">
+                        <i className="ri-lightbulb-line mr-2"></i>
+                        Detailed Explanation:
+                      </h4>
+                      <p className="text-sm text-blue-800 leading-relaxed">
                         {language === 'en' ? question.explanation : question.explanationHindi}
                       </p>
                     </div>
