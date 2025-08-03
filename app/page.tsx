@@ -227,26 +227,41 @@ export default function Home() {
               {currentUser.type ? (
                 <Link 
                   href={currentUser.type === 'admin' ? '/admin' : '/student'}
-                  className="w-full sm:w-auto bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-center cursor-pointer min-w-0"
+                  className="group w-full sm:w-auto bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 text-center cursor-pointer min-w-0 flex items-center justify-center hover:shadow-lg hover:scale-105"
                 >
-                  <i className="ri-dashboard-line mr-2 sm:mr-0 sm:hidden"></i>
-                  Go to Dashboard
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 group-hover:rotate-180 transition-transform duration-500">
+                      <i className="ri-dashboard-line text-sm text-white"></i>
+                    </div>
+                    <span>Go to Dashboard</span>
+                    <i className="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                  </div>
                 </Link>
               ) : (
                 <>
                   <Link 
                     href="/login"
-                    className="w-full sm:w-auto bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-center cursor-pointer"
+                    className="group w-full sm:w-auto bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 text-center cursor-pointer flex items-center justify-center hover:shadow-lg hover:scale-105"
                   >
-                    <i className="ri-login-circle-line mr-2 sm:mr-0 sm:hidden"></i>
-                    Student Login
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 group-hover:rotate-180 transition-transform duration-500">
+                        <i className="ri-login-circle-line text-sm text-white"></i>
+                      </div>
+                      <span>Student Login</span>
+                      <i className="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </div>
                   </Link>
                   <Link 
                     href="/courses"
-                    className="w-full sm:w-auto border-2 border-white text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors text-center cursor-pointer"
+                    className="group w-full sm:w-auto border-2 border-white text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 text-center cursor-pointer flex items-center justify-center hover:shadow-lg hover:scale-105"
                   >
-                    <i className="ri-book-line mr-2 sm:mr-0 sm:hidden"></i>
-                    Explore Courses
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-white/20 group-hover:bg-blue-600 rounded-full flex items-center justify-center mr-3 group-hover:rotate-180 transition-all duration-500">
+                        <i className="ri-book-line text-sm text-white group-hover:text-white"></i>
+                      </div>
+                      <span>Explore Courses</span>
+                      <i className="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </div>
                   </Link>
                 </>
               )}
@@ -259,16 +274,33 @@ export default function Home() {
       <section className="py-12 sm:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center bg-white rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-1 sm:mb-2">
-                  {stat.number}
+            {stats.map((stat, index) => {
+              const statIcons = [
+                'ri-group-line',
+                'ri-trophy-line', 
+                'ri-user-star-line',
+                'ri-time-line'
+              ];
+              const iconColors = [
+                'text-blue-600',
+                'text-green-600',
+                'text-purple-600',
+                'text-orange-600'
+              ];
+              return (
+                <div key={index} className="group text-center bg-white rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform duration-500`}>
+                    <i className={`${statIcons[index]} text-xl sm:text-2xl ${iconColors[index]} group-hover:scale-110 transition-transform duration-300`}></i>
+                  </div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-1 sm:mb-2 group-hover:text-purple-600 transition-colors duration-300">
+                    {stat.number}
+                  </div>
+                  <div className="text-xs sm:text-sm lg:text-base text-gray-600 font-medium">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="text-xs sm:text-sm lg:text-base text-gray-600 font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -287,18 +319,25 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {jobCategories.map((category, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 sm:p-6 cursor-pointer group">
-                <div className={`w-12 h-12 sm:w-16 sm:h-16 ${category.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-105 transition-transform`}>
-                  <i className={`${category.icon} text-lg sm:text-2xl text-white`}></i>
+              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-4 sm:p-6 cursor-pointer group transform hover:scale-105 hover:-translate-y-2">
+                <div className="relative">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 ${category.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 relative overflow-hidden`}>
+                    <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors duration-300"></div>
+                    <i className={`${category.icon} text-lg sm:text-2xl text-white relative z-10 group-hover:scale-125 transition-transform duration-300`}></i>
+                    <div className="absolute top-1 right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping group-hover:animate-bounce"></div>
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
+                    <i className="ri-check-line text-sm text-white"></i>
+                  </div>
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 leading-tight">{category.name}</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors duration-300">{category.name}</h3>
                 <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">{category.description}</p>
                 <Link 
                   href="/login"
-                  className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base cursor-pointer group-hover:translate-x-1 transition-transform"
+                  className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base cursor-pointer group-hover:translate-x-2 transition-all duration-300"
                 >
-                  Learn More 
-                  <i className="ri-arrow-right-line ml-1"></i>
+                  <span className="group-hover:mr-2 transition-all duration-300">Learn More</span>
+                  <i className="ri-arrow-right-line ml-1 group-hover:ml-3 group-hover:scale-125 transition-all duration-300"></i>
                 </Link>
               </div>
             ))}
@@ -410,12 +449,22 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 sm:p-6 group">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-blue-200 transition-colors">
-                  <i className={`${feature.icon} text-lg sm:text-2xl text-blue-600`}></i>
+              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-4 sm:p-6 group cursor-pointer hover:scale-105 hover:-translate-y-1 border border-transparent hover:border-blue-200">
+                <div className="relative mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300"></div>
+                    <i className={`${feature.icon} text-lg sm:text-2xl text-blue-600 relative z-10 group-hover:text-blue-700 group-hover:scale-125 transition-all duration-300`}></i>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse">
+                    <i className="ri-sparkle-fill text-xs text-white"></i>
+                  </div>
                 </div>
-                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 leading-tight">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 leading-tight group-hover:text-blue-600 transition-colors duration-300">{feature.title}</h3>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{feature.description}</p>
+                <div className="mt-3 flex items-center text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2">
+                  <span className="text-sm font-medium">Learn more</span>
+                  <i className="ri-arrow-right-s-line ml-1 text-sm"></i>
+                </div>
               </div>
             ))}
           </div>
@@ -423,8 +472,34 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-12 sm:py-16 lg:py-20 bg-blue-600 relative overflow-hidden">
+        {/* Animated Background Icons */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 left-10 opacity-10 animate-float">
+            <i className="ri-rocket-line text-6xl text-white"></i>
+          </div>
+          <div className="absolute top-20 right-20 opacity-10 animate-float-delayed">
+            <i className="ri-star-line text-4xl text-yellow-300"></i>
+          </div>
+          <div className="absolute bottom-20 left-20 opacity-10 animate-float">
+            <i className="ri-graduation-cap-line text-5xl text-white"></i>
+          </div>
+          <div className="absolute bottom-10 right-10 opacity-10 animate-float-delayed">
+            <i className="ri-trophy-line text-4xl text-yellow-300"></i>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="mb-6 flex justify-center">
+            <div className="relative">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm animate-pulse">
+                <i className="ri-rocket-line text-2xl sm:text-3xl text-yellow-300 animate-bounce"></i>
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center animate-ping">
+                <i className="ri-star-fill text-sm text-blue-600"></i>
+              </div>
+            </div>
+          </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
             Ready to Start Your Journey?
           </h2>
@@ -433,10 +508,15 @@ export default function Home() {
           </p>
           <Link 
             href="/login"
-            className="inline-block bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base cursor-pointer"
+            className="group inline-flex items-center bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 text-sm sm:text-base cursor-pointer hover:scale-105 hover:shadow-lg"
           >
-            <i className="ri-rocket-line mr-2 sm:mr-0 sm:hidden"></i>
-            Get Started Today
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 group-hover:rotate-180 transition-transform duration-500">
+                <i className="ri-rocket-line text-sm text-white group-hover:scale-125 transition-transform duration-300"></i>
+              </div>
+              <span>Get Started Today</span>
+              <i className="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+            </div>
           </Link>
         </div>
       </section>
