@@ -377,42 +377,7 @@ export default function Login() {
                 </div>
               )}
 
-              {userType === 'admin' && (
-                <div className="mt-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-200">
-                  <div className="text-center mb-4">
-                    <h3 className="text-lg font-bold text-gray-800 flex items-center justify-center">
-                      <i className="ri-admin-line text-purple-600 mr-2"></i>
-                      Admin Demo Credentials
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">Use these credentials for admin access</p>
-                  </div>
-                  
-                  <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-purple-200/50 hover:bg-white/90 transition-all duration-200 cursor-pointer group"
-                       onClick={() => setFormData({ ...formData, username: 'admin', password: 'admin123' })}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center text-sm font-semibold text-gray-800 mb-2">
-                          <i className="ri-shield-user-line text-purple-600 mr-2"></i>
-                          Administrator Account
-                        </div>
-                        <div className="text-xs text-gray-600 space-y-1">
-                          <div className="flex items-center">
-                            <i className="ri-user-line text-gray-400 mr-1"></i>
-                            <span className="font-mono">admin</span>
-                          </div>
-                          <div className="flex items-center">
-                            <i className="ri-lock-line text-gray-400 mr-1"></i>
-                            <span className="font-mono">admin123</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <i className="ri-arrow-right-circle-line text-xl"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+
 
               {/* Additional Info */}
               <div className="mt-6 text-center">
