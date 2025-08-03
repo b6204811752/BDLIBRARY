@@ -296,15 +296,22 @@ export default function AdminDashboard() {
             enrollmentDate: new Date().toISOString().split('T')[0],
             status: 'active' as const
           });
-          
-          setMessage('Student added successfully!');
-          setBulkStudents('');
-          setShowBulkUpload(false);
-          await loadData();
+          successCount++;
         } catch (error) {
           console.error('Error adding student:', error);
-          setError('Failed to add student');
+          errorCount++;
         }
+      }
+    }
+
+    setBulkStudents('');
+    setShowBulkUpload(false);
+    
+    if (successCount > 0) {
+      setMessage(`Successfully added ${successCount} student${successCount > 1 ? 's' : ''}!${errorCount > 0 ? ` (${errorCount} failed)` : ''}`);
+    }
+    
+    await loadData();
   };
 
   const handleDeleteStudent = async (id: string) => {
