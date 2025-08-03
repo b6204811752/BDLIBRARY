@@ -8,6 +8,7 @@ import PracticeTest from '@/components/PracticeTest';
 import { getCurrentUser, updateStudentProgress, subscribeToDataChanges, markNotificationAsRead, getAuthData } from '@/lib/auth';
 import { jobCategories } from '@/lib/study-materials';
 import { getScheduleByShift } from '@/lib/schedule';
+import { practiceTests } from '@/lib/practice-tests';
 
 export default function StudentDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -897,72 +898,34 @@ export default function StudentDashboard() {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold text-gray-900">Practice Tests</h2>
                 <div className="text-sm text-gray-500">
-                  Completed: {currentUser.progress?.testsCompleted || 0} | Average: {currentUser.progress?.averageScore || 0}%
+                  Available Tests: {practiceTests.length} | Completed: {currentUser.progress?.testsCompleted || 0} | Average: {currentUser.progress?.averageScore || 0}%
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { 
-                    id: 'ssc-cgl-mock-1',
-                    name: 'SSC CGL Mock Test 1', 
-                    questions: 100, 
-                    duration: '60 minutes', 
-                    difficulty: 'Medium', 
-                    completed: false, 
-                    score: null,
-                    category: 'SSC',
-                    totalMarks: 200,
-                    subjects: ['General Intelligence', 'General Awareness', 'Quantitative Aptitude', 'English']
-                  },
-                  { 
-                    id: 'banking-mock-1',
-                    name: 'Banking Awareness Mock Test', 
-                    questions: 100, 
-                    duration: '45 minutes', 
-                    difficulty: 'Medium', 
-                    completed: false, 
-                    score: null,
-                    category: 'Banking',
-                    totalMarks: 200,
-                    subjects: ['Banking Awareness', 'Financial Awareness']
-                  },
-                  { 
-                    id: 'gk-mock-1',
-                    name: 'General Knowledge Mock Test', 
-                    questions: 100, 
-                    duration: '120 minutes', 
-                    difficulty: 'Medium', 
-                    completed: false, 
-                    score: null,
-                    category: 'General Knowledge',
-                    totalMarks: 200,
-                    subjects: ['History', 'Geography', 'Science', 'Politics', 'Sports', 'Current Affairs']
-                  }
-                ].map((test, index) => (
-                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                {practiceTests.map((test, index) => (
+                  <div key={test.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-medium text-gray-900">{test.name}</h3>
-                      {test.completed && (
-                        <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                          {test.score}%
-                        </span>
-                      )}
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        test.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
+                        test.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {test.difficulty}
+                      </span>
                     </div>
                     <div className="space-y-1 text-sm text-gray-600 mb-3">
-                      <p>Questions: {test.questions}</p>
-                      <p>Duration: {test.duration}</p>
+                      <p>Questions: {test.totalQuestions}</p>
+                      <p>Duration: {test.duration} minutes</p>
                       <p>Total Marks: {test.totalMarks}</p>
                       <p>Category: {test.category}</p>
-                      <p>Difficulty: <span
-                        className={`font-medium ${
-                          test.difficulty === 'Easy' ? 'text-green-600' :
-                            test.difficulty === 'Medium' ? 'text-yellow-600' :
-                              'text-red-600'
-                        }`}
-                      >
-                        {test.difficulty}
-                      </span></p>
+                      <p>Type: <span className="capitalize">{test.type}</span></p>
+                    </div>
+
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 mb-1">Description:</p>
+                      <p className="text-sm text-gray-700">{test.description}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-1 mb-4">
@@ -977,32 +940,17 @@ export default function StudentDashboard() {
                       <button
                         onClick={() => {
                           // Navigate to a dedicated test page with the test ID
-                          alert(`Starting ${test.name}!\n\nFeatures:\n- ${test.questions} real questions\n- ${test.duration} timer\n- Question navigation\n- Hindi/English language toggle\n- Detailed results with explanations\n- Progress tracking\n\nClick OK to proceed to test interface.`);
+                          alert(`Starting ${test.name}!\n\nFeatures:\n- ${test.totalQuestions} real questions\n- ${test.duration} minutes timer\n- Question navigation\n- Hindi/English language toggle\n- Detailed results with explanations\n- Progress tracking\n\nClick OK to proceed to test interface.`);
                           // In a real implementation, you would navigate to /test/${test.id}
                           window.open(`/test?id=${test.id}&name=${encodeURIComponent(test.name)}`, '_blank');
                         }}
-                        className={`flex-1 py-2 px-4 rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                          test.completed
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-green-600 text-white hover:bg-green-700'
-                        }`}
+                        className="flex-1 py-2 px-4 bg-green-600 text-white hover:bg-green-700 rounded-md transition-colors whitespace-nowrap cursor-pointer"
                       >
-                        {test.completed ? 'Retake Test' : 'Start Test'}
+                        Start Test
                       </button>
-                      {test.completed && (
-                        <button 
-                          onClick={() => {
-                            const score = test.score ?? 0;
-                            alert(`Test Results for ${test.name}:\n\nScore: ${score}%\nQuestions Attempted: ${test.questions}\nCorrect Answers: ${Math.floor(test.questions * score / 100)}\n\nClick OK to view detailed analysis.`);
-                          }}
-                          className="bg-gray-100 text-gray-600 px-3 py-2 rounded-md hover:bg-gray-200 cursor-pointer"
-                        >
-                          <i className="ri-eye-line"></i>
-                        </button>
-                      )}
                       <button 
                         onClick={() => {
-                          alert(`Test Instructions for ${test.name}:\n\n• Total Questions: ${test.questions}\n• Duration: ${test.duration}\n• Total Marks: ${test.totalMarks}\n• Subjects: ${test.subjects.join(', ')}\n• Language: English/Hindi toggle available\n• Navigation: Move between questions freely\n• Auto-submit when time expires\n• Detailed explanations provided\n\nGood luck!`);
+                          alert(`Test Instructions for ${test.name}:\n\n• Total Questions: ${test.totalQuestions}\n• Duration: ${test.duration} minutes\n• Total Marks: ${test.totalMarks}\n• Subjects: ${test.subjects.join(', ')}\n• Language: English/Hindi toggle available\n• Navigation: Move between questions freely\n• Auto-submit when time expires\n• Detailed explanations provided\n\nGood luck!`);
                         }}
                         className="px-3 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 cursor-pointer"
                         title="Test Instructions"
@@ -1015,17 +963,47 @@ export default function StudentDashboard() {
               </div>
 
               <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <h3 className="font-semibold text-blue-900 mb-2">Practice Test Features:</h3>
-                <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
-                  <li>100+ real questions for each major test category</li>
-                  <li>Bilingual support (English/Hindi) for questions and explanations</li>
-                  <li>Real-time timer with auto-submit functionality</li>
-                  <li>Question navigation palette for easy movement</li>
-                  <li>Bookmark and flag questions for review</li>
-                  <li>Detailed results with correct answers and explanations</li>
-                  <li>Progress tracking and performance analytics</li>
-                  <li>Mobile-responsive design for practice anywhere</li>
-                </ul>
+                <h3 className="font-semibold text-blue-900 mb-2">Available Practice Tests:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-800">
+                  <div>
+                    <h4 className="font-medium mb-2">📚 Current Affairs & Static GK</h4>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 100 comprehensive questions</li>
+                      <li>• History, Geography, Politics</li>
+                      <li>• Sports, Current Events</li>
+                      <li>• Science & Technology</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-2">🧠 Reasoning & Logical Thinking</h4>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 100 reasoning questions</li>
+                      <li>• Logical reasoning patterns</li>
+                      <li>• Verbal & Non-verbal reasoning</li>
+                      <li>• Problem-solving techniques</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-2">🔢 Basic Mathematics</h4>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 100 mathematical problems</li>
+                      <li>• Arithmetic & Algebra</li>
+                      <li>• Geometry & Mensuration</li>
+                      <li>• Quantitative aptitude</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-blue-200">
+                  <h4 className="font-medium text-blue-900 mb-2">Key Features:</h4>
+                  <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                    <li>Bilingual support (English/Hindi) for questions and explanations</li>
+                    <li>Real-time timer with auto-submit functionality</li>
+                    <li>Question navigation palette for easy movement</li>
+                    <li>Detailed results with correct answers and explanations</li>
+                    <li>Progress tracking and performance analytics</li>
+                    <li>Mobile-responsive design for practice anywhere</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
