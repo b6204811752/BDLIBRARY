@@ -78,7 +78,8 @@ export function setCurrentUser(type: 'student' | 'admin', userData: Student | Ad
   if (typeof window !== 'undefined') {
     try {
       sessionStorage.setItem('bd_library_current_user', JSON.stringify(currentUser));
-      console.log('👤 Current user set:', { type, name: userData.name || userData.username });
+      const userName = type === 'admin' ? (userData as Admin).username : userData.name;
+      console.log('👤 Current user set:', { type, name: userName });
     } catch (error) {
       console.error('❌ Error saving current user:', error);
     }
@@ -272,7 +273,14 @@ export async function debugAuthData(): Promise<void> {
     });
     
     const currentUserInfo = getCurrentUser();
-    console.log('👤 Current User:', currentUserInfo ? `${currentUserInfo.type} - ${currentUserInfo.data.name || currentUserInfo.data.username}` : 'None');
+    if (currentUserInfo) {
+      const userName = currentUserInfo.type === 'admin' 
+        ? (currentUserInfo.data as Admin).username 
+        : currentUserInfo.data.name;
+      console.log('👤 Current User:', `${currentUserInfo.type} - ${userName}`);
+    } else {
+      console.log('👤 Current User: None');
+    }
     
   } catch (error) {
     console.error('❌ Error in debug function:', error);
