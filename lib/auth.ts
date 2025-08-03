@@ -332,3 +332,54 @@ export async function testAuthentication(email: string, mobile: string): Promise
     };
   }
 }
+
+// Additional missing functions for compatibility
+export function logout(): void {
+  clearCurrentUser();
+}
+
+export async function subscribeToDataChanges(callback: () => void): Promise<void> {
+  // For file-based system, we can implement this with storage events
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', callback);
+  }
+}
+
+export async function updateStudentProgress(studentId: string, progress: any): Promise<boolean> {
+  try {
+    const students = studentOperations.getAll();
+    const student = students.find(s => s.id === studentId);
+    
+    if (student) {
+      const updated = await updateStudent(studentId, { ...student, ...progress });
+      return !!updated;
+    }
+    return false;
+  } catch (error) {
+    console.error('❌ Error updating student progress:', error);
+    return false;
+  }
+}
+
+export async function markNotificationAsRead(studentId: string, notificationId: string): Promise<boolean> {
+  try {
+    const students = studentOperations.getAll();
+    const student = students.find(s => s.id === studentId);
+    
+    if (student && student.notifications) {
+      const updatedNotifications = student.notifications.map(n => 
+        n.id === notificationId ? { ...n, read: true } : n
+      );
+      
+      const updated = await updateStudent(studentId, { 
+        ...student, 
+        notifications: updatedNotifications 
+      });
+      return !!updated;
+    }
+    return false;
+  } catch (error) {
+    console.error('❌ Error marking notification as read:', error);
+    return false;
+  }
+}

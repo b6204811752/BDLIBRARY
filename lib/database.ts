@@ -7,6 +7,14 @@ export interface Student {
   course?: string;
   enrollmentDate: string;
   status: 'active' | 'inactive';
+  notifications?: Array<{
+    id: string;
+    title: string;
+    message: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    read: boolean;
+    createdAt: string;
+  }>;
 }
 
 export interface Admin {

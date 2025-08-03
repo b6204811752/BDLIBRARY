@@ -173,7 +173,7 @@ export default function AdminDashboard() {
     // Check if user is authenticated admin
     const checkAuth = async () => {
       const user = getCurrentUser();
-      if (!user.type || user.type !== 'admin') {
+      if (!user || !user.type || user.type !== 'admin') {
         router.push('/login');
         return;
       }
