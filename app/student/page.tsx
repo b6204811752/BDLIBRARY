@@ -356,15 +356,22 @@ export default function StudentDashboard() {
                   <div className="relative">
                     <button
                       onClick={() => setShowNotifications(!showNotifications)}
-                      className="group w-full sm:w-auto bg-white/20 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/30 hover:bg-white/30 transition-all duration-300 cursor-pointer flex items-center justify-center relative"
+                      className="group w-full sm:w-auto bg-white/30 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 border-white/40 hover:bg-white/40 hover:border-white/60 transition-all duration-300 cursor-pointer flex items-center justify-center relative quick-action-button"
                     >
-                      <i className="ri-notification-fill text-xl text-white group-hover:scale-110 transition-transform duration-300"></i>
-                      <span className="ml-2 sm:hidden text-sm text-white font-medium">Notifications</span>
-                      {unreadNotifications > 0 && (
-                        <div className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-bounce shadow-lg">
-                          {unreadNotifications}
+                      <div className="flex items-center space-x-2">
+                        <div className="relative">
+                          <i className="ri-notification-fill text-2xl text-white group-hover:scale-125 transition-all duration-300 icon-glow"></i>
+                          {unreadNotifications > 0 && (
+                            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold animate-bounce shadow-lg floating-badge">
+                              {unreadNotifications}
+                            </div>
+                          )}
                         </div>
-                      )}
+                        <span className="sm:hidden text-base text-white font-semibold">Notifications</span>
+                        <span className="hidden sm:block text-sm text-white font-medium">
+                          {unreadNotifications > 0 ? `${unreadNotifications} New` : 'All Clear'}
+                        </span>
+                      </div>
                     </button>
 
                     {showNotifications && (
@@ -648,6 +655,209 @@ export default function StudentDashboard() {
                     <p className="text-sm font-medium text-gray-600">Total Points</p>
                     <p className="text-2xl font-bold text-gray-900">{currentUser.progress?.totalPoints || 0}</p>
                     <p className="text-xs text-yellow-600">Rank: #{Math.floor(Math.random() * 10) + 1}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions Section */}
+            <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 sm:p-8 rounded-2xl shadow-xl border border-blue-200 relative overflow-hidden">
+              {/* Background decorative elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-200/30 to-blue-200/30 rounded-full blur-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg mb-4">
+                    <i className="ri-flashlight-fill text-3xl text-white"></i>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    Quick Actions
+                  </h2>
+                  <p className="text-gray-600 text-lg">Access frequently used features instantly</p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {/* Take Practice Test */}
+                  <button
+                    onClick={() => setActiveTab('tests')}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-blue-200 hover:border-blue-400 relative overflow-hidden"
+                  >
+                    {/* Hover glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/0 to-blue-600/0 group-hover:from-blue-400/10 group-hover:to-blue-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-quiz-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-blue-700 transition-colors">Take Practice Test</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-blue-600 transition-colors">Start practicing now</p>
+                      
+                      {/* Floating badge */}
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce">
+                        <span className="text-white text-xs font-bold">{realTimeData.activeTests}</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Browse Study Materials */}
+                  <button
+                    onClick={() => setActiveTab('materials')}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-green-200 hover:border-green-400 relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-400/0 to-green-600/0 group-hover:from-green-400/10 group-hover:to-green-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-book-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-green-700 transition-colors">Study Materials</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-green-600 transition-colors">Download resources</p>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce">
+                        <span className="text-white text-xs font-bold">{realTimeData.todayMaterials}</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Quick Search */}
+                  <button
+                    onClick={() => setActiveTab('search')}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-purple-50 hover:to-purple-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-purple-200 hover:border-purple-400 relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400/0 to-purple-600/0 group-hover:from-purple-400/10 group-hover:to-purple-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-search-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-purple-700 transition-colors">Quick Search</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-purple-600 transition-colors">Find anything fast</p>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce">
+                        <i className="ri-star-fill text-white text-xs"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* View Progress */}
+                  <button
+                    onClick={() => setActiveTab('progress')}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-orange-50 hover:to-orange-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-orange-200 hover:border-orange-400 relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/0 to-orange-600/0 group-hover:from-orange-400/10 group-hover:to-orange-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-bar-chart-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-orange-700 transition-colors">View Progress</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-orange-600 transition-colors">Track performance</p>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce">
+                        <i className="ri-arrow-up-line text-white text-xs font-bold"></i>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Check Fees */}
+                  <button
+                    onClick={() => setActiveTab('fees')}
+                    className="group bg-white hover:bg-gradient-to-br hover:from-red-50 hover:to-red-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-red-200 hover:border-red-400 relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-400/0 to-red-600/0 group-hover:from-red-400/10 group-hover:to-red-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-money-rupee-circle-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-red-700 transition-colors">Check Fees</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-red-600 transition-colors">Payment details</p>
+                      
+                      {currentUser.fees?.dueAmount > 0 && (
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                          <i className="ri-alert-fill text-white text-xs"></i>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Live Classes */}
+                  <button
+                    className="group bg-white hover:bg-gradient-to-br hover:from-indigo-50 hover:to-indigo-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-indigo-200 hover:border-indigo-400 relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-400/0 to-indigo-600/0 group-hover:from-indigo-400/10 group-hover:to-indigo-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-live-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-indigo-700 transition-colors">Live Classes</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-indigo-600 transition-colors">Join live sessions</p>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Study Schedule */}
+                  <button
+                    className="group bg-white hover:bg-gradient-to-br hover:from-teal-50 hover:to-teal-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-teal-200 hover:border-teal-400 relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-teal-400/0 to-teal-600/0 group-hover:from-teal-400/10 group-hover:to-teal-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-calendar-check-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-teal-700 transition-colors">Study Schedule</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-teal-600 transition-colors">Plan your studies</p>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce">
+                        <span className="text-white text-xs font-bold">3</span>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Achievements */}
+                  <button
+                    className="group bg-white hover:bg-gradient-to-br hover:from-yellow-50 hover:to-yellow-100 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border-2 border-yellow-200 hover:border-yellow-400 relative overflow-hidden col-span-2 sm:col-span-1"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/0 to-yellow-600/0 group-hover:from-yellow-400/10 group-hover:to-yellow-600/20 transition-all duration-500"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                        <i className="ri-trophy-fill text-2xl sm:text-3xl text-white group-hover:animate-wiggle"></i>
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-2 group-hover:text-yellow-700 transition-colors">Achievements</h3>
+                      <p className="text-xs text-gray-600 group-hover:text-yellow-600 transition-colors">View badges & rewards</p>
+                      
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg group-hover:animate-bounce">
+                        <span className="text-white text-xs font-bold">{currentUser.certificates?.length || 0}</span>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Quick Tips Section */}
+                <div className="mt-8 p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-white/60">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                      <i className="ri-lightbulb-fill text-white text-sm"></i>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-800 text-sm">Quick Tip of the Day</h4>
+                      <p className="text-xs text-gray-600 mt-1">
+                        {[
+                          "Take practice tests regularly to improve your performance!",
+                          "Download study materials before your exam date.",
+                          "Check your progress weekly to stay on track.",
+                          "Join live classes for better understanding.",
+                          "Complete assignments on time to earn bonus points!"
+                        ][Math.floor(Math.random() * 5)]}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
