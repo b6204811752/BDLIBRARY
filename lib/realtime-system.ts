@@ -171,7 +171,16 @@ export class PushNotificationService {
 
 // Enhanced Notification System
 export class NotificationService {
-  static async sendNotification(
+  private static instance: NotificationService;
+  
+  static getInstance(): NotificationService {
+    if (!NotificationService.instance) {
+      NotificationService.instance = new NotificationService();
+    }
+    return NotificationService.instance;
+  }
+
+  async sendNotification(
     recipients: string[],
     template: NotificationTemplate,
     variables: Record<string, string>,
@@ -194,48 +203,235 @@ export class NotificationService {
     await Promise.all(promises);
   }
 
-  private static async sendEmailNotification(
+  // Integration with existing email service
+  private async sendEmailNotification(
     recipients: string[],
     template: NotificationTemplate,
     variables: Record<string, string>
   ): Promise<void> {
-    // Email sending logic with template rendering
-  }
-
-  private static async sendSMSNotification(
-    recipients: string[],
-    template: NotificationTemplate,
-    variables: Record<string, string>
-  ): Promise<void> {
-    // SMS sending logic
-  }
-
-  private static async sendPushNotification(
-    recipients: string[],
-    template: NotificationTemplate,
-    variables: Record<string, string>
-  ): Promise<void> {
-    // Push notification logic
-  }
-
-  private static async sendInAppNotification(
-    recipients: string[],
-    template: NotificationTemplate,
-    variables: Record<string, string>
-  ): Promise<void> {
-    // In-app notification logic
-    const ws = WebSocketService.getInstance();
-    recipients.forEach(userId => {
-      ws.send('notification', {
-        userId,
-        title: this.renderTemplate(template.title, variables),
-        content: this.renderTemplate(template.content, variables),
-        type: 'info'
+    try {
+      // Import email service dynamically to avoid circular dependencies
+      const { EmailService } = await import('./email-service');
+      const emailService = new EmailService({
+        service: 'emailjs',
+        publicKey: (typeof window !== 'undefined' && (window as any).NEXT_PUBLIC_EMAILJS_PUBLIC_KEY) || 'demo',
+        serviceId: (typeof window !== 'undefined' && (window as any).NEXT_PUBLIC_EMAILJS_SERVICE_ID) || 'demo',
+        templateId: (typeof window !== 'undefined' && (window as any).NEXT_PUBLIC_EMAILJS_TEMPLATE_ID) || 'demo'
       });
-    });
+      
+      for (const recipient of recipients) {
+        await emailService.sendEmail({
+          to: recipient,
+          subject: this.renderTemplate(template.title, variables),
+          templateId: template.name,
+          variables
+        });
+      }
+    } catch (error) {
+      console.error('Email notification failed:', error);
+    }
   }
 
-  private static renderTemplate(template: string, variables: Record<string, string>): string {
+  // Integration with existing SMS service
+  private async sendSMSNotification(
+    recipients: string[],
+    template: NotificationTemplate,
+    variables: Record<string, string>
+  ): Promise<void> {
+    try {
+      // Import SMS service dynamically to avoid circular dependencies
+      const { SMSService } = await import('./sms-service');
+      const smsService = new SMSService({
+        provider: 'textbelt',
+        apiKey: (typeof window !== 'undefined' && (window as any).TEXTBELT_API_KEY) || 'textbelt',
+        isTestMode: true
+      });
+      
+      for (const recipient of recipients) {
+        await smsService.sendSMS({
+          to: recipient,
+          message: this.renderTemplate(template.content, variables)
+        });
+      }
+    } catch (error) {
+      console.error('SMS notification failed:', error);
+    }
+  }
+
+  private async sendPushNotification(
+    recipients: string[],
+    template: NotificationTemplate,
+    variables: Record<string, string>
+  ): Promise<void> {
+    try {
+      const title = this.renderTemplate(template.title, variables);
+      const content = this.renderTemplate(template.content, variables);
+      
+      // Send browser push notification
+      await PushNotificationService.sendNotification(title, {
+        body: content,
+        icon: '/icons/notification-icon.png',
+        badge: '/icons/badge-icon.png',
+        tag: template.id,
+        requireInteraction: true,
+        data: { templateId: template.id, variables }
+      });
+    } catch (error) {
+      console.error('Push notification failed:', error);
+    }
+  }
+
+  // Enhanced in-app notification with BD Library integration
+  private async sendInAppNotification(
+    recipients: string[],
+    template: NotificationTemplate,
+    variables: Record<string, string>
+  ): Promise<void> {
+    try {
+      const ws = WebSocketService.getInstance();
+      const title = this.renderTemplate(template.title, variables);
+      const content = this.renderTemplate(template.content, variables);
+      
+      // Send to WebSocket for real-time delivery
+      recipients.forEach(userId => {
+        ws.send('notification', {
+          userId,
+          title,
+          content,
+          type: template.name.includes('payment') ? 'payment' : 
+                template.name.includes('test') ? 'test' :
+                template.name.includes('announcement') ? 'announcement' : 'info',
+          timestamp: new Date().toISOString(),
+          templateId: template.id
+        });
+      });
+
+      // Store in localStorage for offline access (BD Library integration)
+      this.storeNotificationsOffline(recipients, {
+        title,
+        content,
+        type: 'info',
+        timestamp: new Date().toISOString(),
+        templateId: template.id
+      });
+    } catch (error) {
+      console.error('In-app notification failed:', error);
+    }
+  }
+
+  // Integration with BD Library's localStorage system
+  private storeNotificationsOffline(recipients: string[], notification: any): void {
+    try {
+      recipients.forEach(userId => {
+        const key = `bdlib_notifications_${userId}`;
+        const stored = localStorage.getItem(key);
+        const notifications = stored ? JSON.parse(stored) : [];
+        
+        notifications.unshift({
+          id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          ...notification,
+          read: false
+        });
+        
+        // Keep only last 50 notifications
+        if (notifications.length > 50) {
+          notifications.splice(50);
+        }
+        
+        localStorage.setItem(key, JSON.stringify(notifications));
+        
+        // Trigger storage event for real-time updates across tabs
+        window.dispatchEvent(new StorageEvent('storage', {
+          key,
+          newValue: JSON.stringify(notifications)
+        }));
+      });
+    } catch (error) {
+      console.error('Failed to store offline notifications:', error);
+    }
+  }
+
+  private renderTemplate(template: string, variables: Record<string, string>): string {
     return template.replace(/\{\{(\w+)\}\}/g, (match, key) => variables[key] || match);
+  }
+
+  // BD Library specific notification methods
+  async notifyPaymentReceived(studentId: string, amount: number, receiptNo: string): Promise<void> {
+    await this.sendNotification([studentId], {
+      id: 'payment_received',
+      name: 'payment_confirmation',
+      title: 'Payment Confirmed',
+      content: 'Your payment of ₹{{amount}} has been received. Receipt: {{receiptNo}}',
+      variables: ['amount', 'receiptNo'],
+      channels: ['in-app', 'sms'],
+      triggeredBy: ['payment_received']
+    }, {
+      amount: amount.toLocaleString(),
+      receiptNo
+    }, ['in-app', 'sms']);
+  }
+
+  async notifyTestCompleted(studentId: string, testName: string, score: number): Promise<void> {
+    await this.sendNotification([studentId], {
+      id: 'test_completed',
+      name: 'test_result',
+      title: 'Test Result Available',
+      content: 'You scored {{score}}% in {{testName}}. Great job!',
+      variables: ['score', 'testName'],
+      channels: ['in-app', 'push'],
+      triggeredBy: ['test_completed']
+    }, {
+      score: score.toString(),
+      testName
+    }, ['in-app', 'push']);
+  }
+
+  async notifyFeesDue(studentId: string, amount: number, dueDate: string): Promise<void> {
+    await this.sendNotification([studentId], {
+      id: 'fees_due',
+      name: 'fee_reminder',
+      title: 'Fee Payment Reminder',
+      content: 'Your fee payment of ₹{{amount}} is due on {{dueDate}}. Please pay to avoid late charges.',
+      variables: ['amount', 'dueDate'],
+      channels: ['in-app', 'email', 'sms'],
+      triggeredBy: ['fee_due_reminder']
+    }, {
+      amount: amount.toLocaleString(),
+      dueDate
+    }, ['in-app', 'email', 'sms']);
+  }
+
+  async notifyNewMaterial(studentIds: string[], materialName: string, category: string): Promise<void> {
+    await this.sendNotification(studentIds, {
+      id: 'new_material',
+      name: 'study_material',
+      title: 'New Study Material Available',
+      content: 'New {{category}} material "{{materialName}}" has been added to your library.',
+      variables: ['category', 'materialName'],
+      channels: ['in-app', 'push'],
+      triggeredBy: ['material_added']
+    }, {
+      category,
+      materialName
+    }, ['in-app', 'push']);
+  }
+
+  async broadcastAnnouncement(message: string, title: string = 'Important Announcement'): Promise<void> {
+    // Get all active students from localStorage
+    const authData = localStorage.getItem('bdlib_auth_data');
+    if (!authData) return;
+    
+    const { students } = JSON.parse(authData);
+    const studentIds = students.map((s: any) => s.id);
+    
+    await this.sendNotification(studentIds, {
+      id: 'announcement',
+      name: 'general_announcement',
+      title,
+      content: message,
+      variables: [],
+      channels: ['in-app', 'push'],
+      triggeredBy: ['admin_announcement']
+    }, {}, ['in-app', 'push']);
   }
 }
