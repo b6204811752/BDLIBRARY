@@ -945,38 +945,63 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Financial Overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method Stats</h2>
-                <div className="space-y-3">
+            {/* Enhanced Financial Overview */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-white to-indigo-50 p-8 rounded-2xl shadow-xl border border-indigo-100">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-wallet-fill text-white text-xl"></i>
+                  </div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Payment Methods</h2>
+                </div>
+                <div className="space-y-4">
                   {Object.entries(financialAnalytics.paymentMethodStats).map(([method, stats]: [string, any]) => (
-                    <div key={method} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <i className={`${method === 'cash' ? 'ri-money-rupee-circle-line' : method === 'card' ? 'ri-bank-card-line' : method === 'upi' ? 'ri-smartphone-line' : 'ri-bank-line'} text-blue-600`}></i>
-                        <span className="text-sm text-gray-600 capitalize">{method}</span>
+                    <div key={method} className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          method === 'cash' ? 'bg-green-100' : 
+                          method === 'card' ? 'bg-blue-100' : 
+                          method === 'upi' ? 'bg-purple-100' : 'bg-gray-100'
+                        }`}>
+                          <i className={`${
+                            method === 'cash' ? 'ri-money-rupee-circle-fill text-green-600' : 
+                            method === 'card' ? 'ri-bank-card-fill text-blue-600' : 
+                            method === 'upi' ? 'ri-smartphone-fill text-purple-600' : 'ri-bank-fill text-gray-600'
+                          }`}></i>
+                        </div>
+                        <span className="font-semibold text-gray-700 capitalize">{method}</span>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">₹{stats.amount.toLocaleString()}</p>
-                        <p className="text-xs text-gray-500">{stats.count} transactions</p>
+                        <p className="text-lg font-bold text-gray-900">₹{stats.amount.toLocaleString()}</p>
+                        <p className="text-sm text-gray-500">{stats.count} transactions</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Fee Defaulters</h2>
-                <div className="space-y-3">
+              <div className="bg-gradient-to-br from-white to-red-50 p-8 rounded-2xl shadow-xl border border-red-100">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-alarm-warning-fill text-white text-xl"></i>
+                  </div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Fee Defaulters</h2>
+                </div>
+                <div className="space-y-4">
                   {financialAnalytics.defaulters.slice(0, 5).map((student: any) => (
-                    <div key={student.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
-                      <div>
-                        <p className="font-medium text-gray-900">{student.name}</p>
-                        <p className="text-sm text-gray-500">{student.email}</p>
+                    <div key={student.id} className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-red-400 to-red-500 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-white font-bold text-sm">{student.name.charAt(0)}</span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900 group-hover:text-red-600 transition-colors">{student.name}</p>
+                          <p className="text-sm text-gray-500">{student.email}</p>
+                        </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium text-red-600">₹{student.monthlyFees}</p>
-                        <p className="text-xs text-gray-500">Monthly fee</p>
+                        <p className="text-lg font-bold text-red-600">₹{student.monthlyFees}</p>
+                        <p className="text-sm text-gray-500">Monthly fee</p>
                       </div>
                     </div>
                   ))}
@@ -990,24 +1015,51 @@ export default function AdminDashboard() {
         {activeTab === 'students' && (
           <div className="space-y-6">
             {/* Enhanced Search and Filter Controls */}
-            <div className="bg-white p-6 rounded-lg shadow">
+            <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-xl border border-gray-200">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-filter-fill text-white"></i>
+                  </div>
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Advanced Filters
+                  </h3>
+                </div>
+                <button 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setFilterShift('all');
+                    setFilterCategory('all');
+                    setFilterStatus('all');
+                    setSortBy('name');
+                    setSortOrder('asc');
+                  }}
+                  className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                >
+                  <i className="ri-refresh-line mr-2"></i>
+                  Reset Filters
+                </button>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                  <input
-                    type="text"
-                    placeholder="Search by name, email, or mobile..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Search</label>
+                  <div className="relative">
+                    <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input
+                      type="text"
+                      placeholder="Search by name, email, or mobile..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all duration-300 bg-white"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Shift</label>
                   <select
                     value={filterShift}
                     onChange={(e) => setFilterShift(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all duration-300 bg-white"
                   >
                     <option value="all">All Shifts</option>
                     <option value="morning">Morning</option>
@@ -1016,11 +1068,11 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
                   <select
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all duration-300 bg-white"
                   >
                     <option value="all">All Categories</option>
                     <option value="Banking">Banking</option>
@@ -1032,11 +1084,11 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all duration-300 bg-white"
                   >
                     <option value="all">All Status</option>
                     <option value="active">Active</option>
@@ -1045,12 +1097,12 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sort by</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sort by</label>
                   <div className="flex space-x-2">
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-8"
+                      className="flex-1 px-3 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all duration-300 bg-white"
                     >
                       <option value="name">Name</option>
                       <option value="email">Email</option>
@@ -1061,9 +1113,9 @@ export default function AdminDashboard() {
                     </select>
                     <button
                       onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                      className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
+                      className="px-3 py-3 border-2 border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all duration-300 bg-white"
                     >
-                      <i className={`ri-sort-${sortOrder === 'asc' ? 'asc' : 'desc'}-line`}></i>
+                      <i className={`ri-sort-${sortOrder === 'asc' ? 'asc' : 'desc'}-line text-gray-600`}></i>
                     </button>
                   </div>
                 </div>
@@ -1071,137 +1123,208 @@ export default function AdminDashboard() {
             </div>
 
             {/* Enhanced Students Table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-900">Students ({sortedStudents.length})</h2>
-                <div className="flex space-x-2">
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+              <div className="px-8 py-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-group-fill text-white"></i>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      Students Management
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Total {sortedStudents.length} students registered
+                    </p>
+                  </div>
+                </div>
+                <div className="flex space-x-3">
                   <button
                     onClick={() => setShowAddModal(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 whitespace-nowrap cursor-pointer"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 shadow-lg font-medium cursor-pointer"
                   >
-                    <i className="ri-add-line"></i>
+                    <i className="ri-add-line text-lg"></i>
                     <span>Add Student</span>
                   </button>
                   <button
                     onClick={() => setShowBulkUpload(true)}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2 whitespace-nowrap cursor-pointer"
+                    className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-indigo-600 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 shadow-lg font-medium cursor-pointer"
                   >
-                    <i className="ri-file-upload-line"></i>
+                    <i className="ri-file-upload-line text-lg"></i>
                     <span>Bulk Upload</span>
                   </button>
                   <button
                     onClick={() => setShowPaymentModal(true)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2 whitespace-nowrap cursor-pointer"
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 shadow-lg font-medium cursor-pointer"
                   >
-                    <i className="ri-money-rupee-circle-line"></i>
+                    <i className="ri-money-rupee-circle-line text-lg"></i>
                     <span>Payment</span>
                   </button>
                   <button
                     onClick={() => setShowExportModal(true)}
-                    className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-2 whitespace-nowrap cursor-pointer"
+                    className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-6 py-3 rounded-xl hover:from-gray-600 hover:to-gray-700 transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 shadow-lg font-medium cursor-pointer"
                   >
-                    <i className="ri-download-line"></i>
+                    <i className="ri-download-line text-lg"></i>
                     <span>Export</span>
                   </button>
                 </div>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course Info</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-user-fill text-blue-500"></i>
+                          <span>Student</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-phone-fill text-green-500"></i>
+                          <span>Contact</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-book-fill text-purple-500"></i>
+                          <span>Course Info</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-money-rupee-circle-fill text-yellow-500"></i>
+                          <span>Fee Status</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-bar-chart-fill text-indigo-500"></i>
+                          <span>Performance</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-shield-check-fill text-green-500"></i>
+                          <span>Status</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider border-b-2 border-blue-100">
+                        <div className="flex items-center space-x-2">
+                          <i className="ri-settings-fill text-gray-500"></i>
+                          <span>Actions</span>
+                        </div>
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-100">
                     {sortedStudents.map((student) => (
-                      <tr key={student.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                      <tr key={student.id} className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
+                        <td className="px-6 py-6 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                              <span className="text-blue-600 font-medium">{student.name.charAt(0)}</span>
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                              <span className="text-white font-bold text-lg">{student.name.charAt(0)}</span>
                             </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                              <div className="text-sm text-gray-500">ID: {student.id}</div>
+                              <div className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{student.name}</div>
+                              <div className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg inline-block mt-1">ID: {student.id}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{student.email}</div>
-                          <div className="text-sm text-gray-500">Mobile: {student.mobile}</div>
+                        <td className="px-6 py-6 whitespace-nowrap">
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2 text-sm text-gray-900">
+                              <i className="ri-mail-fill text-blue-500"></i>
+                              <span>{student.email}</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm text-gray-600">
+                              <i className="ri-phone-fill text-green-500"></i>
+                              <span>{student.mobile}</span>
+                            </div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{student.course}</div>
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        <td className="px-6 py-6 whitespace-nowrap">
+                          <div className="space-y-2">
+                            <div className="text-sm font-medium text-gray-900">{student.course}</div>
+                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
                             student.libraryAccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}>
                             {student.libraryAccess ? 'Library Access' : 'No Library Access'}
                           </span>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Duration: {student.duration} months</div>
-                          <div className="text-sm text-gray-500">Monthly Fee: ₹{student.monthlyFees}</div>
+                        <td className="px-6 py-6 whitespace-nowrap">
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2 text-sm text-gray-900">
+                              <i className="ri-time-fill text-orange-500"></i>
+                              <span>Duration: {student.duration} months</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm font-medium text-green-600">
+                              <i className="ri-money-rupee-circle-fill text-green-500"></i>
+                              <span>₹{student.monthlyFees}/month</span>
+                            </div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Exams Passed: {student.examsPassed}</div>
-                          <div className="text-sm text-gray-500">Counseling: {student.counselingBooked ? 'Booked' : 'Not Booked'}</div>
-                          <div className="text-sm text-gray-500">Join Date: {student.joinDate}</div>
+                        <td className="px-6 py-6 whitespace-nowrap">
+                          <div className="space-y-3">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-500 rounded-lg flex items-center justify-center">
+                                <i className="ri-trophy-fill text-white text-sm"></i>
+                              </div>
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">Exams Passed</div>
+                                <div className="text-lg font-bold text-purple-600">{student.examsPassed}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm">
+                              <i className={`ri-calendar-check-fill ${student.counselingBooked ? 'text-green-500' : 'text-gray-400'}`}></i>
+                              <span className={student.counselingBooked ? 'text-green-600 font-medium' : 'text-gray-500'}>
+                                Counseling {student.counselingBooked ? 'Booked' : 'Not Booked'}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm text-gray-500">
+                              <i className="ri-calendar-fill text-blue-500"></i>
+                              <span>Joined: {student.joinDate}</span>
+                            </div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            student.libraryAccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        <td className="px-6 py-6 whitespace-nowrap">
+                          <span className={`inline-flex px-4 py-2 text-sm font-bold rounded-xl shadow-lg ${
+                            student.libraryAccess ? 'bg-gradient-to-r from-green-400 to-green-500 text-white' : 'bg-gradient-to-r from-red-400 to-red-500 text-white'
                           }`}>
+                            <i className={`${student.libraryAccess ? 'ri-check-fill' : 'ri-close-fill'} mr-2`}></i>
                             {student.libraryAccess ? 'Active' : 'Inactive'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <td className="px-6 py-6 whitespace-nowrap">
                           <div className="flex space-x-2">
                             <button
                               onClick={() => handleEditStudent(student)}
-                              className="text-blue-600 hover:text-blue-900 cursor-pointer"
+                              className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
                               title="Edit Student"
                             >
-                              <i className="ri-edit-line"></i>
+                              <i className="ri-edit-2-fill"></i>
                             </button>
                             <button
-                              onClick={() => {
-                                setPaymentData(prev => ({ ...prev, studentId: student.id }));
-                                setShowPaymentModal(true);
-                              }}
-                              className="text-green-600 hover:text-green-900 cursor-pointer"
-                              title="Add Payment"
+                              onClick={() => handleViewStudent(student)}
+                              className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 hover:text-green-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
+                              title="View Details"
                             >
-                              <i className="ri-money-rupee-circle-line"></i>
-                            </button>
-                            <button
-                              onClick={() => {
-                                setLibraryData(prev => ({ ...prev, studentId: student.id }));
-                                setShowLibraryModal(true);
-                              }}
-                              className="text-purple-600 hover:text-purple-900 cursor-pointer"
-                              title="Library"
-                            >
-                              <i className="ri-book-line"></i>
-                            </button>
-                            <button
-                              onClick={() => sendNotificationToStudent(student.id, 'Important update from admin')}
-                              className="text-orange-600 hover:text-orange-900 cursor-pointer"
-                              title="Send Notification"
-                            >
-                              <i className="ri-notification-line"></i>
+                              <i className="ri-eye-fill"></i>
                             </button>
                             <button
                               onClick={() => handleDeleteStudent(student.id)}
-                              className="text-red-600 hover:text-red-900 cursor-pointer"
+                              className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 hover:text-red-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
                               title="Delete Student"
                             >
-                              <i className="ri-delete-bin-line"></i>
+                              <i className="ri-delete-bin-fill"></i>
+                            </button>
+                            <button
+                              onClick={() => handleStudentPayment(student)}
+                              className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 hover:text-yellow-700 transition-all duration-300 transform hover:scale-110 cursor-pointer"
+                              title="Payment History"
+                            >
+                              <i className="ri-money-rupee-circle-fill"></i>
                             </button>
                           </div>
                         </td>
@@ -1216,69 +1339,84 @@ export default function AdminDashboard() {
 
         {/* Enhanced Analytics Tab */}
         {activeTab === 'analytics' && analytics && financialAnalytics && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Financial Analytics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Overview</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Revenue</span>
-                    <span className="font-bold text-green-600">₹{financialAnalytics.totalRevenue.toLocaleString()}</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-gradient-to-br from-white to-green-50 p-8 rounded-2xl shadow-xl border border-green-100">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-money-rupee-circle-fill text-white text-xl"></i>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Pending Dues</span>
-                    <span className="font-bold text-red-600">₹{financialAnalytics.totalDues.toLocaleString()}</span>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Revenue Overview</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Total Revenue</span>
+                    <span className="font-bold text-green-600 text-lg">₹{financialAnalytics.totalRevenue.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Discounts Given</span>
-                    <span className="font-bold text-orange-600">₹{financialAnalytics.totalDiscounts.toLocaleString()}</span>
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Pending Dues</span>
+                    <span className="font-bold text-red-600 text-lg">₹{financialAnalytics.totalDues.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Collection Rate</span>
-                    <span className="font-bold text-blue-600">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Discounts Given</span>
+                    <span className="font-bold text-orange-600 text-lg">₹{financialAnalytics.totalDiscounts.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-sm">
+                    <span className="text-gray-700 font-semibold">Collection Rate</span>
+                    <span className="font-bold text-blue-700 text-xl">
                       {Math.round((financialAnalytics.totalRevenue / (financialAnalytics.totalRevenue + financialAnalytics.totalDues)) * 100)}%
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Library Stats</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Library Access</span>
-                    <span className="font-bold text-blue-600">
+              <div className="bg-gradient-to-br from-white to-blue-50 p-8 rounded-2xl shadow-xl border border-blue-100">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-book-open-fill text-white text-xl"></i>
+                  </div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Library Stats</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Library Access</span>
+                    <span className="font-bold text-blue-600 text-lg">
                       {students.filter(s => s.libraryAccess).length}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Students</span>
-                    <span className="font-bold text-green-600">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Total Students</span>
+                    <span className="font-bold text-green-600 text-lg">
                       {students.length}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Counseling Booked</span>
-                    <span className="font-bold text-orange-600">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Counseling Booked</span>
+                    <span className="font-bold text-orange-600 text-lg">
                       {students.filter(s => s.counselingBooked).length}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Exam Performance</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Exams Passed</span>
-                    <span className="font-bold text-blue-600">
+              <div className="bg-gradient-to-br from-white to-purple-50 p-8 rounded-2xl shadow-xl border border-purple-100">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-trophy-fill text-white text-xl"></i>
+                  </div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Exam Performance</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Total Exams Passed</span>
+                    <span className="font-bold text-blue-600 text-lg">
                       {students.reduce((sum, s) => sum + s.examsPassed, 0)}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Avg Exams Per Student</span>
-                    <span className="font-bold text-green-600">
+                  <div className="flex justify-between items-center p-3 bg-white rounded-xl shadow-sm">
+                    <span className="text-gray-600 font-medium">Avg Exams Per Student</span>
+                    <span className="font-bold text-green-600 text-lg">
                       {Math.round(students.reduce((sum, s) => sum + s.examsPassed, 0) / students.length)}
                     </span>
                   </div>

@@ -20,6 +20,19 @@ export default function StudentDashboard() {
     activeTests: 0,
     todayMaterials: 0
   });
+
+  // Quick Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchCategory, setSearchCategory] = useState('all');
+  const [searchResults, setSearchResults] = useState({
+    materials: [],
+    tests: [],
+    notes: [],
+    announcements: []
+  });
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -147,6 +160,99 @@ export default function StudentDashboard() {
   const getAttendancePercentage = () => {
     if (!currentUser?.attendance || currentUser.attendance.totalDays === 0) return 0;
     return (currentUser.attendance.present / currentUser.attendance.totalDays) * 100;
+  };
+
+  // Search functionality
+  const performSearch = (query: string, category: string = 'all') => {
+    if (!query.trim()) {
+      setSearchResults({ materials: [], tests: [], notes: [], announcements: [] });
+      return;
+    }
+
+    setIsSearching(true);
+    
+    // Simulate search delay
+    setTimeout(() => {
+      const results = {
+        materials: [],
+        tests: [],
+        notes: [],
+        announcements: []
+      };
+
+      // Search through all job categories for materials
+      if (category === 'all' || category === 'materials') {
+        jobCategories.forEach(cat => {
+          const matchingMaterials = cat.materials.filter(material =>
+            material.title.toLowerCase().includes(query.toLowerCase()) ||
+            material.description.toLowerCase().includes(query.toLowerCase()) ||
+            material.type.toLowerCase().includes(query.toLowerCase())
+          ).map(material => ({ ...material, category: cat.name }));
+          results.materials.push(...matchingMaterials);
+        });
+      }
+
+      // Search through practice tests
+      if (category === 'all' || category === 'tests') {
+        const matchingTests = practiceTests.filter(test =>
+          test.title.toLowerCase().includes(query.toLowerCase()) ||
+          test.description.toLowerCase().includes(query.toLowerCase()) ||
+          test.category.toLowerCase().includes(query.toLowerCase())
+        );
+        results.tests = matchingTests;
+      }
+
+      // Search through notes (simulated data)
+      if (category === 'all' || category === 'notes') {
+        const sampleNotes = [
+          { id: 1, title: 'Banking Fundamentals', content: 'Key concepts in banking sector', subject: 'Banking', lastModified: '2024-01-15' },
+          { id: 2, title: 'Railway Safety Protocols', content: 'Important safety measures', subject: 'Railway', lastModified: '2024-01-10' },
+          { id: 3, title: 'SSC Mathematics Tips', content: 'Quick calculation methods', subject: 'SSC', lastModified: '2024-01-12' },
+          { id: 4, title: 'UPSC Current Affairs', content: 'Latest current affairs notes', subject: 'UPSC', lastModified: '2024-01-18' }
+        ];
+        
+        const matchingNotes = sampleNotes.filter(note =>
+          note.title.toLowerCase().includes(query.toLowerCase()) ||
+          note.content.toLowerCase().includes(query.toLowerCase()) ||
+          note.subject.toLowerCase().includes(query.toLowerCase())
+        );
+        results.notes = matchingNotes;
+      }
+
+      // Search through announcements (simulated data)
+      if (category === 'all' || category === 'announcements') {
+        const sampleAnnouncements = [
+          { id: 1, title: 'New Study Materials Available', content: 'Latest banking exam materials uploaded', date: '2024-01-20', priority: 'high' },
+          { id: 2, title: 'Practice Test Schedule', content: 'Weekly practice tests every Sunday', date: '2024-01-18', priority: 'medium' },
+          { id: 3, title: 'Fee Payment Reminder', content: 'Monthly fees due on 25th', date: '2024-01-15', priority: 'high' },
+          { id: 4, title: 'Library Hours Extended', content: 'Now open till 10 PM on weekdays', date: '2024-01-12', priority: 'low' }
+        ];
+        
+        const matchingAnnouncements = sampleAnnouncements.filter(announcement =>
+          announcement.title.toLowerCase().includes(query.toLowerCase()) ||
+          announcement.content.toLowerCase().includes(query.toLowerCase())
+        );
+        results.announcements = matchingAnnouncements;
+      }
+
+      setSearchResults(results);
+      setIsSearching(false);
+
+      // Add to search history
+      if (query.trim() && !searchHistory.includes(query.trim())) {
+        setSearchHistory(prev => [query.trim(), ...prev.slice(0, 9)]);
+      }
+    }, 500);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults({ materials: [], tests: [], notes: [], announcements: [] });
+  };
+
+  const handleQuickSearch = (query: string) => {
+    setSearchQuery(query);
+    performSearch(query, searchCategory);
   };
 
   if (loading) {
@@ -335,6 +441,7 @@ export default function StudentDashboard() {
             <nav className="flex overflow-x-auto scrollbar-hide">
               {[
                 { id: 'dashboard', label: 'Dashboard', icon: 'ri-dashboard-fill', color: 'blue', count: null },
+                { id: 'search', label: 'Quick Search', icon: 'ri-search-fill', color: 'indigo', count: null },
                 { id: 'fees', label: 'Fees & Payments', icon: 'ri-money-rupee-circle-fill', color: 'green', count: currentUser.fees?.dueAmount > 0 ? '!' : null },
                 { id: 'materials', label: 'Study Materials', icon: 'ri-book-fill', color: 'purple', count: realTimeData.todayMaterials },
                 { id: 'tests', label: 'Practice Tests', icon: 'ri-quiz-fill', color: 'orange', count: realTimeData.activeTests },
@@ -845,6 +952,309 @@ export default function StudentDashboard() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Quick Search Tab */}
+        {activeTab === 'search' && (
+          <div className="space-y-6">
+            {/* Search Header */}
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl shadow-lg border border-indigo-200">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i className="ri-search-fill text-2xl text-white"></i>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      Quick Search
+                    </h2>
+                    <p className="text-indigo-600">Find materials, tests, notes, and announcements</p>
+                  </div>
+                </div>
+                <div className="text-sm text-indigo-600 bg-white px-3 py-1 rounded-full shadow-sm">
+                  {Object.values(searchResults).flat().length} results
+                </div>
+              </div>
+
+              {/* Search Input */}
+              <div className="relative mb-4">
+                <div className="relative">
+                  <i className="ri-search-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+                  <input
+                    type="text"
+                    placeholder="Search for materials, tests, notes, announcements..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      performSearch(e.target.value, searchCategory);
+                    }}
+                    className="w-full pl-12 pr-12 py-4 border-2 border-indigo-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 text-lg bg-white/80 backdrop-blur-sm"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={clearSearch}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <i className="ri-close-circle-line text-xl"></i>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Search Filters */}
+              <div className="flex flex-wrap gap-3 mb-4">
+                {['all', 'materials', 'tests', 'notes', 'announcements'].map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      setSearchCategory(category);
+                      performSearch(searchQuery, category);
+                    }}
+                    className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
+                      searchCategory === category
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg scale-105'
+                        : 'bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50 hover:scale-105'
+                    }`}
+                  >
+                    <i className={`${
+                      category === 'all' ? 'ri-apps-fill' :
+                      category === 'materials' ? 'ri-book-fill' :
+                      category === 'tests' ? 'ri-quiz-fill' :
+                      category === 'notes' ? 'ri-sticky-note-fill' :
+                      'ri-megaphone-fill'
+                    } mr-2`}></i>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Quick Search Suggestions */}
+              {!searchQuery && searchHistory.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="text-sm font-medium text-indigo-600 mb-2">Recent Searches</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {searchHistory.slice(0, 5).map((query, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleQuickSearch(query)}
+                        className="px-3 py-1 bg-white text-indigo-600 border border-indigo-200 rounded-full text-sm hover:bg-indigo-50 transition-colors"
+                      >
+                        <i className="ri-history-line mr-1"></i>
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Popular Searches */}
+              {!searchQuery && (
+                <div>
+                  <h3 className="text-sm font-medium text-indigo-600 mb-2">Popular Searches</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {['Banking Basics', 'Practice Tests', 'Current Affairs', 'Mathematics', 'English Grammar', 'General Knowledge'].map((query) => (
+                      <button
+                        key={query}
+                        onClick={() => handleQuickSearch(query)}
+                        className="px-3 py-1 bg-white text-indigo-600 border border-indigo-200 rounded-full text-sm hover:bg-indigo-50 transition-colors"
+                      >
+                        <i className="ri-fire-line mr-1"></i>
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Loading State */}
+            {isSearching && (
+              <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                <div className="inline-flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                  <span className="text-indigo-600 font-medium">Searching...</span>
+                </div>
+              </div>
+            )}
+
+            {/* Search Results */}
+            {!isSearching && searchQuery && (
+              <div className="space-y-6">
+                {/* Materials Results */}
+                {searchResults.materials.length > 0 && (
+                  <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i className="ri-book-fill text-white"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">Study Materials ({searchResults.materials.length})</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {searchResults.materials.map((material) => (
+                        <div key={material.id} className="border border-purple-100 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:scale-105">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center space-x-2">
+                              <i className={`${
+                                material.type === 'pdf' ? 'ri-file-pdf-fill text-red-500' :
+                                material.type === 'video' ? 'ri-video-fill text-blue-500' :
+                                material.type === 'quiz' ? 'ri-quiz-fill text-green-500' :
+                                'ri-file-text-fill text-gray-500'
+                              } text-xl`}></i>
+                              <span className="text-sm font-medium text-purple-600">{material.category}</span>
+                            </div>
+                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{material.size}</span>
+                          </div>
+                          <h4 className="font-semibold text-gray-900 mb-2">{material.title}</h4>
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{material.description}</p>
+                          <div className="flex items-center justify-between">
+                            <button
+                              onClick={() => handleDownloadMaterial(material.id)}
+                              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-medium mr-2"
+                            >
+                              <i className="ri-download-fill mr-2"></i>
+                              Download
+                            </button>
+                            <button className="bg-purple-50 text-purple-600 px-3 py-2 rounded-lg hover:bg-purple-100 transition-colors">
+                              <i className="ri-bookmark-fill"></i>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tests Results */}
+                {searchResults.tests.length > 0 && (
+                  <div className="bg-white p-6 rounded-2xl shadow-lg border border-orange-100">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                        <i className="ri-quiz-fill text-white"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">Practice Tests ({searchResults.tests.length})</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {searchResults.tests.map((test) => (
+                        <div key={test.id} className="border border-orange-100 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:scale-105">
+                          <div className="flex items-start justify-between mb-3">
+                            <span className="text-sm font-medium text-orange-600 bg-orange-50 px-3 py-1 rounded-full">{test.category}</span>
+                            <span className="text-sm text-gray-500">{test.timeLimit} min</span>
+                          </div>
+                          <h4 className="font-semibold text-gray-900 mb-2">{test.name}</h4>
+                          <p className="text-sm text-gray-600 mb-3">{test.questions.length} Questions • {test.timeLimit} Minutes</p>
+                          <div className="flex items-center justify-between">
+                            <button
+                              onClick={handleTakeTest}
+                              className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 px-4 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 font-medium mr-2"
+                            >
+                              <i className="ri-play-fill mr-2"></i>
+                              Start Test
+                            </button>
+                            <button className="bg-orange-50 text-orange-600 px-3 py-2 rounded-lg hover:bg-orange-100 transition-colors">
+                              <i className="ri-information-fill"></i>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes Results */}
+                {searchResults.notes.length > 0 && (
+                  <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i className="ri-sticky-note-fill text-white"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">Notes ({searchResults.notes.length})</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {searchResults.notes.map((note) => (
+                        <div key={note.id} className="border border-blue-100 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:scale-105">
+                          <div className="flex items-start justify-between mb-3">
+                            <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{note.subject}</span>
+                            <span className="text-xs text-gray-500">{new Date(note.lastModified).toLocaleDateString()}</span>
+                          </div>
+                          <h4 className="font-semibold text-gray-900 mb-2">{note.title}</h4>
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{note.content}</p>
+                          <div className="flex items-center justify-between">
+                            <button className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-medium mr-2">
+                              <i className="ri-eye-fill mr-2"></i>
+                              View Note
+                            </button>
+                            <button className="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors">
+                              <i className="ri-share-fill"></i>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Announcements Results */}
+                {searchResults.announcements.length > 0 && (
+                  <div className="bg-white p-6 rounded-2xl shadow-lg border border-green-100">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                        <i className="ri-megaphone-fill text-white"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">Announcements ({searchResults.announcements.length})</h3>
+                    </div>
+                    <div className="space-y-3">
+                      {searchResults.announcements.map((announcement) => (
+                        <div key={announcement.id} className="border border-green-100 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-2">
+                              <div className={`w-3 h-3 rounded-full ${
+                                announcement.priority === 'high' ? 'bg-red-500' :
+                                announcement.priority === 'medium' ? 'bg-yellow-500' :
+                                'bg-green-500'
+                              }`}></div>
+                              <span className="text-sm font-medium text-green-600">{announcement.priority.toUpperCase()} PRIORITY</span>
+                            </div>
+                            <span className="text-xs text-gray-500">{new Date(announcement.date).toLocaleDateString()}</span>
+                          </div>
+                          <h4 className="font-semibold text-gray-900 mb-2">{announcement.title}</h4>
+                          <p className="text-sm text-gray-600 mb-3">{announcement.content}</p>
+                          <button className="text-green-600 text-sm font-medium hover:text-green-700 transition-colors">
+                            <i className="ri-arrow-right-line mr-1"></i>
+                            Read More
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* No Results */}
+                {Object.values(searchResults).every(results => results.length === 0) && searchQuery && (
+                  <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <i className="ri-search-line text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No results found</h3>
+                    <p className="text-gray-600 mb-4">
+                      We couldn't find anything matching "<span className="font-medium text-indigo-600">{searchQuery}</span>"
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <span className="text-sm text-gray-500">Try searching for:</span>
+                      {['Banking', 'SSC', 'Railway', 'UPSC'].map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          onClick={() => handleQuickSearch(suggestion)}
+                          className="text-sm text-indigo-600 hover:text-indigo-700 underline"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-2 mb-3 sm:mb-4">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-sm sm:text-lg">BD</span>
+                <span className="text-white font-bold text-sm sm:text-lg">B.D</span>
               </div>
               <span 
                 className="text-lg sm:text-xl font-bold truncate" 
