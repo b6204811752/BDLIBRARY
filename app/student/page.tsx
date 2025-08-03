@@ -25,10 +25,10 @@ export default function StudentDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchCategory, setSearchCategory] = useState('all');
   const [searchResults, setSearchResults] = useState({
-    materials: [],
-    tests: [],
-    notes: [],
-    announcements: []
+    materials: [] as any[],
+    tests: [] as any[],
+    notes: [] as any[],
+    announcements: [] as any[]
   });
   const [isSearching, setIsSearching] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -174,10 +174,10 @@ export default function StudentDashboard() {
     // Simulate search delay
     setTimeout(() => {
       const results = {
-        materials: [],
-        tests: [],
-        notes: [],
-        announcements: []
+        materials: [] as any[],
+        tests: [] as any[],
+        notes: [] as any[],
+        announcements: [] as any[]
       };
 
       // Search through all job categories for materials
