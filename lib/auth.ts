@@ -45,9 +45,6 @@ export async function authenticateStudent(email: string, mobile: string): Promis
   console.log('🔐 Student authentication attempt:', { email, mobile });
   
   try {
-    // Ensure database is initialized first
-    await initializeAuthData();
-    
     const student = studentOperations.authenticate(email, mobile);
     
     if (student) {

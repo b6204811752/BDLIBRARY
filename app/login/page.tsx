@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { authenticateStudent, authenticateAdmin, setCurrentUser, initializeAuthData, debugAuthData } from '@/lib/auth';
+import { authenticateStudent, authenticateAdmin, setCurrentUser, getCurrentUser, initializeAuthData, debugAuthData } from '@/lib/auth';
 
 export default function Login() {
   const [userType, setUserType] = useState<'student' | 'admin'>('student');
@@ -69,10 +69,28 @@ export default function Login() {
         console.log('Student authentication result:', student ? 'Success' : 'Failed');
         
         if (student) {
-          console.log('Setting student user and redirecting...');
+          console.log('✅ Student authentication successful:', student);
+          console.log('🔄 Setting current user...');
           setCurrentUser('student', student);
-          setLoading(false);
-          router.push('/simple-student');
+          
+          // Verify the user was set correctly
+          setTimeout(() => {
+            const verifyUser = getCurrentUser();
+            console.log('🔍 Verification - Current user after setting:', verifyUser);
+            
+            if (verifyUser && verifyUser.type === 'student') {
+              console.log('✅ User verified successfully, redirecting...');
+              setLoading(false);
+              router.push('/student');
+            } else {
+              console.error('❌ User verification failed, trying again...');
+              setCurrentUser('student', student);
+              setTimeout(() => {
+                setLoading(false);
+                router.push('/student');
+              }, 200);
+            }
+          }, 100);
           return;
         } else {
           setError('Invalid email or mobile number. Please check the demo credentials below and ensure email is in the first field, mobile in the second field.');

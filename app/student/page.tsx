@@ -38,26 +38,42 @@ export default function StudentDashboard() {
   useEffect(() => {
     const initAndLoadData = async () => {
       try {
+        console.log('🔄 Student dashboard initializing...');
+        
         // Initialize auth data first
         await initializeAuthData();
+        console.log('✅ Auth data initialized');
         
         const user = getCurrentUser();
-        if (!user || !user.type || user.type !== 'student') {
+        console.log('👤 Current user check:', user);
+        
+        if (!user) {
+          console.log('❌ No user found, redirecting to login');
+          router.push('/login');
+          return;
+        }
+        
+        if (user.type !== 'student') {
+          console.log('❌ User is not a student, redirecting to login');
           router.push('/login');
           return;
         }
 
+        console.log('✅ Valid student user found:', user.data.name);
+        
         // Load initial data only after confirming valid user
         try {
           loadData();
           setLoading(false);
+          console.log('✅ Dashboard data loaded successfully');
         } catch (error) {
-          console.error('Error loading initial data:', error);
+          console.error('❌ Error loading initial data:', error);
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error initializing auth data:', error);
-        router.push('/login');
+        console.error('❌ Error initializing dashboard:', error);
+        setLoading(false);
+        // Don't redirect to login on initialization errors, let user try again
       }
     };
 
@@ -97,18 +113,27 @@ export default function StudentDashboard() {
 
   const loadData = () => {
     try {
+      console.log('📋 Loading dashboard data...');
       const user = getCurrentUser();
+      console.log('👤 User data in loadData:', user);
+      
       if (user && user.data) {
+        console.log('✅ Setting current user data:', user.data.name);
         setCurrentUser(user.data);
+        
         // Ensure notifications is always an array - only for students
         if ('notifications' in user.data && Array.isArray(user.data.notifications)) {
           setNotifications(user.data.notifications);
+          console.log('📧 Loaded notifications:', user.data.notifications.length);
         } else {
           setNotifications([]);
+          console.log('📧 No notifications found, setting empty array');
         }
+      } else {
+        console.log('❌ No user data found in loadData');
       }
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('❌ Error loading dashboard data:', error);
       setLoading(false);
     }
   };
@@ -291,13 +316,28 @@ export default function StudentDashboard() {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading dashboard...</p>
+        <p className="text-gray-600">Loading student dashboard...</p>
+        <p className="text-sm text-gray-500 mt-2">Initializing authentication and user data</p>
       </div>
     </div>;
   }
 
   if (!currentUser) {
-    return null;
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i className="ri-user-line text-2xl text-red-600"></i>
+        </div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+        <p className="text-gray-600 mb-4">Unable to load student data. Please try logging in again.</p>
+        <button 
+          onClick={() => router.push('/login')}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Go to Login
+        </button>
+      </div>
+    </div>;
   }
 
   const categoryData = jobCategories.find(cat => cat.id === currentUser.jobCategory.toLowerCase());

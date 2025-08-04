@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, initializeAuthData } from '@/lib/auth';
+import type { Student } from '@/lib/auth';
 
 export default function SimpleStudentDashboard() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function SimpleStudentDashboard() {
         }
         
         console.log('Student user found:', currentUser.data.name);
-        setUser(currentUser.data);
+        setUser(currentUser.data as Student);
         setLoading(false);
         
       } catch (err) {
