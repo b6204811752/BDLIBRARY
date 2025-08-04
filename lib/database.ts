@@ -7,6 +7,13 @@ export interface Student {
   course?: string;
   enrollmentDate: string;
   status: 'active' | 'inactive';
+  progress?: {
+    materialsDownloaded?: number;
+    testsCompleted?: number;
+    totalPoints?: number;
+    currentStreak?: number;
+    lastActive?: string;
+  };
   notifications?: Array<{
     id: string;
     title: string;
@@ -41,7 +48,14 @@ export const defaultDatabase: DatabaseSchema = {
       mobile: '9065541346',
       course: 'Web Development',
       enrollmentDate: '2024-01-15',
-      status: 'active'
+      status: 'active',
+      progress: {
+        materialsDownloaded: 5,
+        testsCompleted: 2,
+        totalPoints: 150,
+        currentStreak: 3,
+        lastActive: new Date().toISOString()
+      }
     },
     {
       id: '2',
@@ -50,7 +64,14 @@ export const defaultDatabase: DatabaseSchema = {
       mobile: '9876543211',
       course: 'Digital Marketing',
       enrollmentDate: '2024-01-20',
-      status: 'active'
+      status: 'active',
+      progress: {
+        materialsDownloaded: 3,
+        testsCompleted: 1,
+        totalPoints: 80,
+        currentStreak: 1,
+        lastActive: new Date().toISOString()
+      }
     },
     {
       id: '3',
@@ -59,7 +80,14 @@ export const defaultDatabase: DatabaseSchema = {
       mobile: '9876543212',
       course: 'Data Science',
       enrollmentDate: '2024-02-01',
-      status: 'active'
+      status: 'active',
+      progress: {
+        materialsDownloaded: 8,
+        testsCompleted: 4,
+        totalPoints: 320,
+        currentStreak: 5,
+        lastActive: new Date().toISOString()
+      }
     },
     {
       id: '4',
@@ -68,7 +96,14 @@ export const defaultDatabase: DatabaseSchema = {
       mobile: '9876543210',
       course: 'Programming',
       enrollmentDate: '2024-02-10',
-      status: 'active'
+      status: 'active',
+      progress: {
+        materialsDownloaded: 2,
+        testsCompleted: 1,
+        totalPoints: 70,
+        currentStreak: 2,
+        lastActive: new Date().toISOString()
+      }
     },
     {
       id: '5',
@@ -77,7 +112,14 @@ export const defaultDatabase: DatabaseSchema = {
       mobile: '1234567890',
       course: 'General',
       enrollmentDate: '2024-03-01',
-      status: 'active'
+      status: 'active',
+      progress: {
+        materialsDownloaded: 0,
+        testsCompleted: 0,
+        totalPoints: 0,
+        currentStreak: 0,
+        lastActive: new Date().toISOString()
+      }
     }
   ],
   admins: [

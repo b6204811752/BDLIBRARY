@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PracticeTest from '@/components/PracticeTest';
-import { getCurrentUser, updateStudentProgress, subscribeToDataChanges, markNotificationAsRead } from '@/lib/auth';
+import { getCurrentUser, updateStudentProgress, subscribeToDataChanges, markNotificationAsRead, initializeAuthData } from '@/lib/auth';
 import { jobCategories } from '@/lib/study-materials';
 import { practiceTests } from '@/lib/practice-tests';
 
@@ -36,23 +36,46 @@ export default function StudentDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    const user = getCurrentUser();
-    if (!user || !user.type || user.type !== 'student') {
-      router.push('/login');
-      return;
-    }
+    const initAndLoadData = async () => {
+      try {
+        // Initialize auth data first
+        await initializeAuthData();
+        
+        const user = getCurrentUser();
+        if (!user || !user.type || user.type !== 'student') {
+          router.push('/login');
+          return;
+        }
 
-    // Load initial data immediately
-    loadData();
-    setLoading(false);
+        // Load initial data only after confirming valid user
+        try {
+          loadData();
+          setLoading(false);
+        } catch (error) {
+          console.error('Error loading initial data:', error);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error initializing auth data:', error);
+        router.push('/login');
+      }
+    };
+
+    initAndLoadData();
 
     let unsubscribe: (() => void) | null = null;
 
     // Subscribe to real-time updates (but less frequently)
     subscribeToDataChanges(() => {
-      loadData();
+      try {
+        loadData();
+      } catch (error) {
+        console.error('Error in real-time update:', error);
+      }
     }).then((unsub) => {
       unsubscribe = unsub;
+    }).catch((error) => {
+      console.error('Error subscribing to data changes:', error);
     });
 
     // Simulate real-time updates every 2 minutes instead of 30 seconds

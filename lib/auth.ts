@@ -19,6 +19,16 @@ export async function initializeAuthData(): Promise<void> {
   try {
     console.log('🚀 Initializing file-based database system...');
     
+    // Force initialization if we're in a clean environment (like Vercel)
+    if (typeof window !== 'undefined') {
+      const existingData = localStorage.getItem('bd_library_database');
+      if (!existingData) {
+        console.log('🆕 No existing database found, initializing with default data...');
+        // Force reset to ensure we have the latest structure with progress data
+        await resetDatabase();
+      }
+    }
+    
     // The database is automatically initialized when imported
     const stats = databaseOperations.stats();
     console.log('📊 Database Statistics:', stats);
@@ -311,6 +321,9 @@ export async function testAuthentication(email: string, mobile: string): Promise
   console.log('🧪 Testing authentication for:', { email, mobile });
   
   try {
+    // First ensure database is initialized
+    await initializeAuthData();
+    
     const student = await authenticateStudent(email, mobile);
     
     if (student) {
@@ -330,6 +343,24 @@ export async function testAuthentication(email: string, mobile: string): Promise
       success: false,
       message: `Authentication error: ${error}`
     };
+  }
+}
+
+// Quick test function for demo credentials
+export async function testDemoLogin(): Promise<void> {
+  console.log('🎯 Testing demo login credentials...');
+  
+  const demoCredentials = [
+    { email: 'rajesh@email.com', mobile: '9065541346', name: 'Rajesh Kumar' },
+    { email: 'priya@email.com', mobile: '9876543211', name: 'Priya Sharma' },
+    { email: 'amit@email.com', mobile: '9876543212', name: 'Amit Singh' },
+    { email: 'john@example.com', mobile: '9876543210', name: 'John Doe' },
+    { email: 'demo@student.com', mobile: '1234567890', name: 'Demo Student' }
+  ];
+  
+  for (const cred of demoCredentials) {
+    const result = await testAuthentication(cred.email, cred.mobile);
+    console.log(`📝 ${cred.name}: ${result.success ? '✅ SUCCESS' : '❌ FAILED'} - ${result.message}`);
   }
 }
 
@@ -388,4 +419,12 @@ export async function markNotificationAsRead(studentId: string, notificationId: 
     console.error('❌ Error marking notification as read:', error);
     return false;
   }
+}
+
+// Expose test functions globally for debugging in browser console
+if (typeof window !== 'undefined') {
+  (window as any).testAuth = testAuthentication;
+  (window as any).testDemoLogin = testDemoLogin;
+  (window as any).debugAuth = debugAuthData;
+  (window as any).initAuth = initializeAuthData;
 }
