@@ -91,17 +91,18 @@ export default function StudentDashboard() {
   };
 
   const handleDownloadMaterial = (materialId: string) => {
-    if (currentUser) {
+    if (currentUser && currentUser.id) {
+      const currentProgress = currentUser.progress || { materialsDownloaded: 0, totalPoints: 0 };
       const newProgress = {
-        materialsDownloaded: currentUser.progress.materialsDownloaded + 1,
-        totalPoints: currentUser.progress.totalPoints + 10
+        materialsDownloaded: currentProgress.materialsDownloaded + 1,
+        totalPoints: currentProgress.totalPoints + 10
       };
 
       updateStudentProgress(currentUser.id, newProgress);
       setCurrentUser({
         ...currentUser,
         progress: {
-          ...currentUser.progress,
+          ...currentProgress,
           ...newProgress
         }
       });
@@ -109,18 +110,19 @@ export default function StudentDashboard() {
   };
 
   const handleTakeTest = () => {
-    if (currentUser) {
+    if (currentUser && currentUser.id) {
+      const currentProgress = currentUser.progress || { testsCompleted: 0, totalPoints: 0, currentStreak: 0 };
       const newProgress = {
-        testsCompleted: currentUser.progress.testsCompleted + 1,
-        totalPoints: currentUser.progress.totalPoints + 50,
-        currentStreak: currentUser.progress.currentStreak + 1
+        testsCompleted: currentProgress.testsCompleted + 1,
+        totalPoints: currentProgress.totalPoints + 50,
+        currentStreak: currentProgress.currentStreak + 1
       };
 
       updateStudentProgress(currentUser.id, newProgress);
       setCurrentUser({
         ...currentUser,
         progress: {
-          ...currentUser.progress,
+          ...currentProgress,
           ...newProgress
         }
       });
@@ -128,12 +130,13 @@ export default function StudentDashboard() {
   };
 
   const handleTestComplete = (score: number, totalMarks: number) => {
-    if (currentUser) {
+    if (currentUser && currentUser.id) {
       const percentage = (score / totalMarks) * 100;
+      const currentProgress = currentUser.progress || { testsCompleted: 0, totalPoints: 0, currentStreak: 0 };
       const newProgress = {
-        testsCompleted: (currentUser.progress?.testsCompleted || 0) + 1,
-        totalPoints: (currentUser.progress?.totalPoints || 0) + score,
-        currentStreak: (currentUser.progress?.currentStreak || 0) + 1,
+        testsCompleted: currentProgress.testsCompleted + 1,
+        totalPoints: currentProgress.totalPoints + score,
+        currentStreak: currentProgress.currentStreak + 1,
         averageScore: percentage
       };
 
@@ -141,7 +144,7 @@ export default function StudentDashboard() {
       setCurrentUser({
         ...currentUser,
         progress: {
-          ...currentUser.progress,
+          ...currentProgress,
           ...newProgress
         }
       });
@@ -149,7 +152,7 @@ export default function StudentDashboard() {
   };
 
   const handleMarkNotificationAsRead = (notificationId: string) => {
-    if (currentUser) {
+    if (currentUser && currentUser.id) {
       markNotificationAsRead(currentUser.id, notificationId);
       setNotifications(prev =>
         prev.map(notif =>

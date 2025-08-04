@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { authenticateStudent, authenticateAdmin, setCurrentUser, initializeAuthData } from '@/lib/auth';
+import { authenticateStudent, authenticateAdmin, setCurrentUser, initializeAuthData, debugAuthData } from '@/lib/auth';
 
 export default function Login() {
   const [userType, setUserType] = useState<'student' | 'admin'>('student');
@@ -110,6 +110,30 @@ export default function Login() {
       console.error('Login error:', err);
       setError('An error occurred during login. Please try again.');
       setLoading(false);
+    }
+  };
+
+  const handleTestAuth = async () => {
+    console.log('=== DEBUG: Testing Authentication ===');
+    try {
+      await debugAuthData();
+      
+      // Test with demo student credentials
+      const testEmail = 'demo@student.com';
+      const testMobile = '1234567890';
+      
+      console.log(`Testing student login: ${testEmail} / ${testMobile}`);
+      const student = await authenticateStudent(testEmail, testMobile);
+      console.log('Authentication result:', student);
+      
+      if (student) {
+        alert(`Authentication successful for: ${student.name}`);
+      } else {
+        alert('Authentication failed');
+      }
+    } catch (error) {
+      console.error('Test error:', error);
+      alert(`Test error: ${error}`);
     }
   };
 
