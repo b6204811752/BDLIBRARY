@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -1514,7 +1514,7 @@ export default function StudentDashboard() {
                 )}
 
                 {/* No Results */}
-                {Object.values(searchResults).every(results => results.length === 0) && searchQuery && (
+                {Object.values(searchResults).every((results: any[]) => results.length === 0) && searchQuery && (
                   <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <i className="ri-search-line text-2xl text-gray-400"></i>
