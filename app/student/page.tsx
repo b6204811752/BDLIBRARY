@@ -13,6 +13,7 @@ export default function StudentDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [realTimeData, setRealTimeData] = useState({
@@ -68,10 +69,12 @@ export default function StudentDashboard() {
           console.log('✅ Dashboard data loaded successfully');
         } catch (error) {
           console.error('❌ Error loading initial data:', error);
+          setError('Failed to load dashboard data. Please refresh the page.');
           setLoading(false);
         }
       } catch (error) {
         console.error('❌ Error initializing dashboard:', error);
+        setError(`Failed to initialize dashboard: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setLoading(false);
         // Don't redirect to login on initialization errors, let user try again
       }
@@ -117,24 +120,47 @@ export default function StudentDashboard() {
       const user = getCurrentUser();
       console.log('👤 User data in loadData:', user);
       
-      if (user && user.data) {
+      if (user && user.data && user.type === 'student') {
         console.log('✅ Setting current user data:', user.data.name);
-        setCurrentUser(user.data);
+        
+        const studentData = user.data as any; // Cast to any for flexibility with missing fields
+        
+        // Validate required fields and provide defaults
+        const userData = {
+          ...studentData,
+          shift: studentData.shift || 'morning',
+          jobCategory: studentData.jobCategory || 'banking',
+          fees: studentData.fees || { totalAmount: 0, paidAmount: 0, dueAmount: 0 },
+          attendance: studentData.attendance || { present: 0, totalDays: 1 },
+          library: studentData.library || { booksIssued: [] },
+          certificates: studentData.certificates || [],
+          progress: studentData.progress || {
+            materialsDownloaded: 0,
+            testsCompleted: 0,
+            totalPoints: 0,
+            currentStreak: 0,
+            averageScore: 0,
+            studyHours: 0
+          }
+        };
+        
+        setCurrentUser(userData);
         
         // Ensure notifications is always an array - only for students
-        if ('notifications' in user.data && Array.isArray(user.data.notifications)) {
-          setNotifications(user.data.notifications);
-          console.log('📧 Loaded notifications:', user.data.notifications.length);
+        if ('notifications' in userData && Array.isArray(userData.notifications)) {
+          setNotifications(userData.notifications);
+          console.log('📧 Loaded notifications:', userData.notifications.length);
         } else {
           setNotifications([]);
           console.log('📧 No notifications found, setting empty array');
         }
       } else {
-        console.log('❌ No user data found in loadData');
+        console.log('❌ No user data found in loadData or user is not a student');
+        throw new Error('No student data available');
       }
     } catch (error) {
       console.error('❌ Error loading dashboard data:', error);
-      setLoading(false);
+      setError(`Failed to load user data: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -312,6 +338,32 @@ export default function StudentDashboard() {
     performSearch(query, searchCategory);
   };
 
+  if (error) {
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center max-w-md mx-auto p-6">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i className="ri-error-warning-line text-2xl text-red-600"></i>
+        </div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Dashboard Error</h2>
+        <p className="text-gray-600 mb-4">{error}</p>
+        <div className="space-x-3">
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Refresh Page
+          </button>
+          <button 
+            onClick={() => router.push('/login')}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+          >
+            Back to Login
+          </button>
+        </div>
+      </div>
+    </div>;
+  }
+
   if (loading) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
@@ -340,10 +392,12 @@ export default function StudentDashboard() {
     </div>;
   }
 
-  const categoryData = jobCategories.find(cat => cat.id === currentUser.jobCategory.toLowerCase());
+  const categoryData = jobCategories.find(cat => cat.id === (currentUser?.jobCategory || 'banking').toLowerCase());
   const unreadNotifications = notifications.filter(n => !n.read).length;
 
-  return (
+  // Wrap the component rendering in a try-catch for safety
+  try {
+    return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
@@ -373,7 +427,7 @@ export default function StudentDashboard() {
                       <div className="flex flex-wrap items-center gap-3 text-sm">
                         <div className="flex items-center text-blue-100">
                           <i className="ri-time-line mr-1"></i>
-                          <span>{currentUser.shift.charAt(0).toUpperCase() + currentUser.shift.slice(1)} Shift</span>
+                          <span>{(currentUser.shift || 'morning').charAt(0).toUpperCase() + (currentUser.shift || 'morning').slice(1)} Shift</span>
                         </div>
                         <div className="hidden sm:block text-blue-200">•</div>
                         <div className="flex items-center text-blue-100">
@@ -1123,7 +1177,7 @@ export default function StudentDashboard() {
               <h2 className="text-xl font-bold text-gray-900 mb-4">Fee Overview</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">₹{currentUser.fees?.totalFee?.toLocaleString() || 0}</div>
+                  <div className="text-3xl font-bold text-blue-600">₹{currentUser.fees?.totalAmount?.toLocaleString() || 0}</div>
                   <div className="text-sm text-gray-600">Total Fee</div>
                 </div>
                 <div className="text-center">
@@ -1802,4 +1856,34 @@ export default function StudentDashboard() {
       <Footer />
     </div>
   );
+  } catch (renderError) {
+    console.error('❌ Error rendering student dashboard:', renderError);
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i className="ri-error-warning-line text-2xl text-red-600"></i>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Rendering Error</h2>
+          <p className="text-gray-600 mb-4">
+            There was an error displaying the dashboard. This might be due to missing data or a component issue.
+          </p>
+          <div className="space-x-3">
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Refresh Page
+            </button>
+            <button 
+              onClick={() => window.location.href = '/login'}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
