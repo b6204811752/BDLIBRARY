@@ -398,6 +398,18 @@ export default function Login() {
                       <strong>Note:</strong> Enter Email in first field and Mobile Number in second field
                     </p>
                   </div>
+                  
+                  {/* Debug Auth Button */}
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={handleTestAuth}
+                      className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors duration-200 text-sm font-medium"
+                    >
+                      <i className="ri-bug-line mr-2"></i>
+                      Debug Auth System
+                    </button>
+                  </div>
                 </div>
               )}
 
