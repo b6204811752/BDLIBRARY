@@ -72,7 +72,7 @@ export default function Login() {
           console.log('Setting student user and redirecting...');
           setCurrentUser('student', student);
           setLoading(false);
-          router.push('/student');
+          router.push('/simple-student');
           return;
         } else {
           setError('Invalid email or mobile number. Please check the demo credentials below and ensure email is in the first field, mobile in the second field.');
